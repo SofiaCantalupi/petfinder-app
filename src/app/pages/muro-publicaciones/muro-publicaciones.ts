@@ -2,10 +2,11 @@ import { Component, inject, OnInit } from '@angular/core';
 import { PublicacionService } from '../../services/publicacion-service';
 import { Publicacion } from '../../../models/publicacion.model';
 import { Signal } from '@angular/core';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-muro-publicaciones',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './muro-publicaciones.html',
   styleUrl: './muro-publicaciones.css',
 })
