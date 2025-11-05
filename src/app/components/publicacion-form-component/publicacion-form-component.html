@@ -1,88 +1,68 @@
 <form [formGroup]="publicacionForm" (ngSubmit)="onSubmit()">
+  <h3>Datos de la mascota:</h3>
 
-    <h3>Datos de la mascota:</h3>
+  <div>
+    <label for="nombreMascota">Nombre:</label>
+    <input formControlName="nombreMascota" type="text" id="nombreMascota" />
+  </div>
 
-    <!-- formGroupName para el grupo anidado -->
-    <div formGroupName="mascota">
-        <div>
-            <label for="nombreMascota">Nombre:</label>
-            <input 
-                formControlName="nombreMascota"
-                type="text" 
-                id="nombreMascota">
-        </div>
+  <div>
+    <label for="estadoMascota">Estado:</label>
+    <select formControlName="estadoMascota" id="estadoMascota">
+      <option value="">Seleccione...</option>
+      @for (estado of estadosMascotaFiltrados; track estado.value) {
+      <option [value]="estado.value">
+        {{ estado.label }}
+      </option>
+      }
+    </select>
+  </div>
 
-        <div>
-            <label for="estadoMascota">Estado:</label>
-            <select 
-                formControlName="estadoMascota" 
-                id="estadoMascota">
-                <option value="">Seleccione...</option>
-                @for (estado of estadosMascotaFiltrados; track estado.value) {
-                    <option [value]="estado.value">
-                        {{estado.label}}
-                    </option>
-                }
-            </select>
-        </div>
+  <div>
+    <label for="tipoMascota">Tipo:</label>
+    <select formControlName="tipoMascota" id="tipoMascota">
+      <option value="">Seleccione...</option>
+      @for (tipo of tiposMascota; track tipo.value) {
+      <option [value]="tipo.value">
+        {{ tipo.label }}
+      </option>
+      }
+    </select>
+  </div>
 
-        <div>
-            <label for="tipoMascota">Tipo:</label>
-            <select 
-                formControlName="tipoMascota" 
-                id="tipoMascota">
-                <option value="">Seleccione...</option>
-                @for (tipo of tiposMascota; track tipo.value) {
-                    <option [value]="tipo.value">
-                        {{tipo.label}}
-                    </option>
-                }
-            </select>
-        </div>
+  <div>
+    <label for="urlFoto">URL de la foto:</label>
+    <input
+      formControlName="urlFoto"
+      type="url"
+      id="urlFoto"
+      placeholder="https://ejemplo.com/foto.jpg"
+    />
+  </div>
 
-        <div>
-            <label for="urlFoto">URL de la foto:</label>
-            <input 
-                formControlName="urlFoto"
-                type="url" 
-                id="urlFoto"
-                placeholder="https://ejemplo.com/foto.jpg">
-        </div>
-    </div>
+  <div>
+    <label for="descripcion">Descripción:</label>
+    <textarea
+      formControlName="descripcion"
+      id="descripcion"
+      rows="4"
+      placeholder="Describe dónde se vio la mascota..."
+    ></textarea>
+  </div>
 
-    <div>
-        <label for="descripcion">Descripción:</label>
-        <textarea 
-            formControlName="descripcion"
-            id="descripcion"
-            rows="4"
-            placeholder="Describe dónde se vio la mascota..."></textarea>
-    </div>
+  <h3>Dirección:</h3>
 
-    <h3>Dirección:</h3>
+  <div>
+    <label for="calle">Calle:</label>
+    <input formControlName="calle" type="text" id="calle" />
+  </div>
 
-    <!-- formGroupName para el grupo anidado -->
-    <div formGroupName="ubicacion">
-        <div>
-            <label for="calle">Calle:</label>
-            <input 
-                formControlName="calle"
-                type="text" 
-                id="calle">
-        </div>
+  <div>
+    <label for="altura">Altura:</label>
+    <input formControlName="altura" type="number" id="altura" min="1" />
+  </div>
 
-        <div>
-            <label for="altura">Altura:</label>
-            <input 
-                formControlName="altura"
-                type="number" 
-                id="altura"
-                min="1">
-        </div>
-    </div>
-
-    <button type="submit" [disabled]="publicacionForm.invalid">
-        {{esEdicion ? 'Actualizar' : 'Publicar'}}
-    </button>
-
+  <button type="submit" [disabled]="publicacionForm.invalid">
+    {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
+  </button>
 </form>
