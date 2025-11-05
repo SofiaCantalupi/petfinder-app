@@ -29,14 +29,13 @@ export class PublicacionService {
   }
 
   postPublicacion(nuevaPublicacion: Omit<Publicacion, 'id'>) {
-    this.http
+    return this.http
       .post<Publicacion>(this.apiUrl, nuevaPublicacion)
       .pipe(
         tap((data) => {
           this.publicacionesState.update((publicaciones) => [...publicaciones, data]);
         })
       )
-      .subscribe();
   }
 
   putPublicacion(id: number, nuevaPublicacion: Omit<Publicacion, 'id'>) {
@@ -46,7 +45,7 @@ export class PublicacionService {
           publicaciones.map((pub) => (pub.id === id ? data : pub))
         );
       })
-    );
+    )
   }
 
   deletePublicacion(id: number) {
@@ -56,6 +55,10 @@ export class PublicacionService {
           publicaciones.filter((pub) => pub.id !== id)
         );
       })
-    );
+    )
+  }
+
+  getPublicacionById(id: number){
+    return this.http.get<Publicacion>(`${this.apiUrl}/${id}`);
   }
 }
