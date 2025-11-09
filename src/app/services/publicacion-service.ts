@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Publicacion } from '../../models/publicacion.model';
+import { Publicacion } from '../models/publicacion';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 
