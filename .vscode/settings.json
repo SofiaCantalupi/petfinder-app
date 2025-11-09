@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "tailwindCSS.classAttributes": ["class", "className", "ngClass", "class:list"],
+  "tailwindCSS.experimental.configFile": "./src/styles.css",
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
+} 
