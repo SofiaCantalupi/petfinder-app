@@ -3,12 +3,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { PublicacionService } from '../../services/publicacion-service';
 import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-publicacion-form-component',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgClass, RouterLink],
   templateUrl: './publicacion-form-component.html',
   styleUrl: './publicacion-form-component.css',
 })
