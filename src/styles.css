@@ -4,7 +4,7 @@
 
 @theme {
   /* Bootstrap-inspired blue accent colors */
-  --color-background: oklch(1 0 0);
+  --color-background: rgb(255, 151, 28 / 5);
   --color-foreground: oklch(0.145 0 0);
   --color-card: oklch(1 0 0);
   --color-card-foreground: rgb(217, 122, 18);
@@ -43,7 +43,7 @@
   --color-sidebar-ring: oklch(0.708 0 0);
 
   --font-body: 'Nunito', sans-serif;
-  --font-display: 'Quicksand', sans-serif ;
+  --font-display: 'Quicksand', sans-serif;
 }
 
 .dark {
@@ -85,7 +85,7 @@
   * {
     @apply border-border outline-ring/50;
   }
-  
+
   body {
     @apply bg-background text-foreground font-body;
   }
@@ -111,8 +111,21 @@
   input,
   textarea,
   button {
-    font-family: 'Quicksand', sans-serif;
+    @apply font-body;
   }
+
+  a {
+    @apply hover:text-primary;
+  }
+}
+
+@utility wrapper {
+    @apply max-w-6xl mx-auto;
+}
+
+@utility bg-paw-pattern {
+    @apply relative;
+    @apply after:bg-[url('/images/paw-pattern-3.jpg')] after:bg-repeat after:bg-size-[400px] after:absolute after:inset-0 after:-z-1 after:opacity-70;
 }
 
 /* Adding reusable component classes using @utility directive */
@@ -196,7 +209,7 @@
 }
 
 @utility card-title {
-  @apply text-xl font-semibold text-foreground;
+  @apply text-2xl font-semibold text-foreground text-center;
 }
 
 @utility card-body {
