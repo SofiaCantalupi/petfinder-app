@@ -1,12 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MuroPublicaciones } from './pages/muro-publicaciones/muro-publicaciones';
-import { PublicacionFormComponent } from './pages/publicacion-form-component/publicacion-form-component';
-
+import { GuiaEstilo } from './prueba/guia-estilo/guia-estilo';
+import { Header } from './components/header/header';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, GuiaEstilo, Header],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
