@@ -23,17 +23,58 @@
 
 
         <div class="card-body">
-          <form class="flex flex-col gap-4">
+          <form class="flex flex-col gap-4" [formGroup]="logInForm"(ngSubmit)="onSubmit()">
 
             <div class="input-group">
               <label for="email" class="input-label">Correo electrónico</label>
-              <input id="email" type="email" class="input-field" placeholder="usuario@ejemplo.com" required />
+               <input
+          class="input-field placeholder:text-muted-foreground"
+          [ngClass]="{
+            'input-error':
+              logInForm.get('email')?.invalid &&
+              logInForm.get('email')?.touched
+          }"
+          formControlName="email"
+          placeholder="usuario@ejemplo.com"
+          type="email"
+          id="email"
+        />
+        
+@if (logInForm.get('email')?.invalid && logInForm.get('email')?.touched) {
+  <p class="input-error-text">
+    @if (logInForm.get('email')?.errors?.['required']) {
+      Este campo es obligatorio.
+    }
+    @if (logInForm.get('email')?.errors?.['email']) {
+      El formato del correo no es válido.
+    }
+  </p>
+
+        }
             </div>
-
-
+        
             <div class="input-group">
               <label for="password" class="input-label">Contraseña</label>
-              <input id="password" type="password" class="input-field" placeholder="••••••••" required />
+            <input
+          class="input-field placeholder:text-muted-foreground"
+          [ngClass]="{
+            'input-error':
+              logInForm.get('password')?.invalid &&
+              logInForm.get('password')?.touched
+          }"
+          formControlName="password"
+          placeholder="••••••••"
+          type="password"
+          id="password"
+        />
+        @if (logInForm.get('password')?.touched) {
+  <p class="input-error-text">
+    @if (logInForm.get('password')?.errors?.['required']) {
+      Este campo es obligatorio.
+    }
+  </p>
+}
+        
               <span class="input-helper">Debe tener al menos 8 caracteres</span>
             </div>
 
@@ -43,9 +84,9 @@
             </div>
 
 
-            <button type="submit" class="btn btn-primary btn-md w-full">
-              Iniciar sesión
-            </button>
+      <button class="btn btn-primary btn-md" type="submit" [disabled]="logInForm.invalid">
+        Iniciar sesión
+      </button>
           </form>
         </div>
 
@@ -53,7 +94,7 @@
         <div class="card-footer text-center">
           <p class="text-sm text-muted-foreground">
             ¿No tenés cuenta?
-            <a href="/register" class="text-primary hover:underline font-medium">Registrate</a>
+            <a routerLink= '/registro' class="text-primary hover:underline font-medium">Registrate</a>
           </p>
         </div>
       </div>
