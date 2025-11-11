@@ -6,18 +6,19 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { Validators } from '@angular/forms';
 import { NgClass } from '@angular/common';
-
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [FormsModule, NgClass, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
-
   private formBuilder = inject(FormBuilder);
 
+  private authService = inject(AuthService);
   route = inject(ActivatedRoute);
   router = inject(Router);
 
@@ -27,7 +28,7 @@ export class Login {
     password: ['', [Validators.required]],
   });
 
-    onSubmit() {}
+  onSubmit() {}
 
-    //Todavía no hace nada...Falta miembroService
+  //Todavía no hace nada...Falta miembroService
 }

@@ -5,6 +5,6 @@ export interface MiembroDdDTO {
   apellido: string;
   email: string;
   contrasenia: string;
-  rol: string;
+  rol: 'administrador' | 'usuario';
   activo: boolean;
 }

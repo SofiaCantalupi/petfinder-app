@@ -80,6 +80,11 @@ export class AuthService {
         //Si no, guardamos el miembro encontrado en la posición 0 (El email es único)
         const miembroDb = miembros[0];
 
+        //Verificamos que la cuenta del usuario este activa.
+        if (!miembroDb.activo) {
+          throw new Error('Tu cuenta ha sido desactivada. Contacta al administrador.');
+        }
+
         // Verificamos contraseña comparando la ingresada con la de la base de datos.
         if (miembroDb.contrasenia !== loginDto.contrasenia) {
           throw new Error('Contraseña incorrecta');
