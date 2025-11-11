@@ -1,5 +1,15 @@
 {
-  "usuarios": [],
+  "miembros": [
+    {
+      "id": 1,
+      "nombre": "Franco",
+      "apellido": "Cancino",
+      "email": "franco@gmail.com",
+      "contrasenia": "12345678",
+      "rol": "administrador",
+      "activo": true
+    }
+  ],
   "publicaciones": [],
   "comentarios": []
 }
