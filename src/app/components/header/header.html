@@ -49,15 +49,17 @@
         </g>
       </svg>
 
-      <span class="font-bold">PetFinder</span>
+      <span class="font-bold"
+        ><a routerLink="/login" class="hover:text-amber-800 transition-colors">PetFinder</a></span
+      >
     </div>
 
-    <ul
-      class="flex flex-row justify-between items-center gap-5 font-semibold"
-    >
+    <ul class="flex flex-row justify-between items-center gap-5 font-semibold">
       <li><a href="#" class="hover:text-amber-800 transition-colors">Home</a></li>
       <li><a href="#" class="hover:text-amber-800 transition-colors">Nueva Publicación</a></li>
-      <li><a href="#" class="hover:text-amber-800 transition-colors">Mi Perfil</a></li>
+      <li>
+        <a routerLink="/miPerfil" class="hover:text-amber-800 transition-colors">Mi Perfil</a>
+      </li>
     </ul>
   </div>
 </header>
