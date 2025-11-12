@@ -9,6 +9,7 @@ import { CrearMiembroDTO } from '../models/auth/crear-miembro-dto';
 import { RegistroRequestDTO } from '../models/auth/registro-request-dto';
 import { Observable } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
+import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 
 @Injectable({
   providedIn: 'root',
@@ -106,13 +107,20 @@ export class AuthService {
     );
   }
 
+  //Metodo auxiliar para modularizar el metodo register.
+  emailYaRegistrado(email: string): Observable<boolean> {
+    return this.http
+      .get<MiembroDdDTO[]>(`${this.apiUrl}?email=${email}`)
+      .pipe(map((miembros) => miembros.length > 0));
+  }
+
   //Registro
   register(registroDto: RegistroRequestDTO): Observable<Miembro> {
     // Verificar que el email no exista
-    return this.http.get<MiembroDdDTO[]>(`${this.apiUrl}?email=${registroDto.email}`).pipe(
-      switchMap((miembrosExistentes) => {
-        //Usamos switchMap para leer el observable GET y si solo tiene 1 miembro, devolver otro para el Post luego.
-        if (miembrosExistentes.length > 0) {
+    return this.emailYaRegistrado(registroDto.email).pipe(
+      switchMap((existe) => {
+        //Usamos switchMap para leer el observable GET y ver si el email esta presente, despues devolver otro para el Post luego en el return.
+        if (existe) {
           throw new Error('El email ya está registrado');
         }
 

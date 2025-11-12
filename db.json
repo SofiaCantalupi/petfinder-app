@@ -1,22 +1,13 @@
 {
   "miembros": [
     {
-      "id": "1",
-      "nombre": "Franco",
-      "apellido": "Cancino",
+      "nombre": "franco",
+      "apellido": "cancino",
       "email": "franco@gmail.com",
-      "contrasenia": "12345678",
-      "rol": "administrador",
-      "activo": true
-    },
-    {
-      "id": "573a",
-      "nombre": "Mauro",
-      "apellido": "Triaca",
-      "email": "mauro@gmail.com",
-      "contrasenia": "riverPlate",
+      "contrasenia": "riverplate",
       "rol": "usuario",
-      "activo": true
+      "activo": true,
+      "id": 1
     }
   ],
   "publicaciones": [],
