@@ -1,9 +1,9 @@
 {
   "miembros": [
     {
-      "nombre": "franco",
-      "apellido": "cancino",
-      "email": "franco@gmail.com",
+      "nombre": "Franco",
+      "apellido": "Cancino",
+      "email": "Franco@gmail.com",
       "contrasenia": "riverplate",
       "rol": "usuario",
       "activo": true,

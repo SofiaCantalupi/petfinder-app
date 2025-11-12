@@ -4,14 +4,51 @@
   <div class="flex-1 flex flex-col mt-10">
     <div class="card">
       <div class="card-body">
-        <h3 class="card-title mb-2">Simple Card</h3>
-        <p>Nombre: {{ miembroService.miembro()?.nombre }}</p>
-        <p>Apellido: {{ miembroService.miembro()?.apellido }}</p>
-        <p>Gmail: {{ miembroService.miembro()?.email }}</p>
-        <p>Rol: {{ miembroService.miembro()?.rol }}</p>
-        <button class="btn btn-primary btn-md">Editar Perfil</button>
-        <button class="btn btn-outline btn-md">Cambiar Contraseña</button>
-        <button class="btn btn-danger btn-md" (click)="authService.logout()">Cerrar sesión</button>
+        <h3 class="card-title mb-2"></h3>
+        <form [formGroup]="perfilForm" class="mt-50">
+          <div class="input-group py-2">
+            <label class="input-helper">Nombre:</label>
+            <input
+              type="text"
+              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              formControlName="nombre"
+            />
+          </div>
+
+          <div class="input-group py-2">
+            <label class="input-helper">Apellido:</label>
+            <input
+              type="text"
+              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              formControlName="apellido"
+            />
+          </div>
+          <div class="input-group py-2">
+            <label class="input-helper">Gmail:</label>
+            <input
+              type="text"
+              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              formControlName="email"
+            />
+          </div>
+
+          <div class="input-group py-2">
+            <label class="input-helper">Rol:</label>
+            <input
+              type="text"
+              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              formControlName="rol"
+            />
+          </div>
+          <div></div>
+          <div class="flex flex-col gap-4 py-4">
+            <button class="btn btn-primary btn-md">Editar Perfil</button>
+            <button class="btn btn-outline btn-md">Cambiar Contraseña</button>
+            <button class="btn btn-danger btn-md" (click)="authService.logout()">
+              Cerrar sesión
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
