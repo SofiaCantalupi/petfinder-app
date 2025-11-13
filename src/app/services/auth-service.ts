@@ -164,4 +164,8 @@ export class AuthService {
   getCurrentUser(): Miembro | null {
     return this.currentUserSubject.value;
   }
+
+  estaLogeado(): boolean {
+    return !!localStorage.getItem('currentUser');
+  }
 }
