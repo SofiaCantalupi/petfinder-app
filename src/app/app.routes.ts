@@ -3,6 +3,8 @@ import { MuroPublicaciones } from './pages/muro-publicaciones/muro-publicaciones
 import { PublicacionFormComponent } from './pages/publicacion-form-component/publicacion-form-component';
 import { PublicacionDetail } from './pages/publicacion-detail/publicacion-detail';
 import { Login } from './pages/login/login';
+import { Registro } from './pages/registro/registro';
+import { MiPerfil } from './pages/mi-perfil/mi-perfil';
 
 export const routes: Routes = [
   {
@@ -13,6 +15,10 @@ export const routes: Routes = [
   {
     path: 'login',
     component: Login,
+  },
+  {
+    path: 'registro',
+    component: Registro,
   },
   {
     path: 'publicaciones',
@@ -29,5 +35,9 @@ export const routes: Routes = [
   {
     path: 'publicaciones/:id/editar',
     component: PublicacionFormComponent,
+  },
+  {
+    path: 'miPerfil',
+    component: MiPerfil,
   },
 ];

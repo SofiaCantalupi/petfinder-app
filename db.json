@@ -1,5 +1,15 @@
 {
-  "usuarios": [],
+  "miembros": [
+    {
+      "nombre": "Franco",
+      "apellido": "Cancino",
+      "email": "Franco@gmail.com",
+      "contrasenia": "riverplate",
+      "rol": "usuario",
+      "activo": true,
+      "id": 1
+    }
+  ],
   "publicaciones": [],
   "comentarios": []
 }
