@@ -120,12 +120,12 @@
 }
 
 @utility wrapper {
-    @apply max-w-6xl mx-auto;
+  @apply max-w-6xl mx-auto;
 }
 
 @utility bg-paw-pattern {
-    @apply relative;
-    @apply after:bg-[url('/images/paw-pattern-3.jpg')] after:bg-repeat after:bg-size-[400px] after:absolute after:inset-0 after:-z-1 after:opacity-70;
+  @apply relative;
+  @apply after:bg-[url('/images/paw-pattern-4.jpg')] after:bg-repeat after:bg-size-[400px] after:absolute after:inset-0 after:-z-1 after:opacity-70;
 }
 
 /* Adding reusable component classes using @utility directive */
@@ -242,7 +242,7 @@
 }
 
 @utility alert-icon {
-  @apply flex-shrink-0 w-5 h-5;
+  @apply shrink-0 w-5 h-5;
 }
 
 @utility alert-content {
