@@ -3,6 +3,7 @@ import { MuroPublicaciones } from './pages/muro-publicaciones/muro-publicaciones
 import { PublicacionFormComponent } from './pages/publicacion-form-component/publicacion-form-component';
 import { PublicacionDetail } from './pages/publicacion-detail/publicacion-detail';
 import { Login } from './pages/login/login';
+import { GuiaEstilo } from './prueba/guia-estilo/guia-estilo';
 
 export const routes: Routes = [
   {
@@ -30,4 +31,8 @@ export const routes: Routes = [
     path: 'publicaciones/:id/editar',
     component: PublicacionFormComponent,
   },
+  {
+    path: 'guia',
+    component: GuiaEstilo
+  }
 ];
