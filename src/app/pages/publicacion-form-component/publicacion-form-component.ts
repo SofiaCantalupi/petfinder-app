@@ -9,6 +9,7 @@ import { NgClass } from '@angular/common';
 import { TipoMascota } from '../../models/publicacion';
 import { EstadoMascota } from '../../models/publicacion';
 import { Publicacion } from '../../models/publicacion';
+import { MiembroService } from '../../services/miembro-service';
 
 @Component({
   selector: 'app-publicacion-form-component',
@@ -20,6 +21,7 @@ export class PublicacionFormComponent implements OnInit {
   // Inyeccion de dependencias
   private formBuilder = inject(FormBuilder);
   private publicacionService = inject(PublicacionService);
+  private miembroService = inject(MiembroService);
 
   route = inject(ActivatedRoute);
   router = inject(Router);
@@ -32,10 +34,10 @@ export class PublicacionFormComponent implements OnInit {
   estadosMascota: { value: EstadoMascota; label: string }[] = [
     { value: 'perdido', label: 'Perdido' },
     { value: 'encontrado', label: 'Encontrado' },
-    { value: 'reencontrado', label: 'Reencontrado' }
+    { value: 'reencontrado', label: 'Reencontrado' },
   ];
 
-  tiposMascota: { value: TipoMascota; label: string} [] = [
+  tiposMascota: { value: TipoMascota; label: string }[] = [
     { value: 'perro', label: 'Perro' },
     { value: 'gato', label: 'Gato' },
   ];
@@ -48,7 +50,6 @@ export class PublicacionFormComponent implements OnInit {
     return this.estadosMascota.filter((e) => e.value !== 'reencontrado');
   }
 
-  //
   ngOnInit(): void {
     // se fija si en la URL existe un id
     const id = this.route.snapshot.params['id'];
@@ -76,20 +77,20 @@ export class PublicacionFormComponent implements OnInit {
   }
 
   // metodo helper para convertir la estructura plana de la interfaz, a una anidada como la que requiere el formulario
-  mappearPublicacionAForm(publicacion: Publicacion){
+  mappearPublicacionAForm(publicacion: Publicacion) {
     return {
       mascota: {
         nombreMascota: publicacion.nombreMascota,
         tipoMascota: publicacion.tipoMascota,
-        estadoMascota: publicacion.estadoMascota, 
-        urlFoto: publicacion.urlFoto
+        estadoMascota: publicacion.estadoMascota,
+        urlFoto: publicacion.urlFoto,
       },
       descripcion: publicacion.descripcion,
       ubicacion: {
         calle: publicacion.calle,
-        altura: publicacion.altura
-      }
-    }
+        altura: publicacion.altura,
+      },
+    };
   }
 
   // Creacion del formulario
@@ -114,57 +115,71 @@ export class PublicacionFormComponent implements OnInit {
       return;
     }
 
-    const usuarioActual = this.getUsuarioActual();
+    // obtener el miembro loggeado
+    const miembroActual$ = this.miembroService.cargarMiembroActual();
+    if (!miembroActual$) {
+      alert('Debes iniciar sesión para publicar');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // se obtienen los datos cargados en el formulario
     const formValue = this.publicacionForm.getRawValue();
 
-    // esto se tiene que cambiar en la integracion con spirng boot
-    const publicacion = {
-      // Mascota
-      nombreMascota: formValue.mascota.nombreMascota,
-      tipoMascota: formValue.mascota.tipoMascota,
-      estadoMascota: formValue.mascota.estadoMascota,
-      urlFoto: formValue.mascota.urlFoto,
-      // descripcion
-      descripcion: formValue.descripcion,
-      // Ubicacion
-      calle: formValue.ubicacion.calle,
-      altura: formValue.ubicacion.altura,
-      fecha: new Date().toISOString(),
-      activo: true,
-      idMiembro: usuarioActual.id,
-    };
+    //  toda la lógica de editar y crear esta dentro del subscribe
+    miembroActual$.subscribe({
+      next: (miembro) => {
+        const publicacion: Omit<Publicacion, 'id'> = {
+          idMiembro: miembro.id, // id del miembro loggeado
+          // mascota
+          nombreMascota: formValue.mascota.nombreMascota,
+          tipoMascota: formValue.mascota.tipoMascota,
+          estadoMascota: formValue.mascota.estadoMascota,
+          urlFoto: formValue.mascota.urlFoto,
+          // descripcion
+          descripcion: formValue.descripcion,
+          calle: formValue.ubicacion.calle,
+          altura: formValue.ubicacion.altura,
+          // datos que no vienen del formulario
+          fecha: new Date().toISOString(),
+          activo: true,
+        };
 
-    if (this.esEdicion()) {
-      // EDITAR
-      this.publicacionService.putPublicacion(this.publicacionId()!, publicacion).subscribe({
-        next: () => {
-          console.log('Publicación actualizada');
-          this.publicacionForm.reset();
-          this.router.navigate(['/publicaciones', this.publicacionId()]);
-        },
-        error: (error) => {
-          console.error('Error actualizando:', error);
-          alert('Error al actualizar la publicación');
-        },
-      });
-    } else {
-      // CREAR
-      this.publicacionService.postPublicacion(publicacion).subscribe({
-        next: () => {
-          console.log('Publicación creada');
-          this.publicacionForm.reset();
-          this.router.navigate(['/publicaciones']);
-        },
-        error: (error) => {
-          console.error('Error creando:', error);
-          alert('Error al crear la publicación');
-        },
-      });
-    }
-  }
-
-  getUsuarioActual(){
-    const usuarioJson = localStorage.getItem('currentUser');
-    return usuarioJson ? JSON.parse(usuarioJson) : null;
+        // esto se tiene que cambiar en la integracion con spring boot
+        if (this.esEdicion()) {
+          // EDITAR
+          this.publicacionService.putPublicacion(this.publicacionId()!, publicacion).subscribe({
+            next: () => {
+              console.log('Publicación actualizada');
+              this.publicacionForm.reset();
+              this.router.navigate(['/publicaciones', this.publicacionId()]);
+            },
+            error: (error) => {
+              console.error('Error actualizando:', error);
+              alert('Error al actualizar la publicación');
+            },
+          });
+        } else {
+          // CREAR
+          this.publicacionService.postPublicacion(publicacion).subscribe({
+            next: () => {
+              console.log('Publicación creada');
+              this.publicacionForm.reset();
+              this.router.navigate(['/publicaciones']);
+            },
+            error: (error) => {
+              console.error('Error creando:', error);
+              alert('Error al crear la publicación');
+            },
+          });
+        }
+      },
+      // este error correspone el subscribe de cargarmiembrologeado
+      error: (error) => {
+        console.error('Error al cargar miembro:', error);
+        alert('Error al obtener datos del usuario');
+        this.router.navigate(['/login']);
+      },
+    });
   }
 }
