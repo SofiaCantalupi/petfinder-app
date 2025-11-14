@@ -1,9 +1,8 @@
 <body>
-    <app-header></app-header>
+  @if(router.url !== '/login' && router.url !== '/registro'){<app-header></app-header>}
 
-    <main class="p-8 wrapper">
-         <router-outlet />
-    </main>
-    <app-guia-estilo ></app-guia-estilo>
- 
+  <main class="p-8 wrapper">
+    <router-outlet />
+  </main>
 </body>
+<app-footer></app-footer>

@@ -8,8 +8,29 @@
       "rol": "usuario",
       "activo": true,
       "id": 1
+    },
+    {
+      "nombre": "Administrador",
+      "apellido": "Uno",
+      "email": "admin@gmail.com",
+      "contrasenia": "admin123",
+      "rol": "administrador",
+      "activo": true,
+      "id": 2
     }
   ],
-  "publicaciones": [],
+  "publicaciones": [
+    {
+      "nombreMascota": "Lola",
+      "tipoMascota": "perro",
+      "estadoMascota": "encontrado",
+      "urlFoto": "https://www.radioimagina.cl/wp-content/uploads/2015/04/DSC_0014.jpg",
+      "descripcion": "Perro Ovejero",
+      "calle": "Alberti",
+      "altura": 5138,
+      "fecha": "2025-11-13T23:02:58.012Z",
+      "id": 1
+    }
+  ],
   "comentarios": []
 }
