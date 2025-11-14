@@ -1,0 +1,23 @@
+<section class="mt-8 p-10">
+  <h2 class="text-2xl font-bold text-text-primary mb-6">Comentarios</h2>
+
+  <!-- Lista de comentarios -->
+  <div class="space-y-0">
+    @if (comentarios().length === 0) {
+    <p class="text-text-secondary text-center py-8">
+      No hay comentarios aún. ¡Sé el primero en comentar!
+    </p>
+    } @else { @for (comentario of comentarios(); track comentario.id) {
+    <app-comentario-item
+      [comentario]="comentario"
+      (comentarioEliminado)="eliminarComentario($event)"
+    />
+    } }
+  </div>
+
+  <!-- Formulario para agregar comentario (abajo de todo) -->
+  <app-comentario-form
+    [publicacionId]="publicacionId()"
+    (comentarioCreado)="guardarComentario($event)"
+  />
+</section>

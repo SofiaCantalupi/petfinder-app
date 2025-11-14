@@ -36,4 +36,8 @@ export const routes: Routes = [
     path: 'publicaciones/:id/editar',
     component: PublicacionFormComponent,
   },
+  {
+    path: 'miPerfil',
+    component: MiPerfil,
+  },
 ];

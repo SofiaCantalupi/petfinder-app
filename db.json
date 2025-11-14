@@ -7,9 +7,101 @@
       "contrasenia": "riverplate",
       "rol": "usuario",
       "activo": true,
-      "id": 1
+      "id": "1"
+    },
+    {
+      "id": "2d09",
+      "nombre": "Leonel",
+      "apellido": "Benavides Colmeck",
+      "email": "leonel22102000@gmail.com",
+      "contrasenia": "12345678",
+      "rol": "usuario",
+      "activo": true
     }
   ],
-  "publicaciones": [],
-  "comentarios": []
+  "publicaciones": [
+    {
+      "id": "69fe",
+      "nombreMascota": "carlos",
+      "tipoMascota": "perro",
+      "estadoMascota": "perdido",
+      "urlFoto": "https://png.pngtree.com/png-vector/20250111/ourmid/pngtree-golden-retriever-dog-pictures-png-image_15147078.png",
+      "descripcion": "el pero se perdio hoy a las 2 de la tarde, tiene 3 años y 5 meses, blablablablbalbalblablablblablababl.",
+      "calle": "balcarce",
+      "altura": 10720,
+      "fecha": "2025-11-14T03:12:50.895Z"
+    }
+  ],
+  "comentarios": [
+    {
+      "id": "1",
+      "texto": "Creo que vi a este perro cerca del parque",
+      "fechaPublicacion": "2024-11-13",
+      "activo": true,
+      "publicacionId": 1,
+      "miembroId": 1,
+      "miembroNombre": "Franco",
+      "miembroApellido": "Cancino"
+    },
+    {
+      "id": "c71b",
+      "texto": "yo lo vi lejos del parque\n",
+      "fechaPublicacion": "2025-11-14",
+      "activo": true,
+      "publicacionId": 1,
+      "miembroId": "2d09",
+      "miembroNombre": "Leonel",
+      "miembroApellido": "Benavides Colmeck"
+    },
+    {
+      "id": "3e6b",
+      "texto": "cmo estna?\n",
+      "fechaPublicacion": "2025-11-14",
+      "activo": true,
+      "publicacionId": 1,
+      "miembroId": "2d09",
+      "miembroNombre": "Leonel",
+      "miembroApellido": "Benavides Colmeck"
+    },
+    {
+      "id": "30bd",
+      "texto": "muy buena publicacion\n",
+      "fechaPublicacion": "2025-11-14",
+      "activo": true,
+      "publicacionId": 1,
+      "miembroId": "1",
+      "miembroNombre": "Franco",
+      "miembroApellido": "Cancino"
+    },
+    {
+      "id": "4d6f",
+      "texto": "lindo perro, lastima que se perdio\n",
+      "fechaPublicacion": "2025-11-14T14:49:26.669Z",
+      "activo": true,
+      "publicacionId": 1,
+      "miembroId": "1",
+      "miembroNombre": "Franco",
+      "miembroApellido": "Cancino"
+    },
+    {
+      "id": "cac4",
+      "texto": "perro fiero como la dueña\n",
+      "fechaPublicacion": "2025-11-14T14:50:05.768Z",
+      "activo": true,
+      "publicacionId": 1,
+      "miembroId": "1",
+      "miembroNombre": "Franco",
+      "miembroApellido": "Cancino"
+    },
+    {
+      "id": "b143",
+      "texto": "blablbalba",
+      "fechaPublicacion": "2025-11-14T14:51:34.382Z",
+      "activo": true,
+      "publicacionId": 1,
+      "miembroId": "2d09",
+      "miembroNombre": "Leonel",
+      "miembroApellido": "Benavides Colmeck"
+    }
+  ]
 }
