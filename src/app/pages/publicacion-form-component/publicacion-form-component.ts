@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { TipoMascota } from '../../models/publicacion';
 import { EstadoMascota } from '../../models/publicacion';
+import { Publicacion } from '../../models/publicacion';
 
 @Component({
   selector: 'app-publicacion-form-component',
@@ -63,7 +64,8 @@ export class PublicacionFormComponent implements OnInit {
   cargarFormulario(id: number) {
     this.publicacionService.getPublicacionById(id).subscribe({
       next: (publicacion) => {
-        this.publicacionForm.patchValue(publicacion);
+        // se cargan los datos con lo retornado por el mappeo de la publicacion plana, a una estructura anidada
+        this.publicacionForm.patchValue(this.mappearPublicacionAForm(publicacion));
       },
       error: (error) => {
         console.log('Error cargando el formulario.', error);
@@ -71,6 +73,23 @@ export class PublicacionFormComponent implements OnInit {
         this.router.navigate(['/publicaciones']);
       },
     });
+  }
+
+  // metodo helper para convertir la estructura plana de la interfaz, a una anidada como la que requiere el formulario
+  mappearPublicacionAForm(publicacion: Publicacion){
+    return {
+      mascota: {
+        nombreMascota: publicacion.nombreMascota,
+        tipoMascota: publicacion.tipoMascota,
+        estadoMascota: publicacion.estadoMascota, 
+        urlFoto: publicacion.urlFoto
+      },
+      descripcion: publicacion.descripcion,
+      ubicacion: {
+        calle: publicacion.calle,
+        altura: publicacion.altura
+      }
+    }
   }
 
   // Creacion del formulario
@@ -100,16 +119,14 @@ export class PublicacionFormComponent implements OnInit {
 
     // esto se tiene que cambiar en la integracion con spirng boot
     const publicacion = {
-
-      //usuarioId: usuario.id,
       // Mascota
       nombreMascota: formValue.mascota.nombreMascota,
       tipoMascota: formValue.mascota.tipoMascota,
       estadoMascota: formValue.mascota.estadoMascota,
       urlFoto: formValue.mascota.urlFoto,
-      // Otros
+      // descripcion
       descripcion: formValue.descripcion,
-      // Ubicación
+      // Ubicacion
       calle: formValue.ubicacion.calle,
       altura: formValue.ubicacion.altura,
       fecha: new Date().toISOString(),
