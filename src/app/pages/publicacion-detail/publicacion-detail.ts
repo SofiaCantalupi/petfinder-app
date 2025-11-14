@@ -1,12 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router'; // ← Agregar RouterLink
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PublicacionService } from '../../services/publicacion-service';
 import { Publicacion } from '../../models/publicacion';
 import { ComentarioList } from '../../components/comentarios/comentario-list/comentario-list';
 
 @Component({
   selector: 'app-publicacion-detail',
-  imports: [ComentarioList, RouterLink], // ← Agregar RouterLink
+  imports: [ComentarioList, RouterLink],
   templateUrl: './publicacion-detail.html',
   styleUrl: './publicacion-detail.css',
 })
