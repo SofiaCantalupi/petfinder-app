@@ -6,6 +6,8 @@ import { Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { NgClass } from '@angular/common';
+import { TipoMascota } from '../../models/publicacion';
+import { EstadoMascota } from '../../models/publicacion';
 
 @Component({
   selector: 'app-publicacion-form-component',
@@ -26,13 +28,13 @@ export class PublicacionFormComponent implements OnInit {
   publicacionId = signal<number | undefined>(undefined);
 
   // Arrays para las opciones
-  estadosMascota = [
+  estadosMascota: { value: EstadoMascota; label: string }[] = [
     { value: 'perdido', label: 'Perdido' },
     { value: 'encontrado', label: 'Encontrado' },
-    { value: 'reencontrado', label: 'Reencontrado' },
+    { value: 'reencontrado', label: 'Reencontrado' }
   ];
 
-  tiposMascota = [
+  tiposMascota: { value: TipoMascota; label: string} [] = [
     { value: 'perro', label: 'Perro' },
     { value: 'gato', label: 'Gato' },
   ];
@@ -64,7 +66,7 @@ export class PublicacionFormComponent implements OnInit {
         this.publicacionForm.patchValue(publicacion);
       },
       error: (error) => {
-        console.log('Error cargando el formulario.');
+        console.log('Error cargando el formulario.', error);
         // si no existe la publicacion redirigir
         this.router.navigate(['/publicaciones']);
       },
@@ -73,54 +75,79 @@ export class PublicacionFormComponent implements OnInit {
 
   // Creacion del formulario
   publicacionForm = this.formBuilder.nonNullable.group({
-    nombreMascota: ['', [Validators.required, Validators.minLength(3)]],
-    tipoMascota: ['', Validators.required],
-    estadoMascota: ['', Validators.required],
-    urlFoto: ['', [Validators.required, Validators.pattern(/^https?:\/\/.+/)]],
+    mascota: this.formBuilder.nonNullable.group({
+      nombreMascota: ['', [Validators.required, Validators.minLength(3)]],
+      tipoMascota: ['' as TipoMascota, Validators.required],
+      estadoMascota: ['' as EstadoMascota, Validators.required],
+      urlFoto: ['', [Validators.required, Validators.pattern(/^https?:\/\/.+/)]],
+    }),
     descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
-    calle: ['', [Validators.required, Validators.minLength(3)]],
-    altura: [0, [Validators.required, Validators.min(2)]],
+    ubicacion: this.formBuilder.nonNullable.group({
+      calle: ['', [Validators.required, Validators.minLength(3)]],
+      altura: [0, [Validators.required, Validators.min(2)]],
+    }),
   });
 
   onSubmit() {
-    if (this.publicacionForm.valid) {
-      const publicacion = {
-        ...this.publicacionForm.getRawValue(),
-        fecha: new Date(),
-      };
+    if (this.publicacionForm.invalid) {
+      // marcar todos los campos como touched, incluyendo los anidados
+      this.publicacionForm.markAllAsTouched();
+      return;
+    }
 
-      if (this.esEdicion()) {
-        // EDITAR
-        this.publicacionService.putPublicacion(this.publicacionId()!, publicacion).subscribe({
-          next: () => {
-            console.log('Publicación actualizada');
-            this.publicacionForm.reset();
-            this.router.navigate(['/publicaciones', this.publicacionId()]);
-          },
-          error: (error) => {
-            console.error('Error actualizando:', error);
-            alert('Error al actualizar la publicación');
-          },
-        });
-      } else {
-        // CREAR
-        this.publicacionService.postPublicacion(publicacion).subscribe({
-          next: () => {
-            console.log('Publicación creada');
-            this.publicacionForm.reset();
-            this.router.navigate(['/publicaciones']);
-          },
-          error: (error) => {
-            console.error('Error creando:', error);
-            alert('Error al crear la publicación');
-          },
-        });
-      }
+    const usuarioActual = this.getUsuarioActual();
+    const formValue = this.publicacionForm.getRawValue();
+
+    // esto se tiene que cambiar en la integracion con spirng boot
+    const publicacion = {
+
+      //usuarioId: usuario.id,
+      // Mascota
+      nombreMascota: formValue.mascota.nombreMascota,
+      tipoMascota: formValue.mascota.tipoMascota,
+      estadoMascota: formValue.mascota.estadoMascota,
+      urlFoto: formValue.mascota.urlFoto,
+      // Otros
+      descripcion: formValue.descripcion,
+      // Ubicación
+      calle: formValue.ubicacion.calle,
+      altura: formValue.ubicacion.altura,
+      fecha: new Date().toISOString(),
+      activo: true,
+      idMiembro: usuarioActual.id,
+    };
+
+    if (this.esEdicion()) {
+      // EDITAR
+      this.publicacionService.putPublicacion(this.publicacionId()!, publicacion).subscribe({
+        next: () => {
+          console.log('Publicación actualizada');
+          this.publicacionForm.reset();
+          this.router.navigate(['/publicaciones', this.publicacionId()]);
+        },
+        error: (error) => {
+          console.error('Error actualizando:', error);
+          alert('Error al actualizar la publicación');
+        },
+      });
     } else {
-      // Marcar campos como touched para mostrar errores
-      Object.keys(this.publicacionForm.controls).forEach((key) => {
-        this.publicacionForm.get(key)?.markAsTouched();
+      // CREAR
+      this.publicacionService.postPublicacion(publicacion).subscribe({
+        next: () => {
+          console.log('Publicación creada');
+          this.publicacionForm.reset();
+          this.router.navigate(['/publicaciones']);
+        },
+        error: (error) => {
+          console.error('Error creando:', error);
+          alert('Error al crear la publicación');
+        },
       });
     }
+  }
+
+  getUsuarioActual(){
+    const usuarioJson = localStorage.getItem('currentUser');
+    return usuarioJson ? JSON.parse(usuarioJson) : null;
   }
 }
