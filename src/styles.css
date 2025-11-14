@@ -3,7 +3,6 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Bootstrap-inspired blue accent colors */
   --color-background: rgb(255, 151, 28 / 5);
   --color-foreground: oklch(0.145 0 0);
   --color-card: oklch(1 0 0);
@@ -41,6 +40,8 @@
   --color-sidebar-accent-foreground: oklch(0.205 0 0);
   --color-sidebar-border: oklch(0.922 0 0);
   --color-sidebar-ring: oklch(0.708 0 0);
+
+  --color-white: #fafafa;
 
   --font-body: 'Nunito', sans-serif;
   --font-display: 'Quicksand', sans-serif;
