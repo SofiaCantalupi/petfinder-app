@@ -9,7 +9,8 @@ import { CrearMiembroDTO } from '../models/auth/crear-miembro-dto';
 import { RegistroRequestDTO } from '../models/auth/registro-request-dto';
 import { Observable } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
-import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
+import { computed } from '@angular/core';
+import { signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,16 @@ import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
+
+  private currentUserSignal = signal<Miembro | null>(null);
+
+  //Uso de computed -> Solo recalcula cuando cambia currentUserSignal, ahorrando recursos.
+  //Si el usuario esta logeado, retorna true. Lee el signal y determina si es distinto de nulo.
+  isAuthenticated = computed(() => this.currentUserSignal() !== null);
+
+  //Hace lo mismo, se fija que rol tiene.
+  isAdmin = computed(() => this.currentUserSignal()?.rol === 'administrador');
+  isUsuario = computed(() => this.currentUserSignal()?.rol === 'usuario');
 
   private apiUrl = 'http://localhost:3000/miembros';
 
@@ -44,6 +55,7 @@ export class AuthService {
       try {
         const user: Miembro = JSON.parse(userJson); //Guardo el MiembroSession del LocalStorage
         this.currentUserSubject.next(user); //Lo pongo en el BehaviorSubject.
+        this.currentUserSignal.set(user); //Tambien en el CurrentUserSignal para lectura de roles.
       } catch (error) {
         console.error('Error al parsear usuario del localStorage', error);
         // Si hay error, se limpia el localStorage
@@ -56,6 +68,7 @@ export class AuthService {
   private setCurrentUser(user: Miembro): void {
     localStorage.setItem('currentUser', JSON.stringify(user));
     this.currentUserSubject.next(user); //Lo pongo en el BehaviorSubject.
+    this.currentUserSignal.set(user); //Tambien en el CurrentUserSignal para lectura de roles.
   }
 
   //Pasamos de la base de datos a un miembro para el LocalStorage (Sin la contraseña expuesta)
@@ -76,7 +89,7 @@ export class AuthService {
       map((miembros) => {
         // Si miembros tiene tamaño 0, es porque no se encontro nada con el email del LoginRequestDTO
         if (miembros.length === 0) {
-          throw new Error('Email no encontrado');
+          throw new Error('Email no encontrado. Registrate o intentalo nuevamente.');
         }
         //Si no, guardamos el miembro encontrado en la posición 0 (El email es único)
         const miembroDb = miembros[0];
@@ -88,7 +101,7 @@ export class AuthService {
 
         // Verificamos contraseña comparando la ingresada con la de la base de datos.
         if (miembroDb.contrasenia !== loginDto.contrasenia) {
-          throw new Error('Contraseña incorrecta');
+          throw new Error('Contraseña incorrecta. Intentalo nuevamente');
         }
 
         // Habiendo validado que el mail existe y la contraseña es correcta,
@@ -157,11 +170,17 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
+    this.currentUserSignal.set(null);
     this.router.navigate(['/login']);
   }
 
   //Obtiene el usuario actual logeado.
   getCurrentUser(): Miembro | null {
     return this.currentUserSubject.value;
+  }
+
+  //El !! significa que devuelve true or false aunque el valor que obtenga sea un string. Si esta vacio seria false
+  estaLogeado(): boolean {
+    return !!localStorage.getItem('currentUser');
   }
 }

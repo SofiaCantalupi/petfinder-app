@@ -87,7 +87,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-paw-pattern text-foreground font-body;
   }
 
   /* Adding typography styles for headings and body text */

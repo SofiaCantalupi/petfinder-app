@@ -1,0 +1,17 @@
+<article class="flex h-screen items-start justify-center p-25">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Atención...</h3>
+    </div>
+    <div class="card-body">
+      <p>Actualmente ya te encontras con una sesión activa.</p>
+      <p>Para acceder con otra cuenta, tenes que cerrar sesión.</p>
+    </div>
+    <div class="card-footer flex flex-row justify-around">
+      <button class="btn btn-outline btn-sm" (click)="router.navigate(['/publicaciones'])">
+        Cancelar
+      </button>
+      <button class="btn btn-danger btn-sm" (click)="authService.logout()">Cerrar Sesión</button>
+    </div>
+  </div>
+</article>
