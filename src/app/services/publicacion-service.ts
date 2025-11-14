@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { Publicacion } from '../models/publicacion';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
+import { switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -29,13 +30,11 @@ export class PublicacionService {
   }
 
   postPublicacion(nuevaPublicacion: Omit<Publicacion, 'id'>) {
-    return this.http
-      .post<Publicacion>(this.apiUrl, nuevaPublicacion)
-      .pipe(
-        tap((data) => {
-          this.publicacionesState.update((publicaciones) => [...publicaciones, data]);
-        })
-      )
+    return this.http.post<Publicacion>(this.apiUrl, nuevaPublicacion).pipe(
+      tap((data) => {
+        this.publicacionesState.update((publicaciones) => [...publicaciones, data]);
+      })
+    );
   }
 
   putPublicacion(id: number, nuevaPublicacion: Omit<Publicacion, 'id'>) {
@@ -45,20 +44,31 @@ export class PublicacionService {
           publicaciones.map((pub) => (pub.id === id ? data : pub))
         );
       })
-    )
+    );
   }
 
   deletePublicacion(id: number) {
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+    return this.getPublicacionById(id).pipe(
+      switchMap((publicacion) => {
+        // cambia el estado activo a false (baja pasiva)
+        const publicacionActualizada = {
+          ...publicacion,
+          activo: false,
+        };
+
+        // PUT con la publicacion actualizada
+        return this.http.put<Publicacion>(`${this.apiUrl}/${id}`, publicacionActualizada);
+      }),
       tap(() => {
+        // actualizar el state removiendo la publicacion eliminada
         this.publicacionesState.update((publicaciones) =>
           publicaciones.filter((pub) => pub.id !== id)
         );
       })
-    )
+    );
   }
 
-  getPublicacionById(id: number){
+  getPublicacionById(id: number) {
     return this.http.get<Publicacion>(`${this.apiUrl}/${id}`);
   }
 }
