@@ -1,11 +1,23 @@
 <div class="card max-w-3xl mx-auto">
+  <!-- Header del formulario -->
   <div class="card-header">
-    <h2 class="card-title">Crear una publicación</h2>
+    <h2 class="card-title">{{ esEdicion() ? 'Editar publicación' : 'Crear una publicación' }}</h2>
   </div>
+
+  @if(esEdicion()){
+  <p class="pt-2 text-center text-pretty">
+    Revisá los datos de tu publicación y cambiá lo que necesites. <br />
+    Al finalizar, tocá “Actualizar” para guardar los cambios.
+  </p>
+  }
+
+  <!-- Formulario -->
   <form [formGroup]="publicacionForm" (ngSubmit)="onSubmit()">
     <div class="card-body space-y-4 pb-16">
+      <!-- Seccion Datos Mascota -->
       <h3 class="font-semibold">Datos de la mascota:</h3>
 
+      <!-- Nombre Mascota -->
       <div formGroupName="mascota">
         <div class="input-group">
           <label class="input-label" for="nombreMascota">Nombre:</label>
@@ -32,6 +44,7 @@
           }
         </div>
 
+        <!-- Estado Mascota -->
         <div class="input-group">
           <label class="input-label" for="estadoMascota">Estado:</label>
           <select
@@ -58,6 +71,7 @@
           }
         </div>
 
+        <!-- Tipo Mascota -->
         <div class="input-group">
           <label class="input-label" for="tipoMascota">Tipo:</label>
           <select
@@ -84,6 +98,7 @@
           }
         </div>
 
+        <!-- Foto -->
         <div class="input-group">
           <label class="input-label" for="urlFoto">URL de la foto:</label>
           <input
@@ -107,6 +122,7 @@
         </div>
       </div>
 
+      <!-- Seccion Descripcion -->
       <div class="input-group">
         <label class="input-label" for="descripcion">Descripción:</label>
         <textarea
@@ -134,8 +150,10 @@
         }
       </div>
 
+      <!-- Seccion Datos Ubicacion -->
       <h3 class="font-semibold">Dirección:</h3>
 
+      <!-- Calle -->
       <div formGroupName="ubicacion">
         <div class="input-group">
           <label class="input-label" for="calle">Calle:</label>
@@ -159,6 +177,7 @@
           }
         </div>
 
+        <!-- Altura -->
         <div class="input-group">
           <label class="input-label" for="altura">Altura:</label>
           <input
@@ -184,6 +203,7 @@
       </div>
     </div>
 
+    <!-- Botones -->
     <div class="card-footer space-x-3 flex justify-center">
       <button class="btn btn-primary btn-md" type="submit" [disabled]="publicacionForm.invalid">
         {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
