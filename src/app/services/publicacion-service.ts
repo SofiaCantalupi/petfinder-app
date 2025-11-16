@@ -1,8 +1,9 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { Publicacion } from '../models/publicacion';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 import { switchMap } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,11 @@ export class PublicacionService {
   private publicacionesState = signal<Publicacion[]>([]);
 
   public publicaciones = this.publicacionesState.asReadonly();
+
+  // computed usado para filtrar publicaciones activas, filtra solo cuando hay cambios
+  public publicacionesActivas = computed(()=>
+    this.publicacionesState().filter(publicacion => publicacion.activo === true)
+  );
 
   constructor(private http: HttpClient) {
     this.getPublicaciones();
