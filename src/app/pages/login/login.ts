@@ -48,7 +48,7 @@ export class Login {
     //Login a través del authService.
     this.authService.login(LoginDto).subscribe({
       next: (miembro) => {
-        this.router.navigate(['/publicaciones/crear']);
+        this.router.navigate(['/publicaciones']);
       },
       error: (error) => {
         this.errorMessage.set(error.message);
