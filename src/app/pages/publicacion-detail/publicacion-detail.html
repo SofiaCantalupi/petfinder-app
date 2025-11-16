@@ -5,13 +5,14 @@
   <div class="flex">
     <img
       class="w-90 h-90 object-cover"
-      src="https://images.unsplash.com/photo-1534361960057-19889db9621e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=870"
-      alt=""
+      [src]="publicacion()?.urlFoto"
+      [alt]="publicacion()?.nombreMascota"
     />
     <div class="card-body">
-      <h2 class="card-title text-3xl pb-3">Max</h2>
+      <h2 class="card-title text-3xl pb-3">{{ publicacion()?.nombreMascota }}</h2>
       <p class="pb-4">Publicado por ...</p>
       <div class="flex gap-1 items-center justify-start">
+        <!-- svg ubicacion -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -29,10 +30,11 @@
           />
           <circle cx="12" cy="10" r="3" />
         </svg>
-        <p class="text-s">San Juan 721</p>
+        <p class="text-s">{{ publicacion()?.calle }}, {{ publicacion()?.altura }}</p>
       </div>
 
       <div class="flex gap-1 items-center justify-start">
+        <!-- svg calendario -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -51,16 +53,21 @@
           <path d="M8 2v4" />
           <rect x="3" y="4" width="18" height="18" rx="2" />
         </svg>
-        <p class="text-s">22-10-2025</p>
+        <p class="text-s">{{ publicacion()?.fecha }}</p>
       </div>
 
+      @if (esDuenio()) {
       <div class="flex gap-2 pt-35 justify-center">
-        <button class="btn btn-primary btn-sm" (click)="navigateToUpdate()">Editar</button>
+        <button class="btn btn-primary btn-sm" (click)="navigateToUpdate()">Editar Publicación</button>
         <button class="btn btn-danger btn-sm" (click)="deletePublicacion()">Eliminar</button>
       </div>
+      }
+
     </div>
   </div>
   <div class="card-body bg-primary/10 border-t-3">
-    <p class="text-center text-pretty">Se perdió cerca de las 18 hs, en la zona de Constitución y José Mármol. Es un macho mestizo de tamaño mediano, de aproximadamente 4 años, color marrón claro con el pecho y las patitas blancas, y una mancha negra muy característica en la oreja izquierda. Llevaba un collar rojo de tela con una chapita identificatoria donde figura su nombre y mi número de teléfono. Es muy cariñoso y juguetón, aunque puede asustarse con los autos o ruidos fuertes. Responde cuando se lo llama por su nombre, Tobi. No tiene chip, pero está vacunado y en buen estado de salud. Agradezco muchísimo si alguien lo ve o puede darme información. Pueden comunicarse al 223-5551234 o por mensaje. Lo estamos buscando con toda la familia, lo extrañamos un montón y cualquier ayuda es muy valiosa.</p>
+    <p class="text-center text-pretty">
+      {{ publicacion()?.descripcion }}
+    </p>
   </div>
 </div>
