@@ -3,9 +3,4 @@
     <button>+Crear Publicación</button>
 </a>
 
-@for(pub of publicacionActivas(); track pub.id){
-    <article>
-        <h3>{{pub.nombreMascota}}</h3>
-        <a [routerLink]="['/publicaciones', pub.id]">Ver más</a>
-    </article>
-}
+<app-publicacion-list [publicaciones]="publicacionActivas()"></app-publicacion-list>
