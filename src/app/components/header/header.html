@@ -55,9 +55,9 @@
     </div>
 
     <ul class="flex flex-row justify-between items-center gap-5 font-semibold text-white">
-      <li><a href="#" class="hover:text-amber-800 transition-colors">Home</a></li>
+      <li><a routerLink="/publicaciones" class="hover:text-amber-800 transition-colors">Home</a></li>
       @if(authService.isUsuario()){
-      <li><a href="#" class="hover:text-amber-800 transition-colors">Nueva Publicación</a></li>
+      <li><a routerLink="/publicaciones/crear" class="hover:text-amber-800 transition-colors">Nueva Publicación</a></li>
       }
       <li>
         <a routerLink="/miPerfil" class="hover:text-amber-800 transition-colors">Mi Perfil</a>
