@@ -56,7 +56,7 @@
   --color-popover-foreground: oklch(0.985 0 0);
   --color-primary: oklch(0.985 0 0);
   --color-primary-foreground: oklch(0.205 0 0);
-  --color-secondary: oklch(0.269 0 0);
+  --color-secondary: oklch(26.862% 0.00003 271.152);
   --color-secondary-foreground: oklch(0.985 0 0);
   --color-muted: oklch(0.269 0 0);
   --color-muted-foreground: oklch(0.708 0 0);
@@ -256,4 +256,21 @@
 
 @utility alert-message {
   @apply text-sm;
+}
+
+/* EstadoMascota tags */
+@utility tag {
+  @apply absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white rounded-full uppercase;
+}
+
+@utility tag-perdido {
+  @apply bg-destructive;
+}
+
+@utility tag-encontrado {
+  @apply bg-blue-500;
+}
+
+@utility tag-reencontrado {
+  @apply bg-chart-1;
 }
