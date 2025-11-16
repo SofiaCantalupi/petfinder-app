@@ -5,10 +5,12 @@ import { Publicacion } from '../../models/publicacion';
 import { MiembroService } from '../../services/miembro-service';
 import { Miembro } from '../../models/miembro';
 import { ComentarioList } from '../../components/comentarios/comentario-list/comentario-list';
+import { AuthService } from '../../services/auth-service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-publicacion-detail',
-  imports: [ComentarioList, RouterLink],
+  imports: [ComentarioList, DatePipe, RouterLink],
   templateUrl: './publicacion-detail.html',
   styleUrl: './publicacion-detail.css',
 })
@@ -16,6 +18,7 @@ export class PublicacionDetail implements OnInit {
   // injeccion de dependencias
   private publicacionService = inject(PublicacionService);
   private miembroService = inject(MiembroService);
+  authService = inject(AuthService);
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -23,20 +26,29 @@ export class PublicacionDetail implements OnInit {
   // signals
   publicacion = signal<Publicacion | null>(null);
   miembroCreador = signal<Miembro | null>(null);
-  miembroActual = signal<Miembro | null>(null);
   cargando = signal<boolean>(true);
 
-  // nombre completo del miembro creado
+  // nombre completo del miembro creador
   nombreCreador = computed(() => {
     const miembro = this.miembroCreador();
     return miembro ? `${miembro.nombre} ${miembro.apellido}` : `Cargando...`;
   });
 
-  esDuenio = computed(() => {
+  // verificar si el usuario loggeado puede editar o eliminar la publicacion
+  puedeEditar = computed(() => {
     const pub = this.publicacion();
-    const miembro = this.miembroActual();
-    return pub && miembro && pub.idMiembro === miembro.id; // la publicacion y el miembro existen, y los ids son iguales
+    return pub ? this.authService.puedeEditar(pub.idMiembro) : false;
   });
+
+  puedeEliminar = computed(() => {
+    const pub = this.publicacion();
+    return pub ? this.authService.puedeEliminar(pub.idMiembro) : false;
+  });
+
+  isAdmin = computed(()=>{
+    const pub = this.publicacion();
+    return pub ? this.authService.isAdmin() : false;
+  })
 
   ngOnInit(): void {
     const idPublicacion = this.route.snapshot.params['id'];
@@ -51,18 +63,9 @@ export class PublicacionDetail implements OnInit {
       error: (error) => {
         console.log('Error al obtener la publicacion por ID', error);
         this.cargando.set(false);
+        this.router.navigate(['/publicaciones']); 
       },
     });
-
-    // se carga el miembro que esta logeado actualmente para luego saber si es duenio de la publicacion. la nomenclatura $ indica que es un observable
-    const miembroActual$ = this.miembroService.cargarMiembroActual();
-
-    if (miembroActual$) {
-      miembroActual$.subscribe({
-        next: (miembro) => this.miembroActual.set(miembro),
-        error: (error) => console.error('Error cargando miembro actual:', error),
-      });
-    }
   }
 
   cargarMiembroCreador(idMiembro: number) {
@@ -77,7 +80,7 @@ export class PublicacionDetail implements OnInit {
   }
 
   navigateToUpdate() {
-    if (this.esDuenio()) {
+    if (this.puedeEditar()) {
       const id = this.publicacion()?.id;
       this.router.navigate(['/publicaciones', id, 'editar']);
     }
@@ -90,7 +93,7 @@ export class PublicacionDetail implements OnInit {
       return;
     }
 
-    if (this.esDuenio() && confirm('¿Estás seguro de eliminar esta publicación?')) {
+    if (this.puedeEliminar() && confirm('¿Estás seguro de eliminar esta publicación?')) {
       this.publicacionService.deletePublicacion(publicacion.id).subscribe({
         next: () => {
           console.log('Publicación eliminada.');
