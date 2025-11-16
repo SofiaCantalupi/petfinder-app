@@ -115,7 +115,7 @@
     @apply font-body;
   }
 
-  a {
+  a:not(.btn) {
     @apply hover:text-primary;
   }
 }
