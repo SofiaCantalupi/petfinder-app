@@ -9,8 +9,13 @@
       [alt]="publicacion()?.nombreMascota"
     />
     <div class="card-body">
+      <!-- titulo, nombre de la mascota -->
       <h2 class="card-title text-3xl pb-3">{{ publicacion()?.nombreMascota }}</h2>
-      <p class="pb-4">Publicado por ...</p>
+
+      <p class="pb-4">
+        Publicado por: <strong>{{ nombreCreador() }}</strong>
+      </p>
+
       <div class="flex gap-1 items-center justify-start">
         <!-- svg ubicacion -->
         <svg
@@ -53,16 +58,34 @@
           <path d="M8 2v4" />
           <rect x="3" y="4" width="18" height="18" rx="2" />
         </svg>
-        <p class="text-s">{{ publicacion()?.fecha }}</p>
+        <p class="text-s">{{ publicacion()?.fecha | date : 'dd/MM/yyyy HH:mm' }}</p>
       </div>
 
-      @if (esDuenio()) {
-      <div class="flex gap-2 pt-35 justify-center">
-        <button class="btn btn-primary btn-sm" (click)="navigateToUpdate()">Editar Publicación</button>
+      <div>
+        @if(authService.estaLogeado()){
+        <div class="flex gap-2 pt-35 justify-center">
+          @if (puedeEditar()) {
+          <button class="btn btn-primary btn-sm" (click)="navigateToUpdate()">
+            Editar Publicación
+          </button>
+          }
+        </div>
+
+         @if(puedeEliminar() && isAdmin()){
+          <p class="text-xs text-center">Como Administrador, puede eliminar esta publicación.</p>
+        }
+
+        @if (puedeEliminar()) {
         <button class="btn btn-danger btn-sm" (click)="deletePublicacion()">Eliminar</button>
+        } }
+       
       </div>
-      }
 
+      
+     <!--  @if (esDuenio()) {
+      <div class="flex gap-2 pt-35 justify-center">
+        <button class="btn btn-danger btn-sm" (click)="deletePublicacion()">Eliminar</button>
+      </div> -->
     </div>
   </div>
   <div class="card-body bg-primary/10 border-t-3">
@@ -70,11 +93,8 @@
       {{ publicacion()?.descripcion }}
     </p>
   </div>
-
-
 </div>
 
 @if (publicacion(); as pub) {
-  <app-comentario-list [publicacionId]="pub.id" />
+<app-comentario-list [publicacionId]="pub.id" />
 }
-
