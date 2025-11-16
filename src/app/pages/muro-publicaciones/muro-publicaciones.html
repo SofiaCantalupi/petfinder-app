@@ -3,7 +3,7 @@
     <button>+Crear Publicación</button>
 </a>
 
-@for(pub of listaPublicaciones(); track pub.id){
+@for(pub of publicacionActivas(); track pub.id){
     <article>
         <h3>{{pub.nombreMascota}}</h3>
         <a [routerLink]="['/publicaciones', pub.id]">Ver más</a>

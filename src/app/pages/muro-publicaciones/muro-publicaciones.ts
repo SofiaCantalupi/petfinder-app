@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { PublicacionService } from '../../services/publicacion-service';
 import { RouterLink } from "@angular/router";
 
@@ -8,12 +8,8 @@ import { RouterLink } from "@angular/router";
   templateUrl: './muro-publicaciones.html',
   styleUrl: './muro-publicaciones.css',
 })
-export class MuroPublicaciones implements OnInit {
+export class MuroPublicaciones{
   private publicacionService = inject(PublicacionService);
 
-  listaPublicaciones = this.publicacionService.publicaciones;
-
-  ngOnInit(): void{
-    this.publicacionService.getPublicaciones();
-  }
+  publicacionActivas = this.publicacionService.publicacionesActivas;
 }
