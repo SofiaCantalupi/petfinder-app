@@ -6,11 +6,11 @@ import { MiembroService } from '../../services/miembro-service';
 import { Miembro } from '../../models/miembro';
 import { ComentarioList } from '../../components/comentarios/comentario-list/comentario-list';
 import { AuthService } from '../../services/auth-service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-publicacion-detail',
-  imports: [ComentarioList, DatePipe, RouterLink],
+  imports: [ComentarioList, DatePipe, RouterLink, NgClass],
   templateUrl: './publicacion-detail.html',
   styleUrl: './publicacion-detail.css',
 })
@@ -45,10 +45,10 @@ export class PublicacionDetail implements OnInit {
     return pub ? this.authService.puedeEliminar(pub.idMiembro) : false;
   });
 
-  isAdmin = computed(()=>{
+  isAdmin = computed(() => {
     const pub = this.publicacion();
     return pub ? this.authService.isAdmin() : false;
-  })
+  });
 
   ngOnInit(): void {
     const idPublicacion = this.route.snapshot.params['id'];
@@ -63,7 +63,7 @@ export class PublicacionDetail implements OnInit {
       error: (error) => {
         console.log('Error al obtener la publicacion por ID', error);
         this.cargando.set(false);
-        this.router.navigate(['/publicaciones']); 
+        this.router.navigate(['/publicaciones']);
       },
     });
   }
@@ -104,5 +104,11 @@ export class PublicacionDetail implements OnInit {
         },
       });
     }
+  }
+
+  irAComentarios() {
+    const element = document.getElementById('formComentario');
+    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    element?.focus({ preventScroll: true });
   }
 }
