@@ -65,7 +65,7 @@
               <span class="input-helper">Debe tener al menos 8 caracteres</span>
             </div>
 
-            <div class="relative inline-block group text-right">
+            <div class="relative inline-block group text-center">
               <a class="text-sm text-primary hover:underline cursor-pointer">
                 ¿Olvidaste tu contraseña?
               </a>
@@ -102,7 +102,7 @@
           </form>
           @if (errorMessage()) {
           <div class="flex justify-center">
-            <span class="input-error-text"><b>Error: </b> {{ errorMessage() }}</span>
+            <span class="input-error-text text-center text-pretty">Upps...{{ errorMessage() }}</span>
           </div>
           }
         </div>
