@@ -4,10 +4,11 @@ import { PublicacionService } from '../../services/publicacion-service';
 import { Publicacion } from '../../models/publicacion';
 import { MiembroService } from '../../services/miembro-service';
 import { Miembro } from '../../models/miembro';
+import { ComentarioList } from '../../components/comentarios/comentario-list/comentario-list';
 
 @Component({
   selector: 'app-publicacion-detail',
-  imports: [RouterLink],
+  imports: [ComentarioList, RouterLink],
   templateUrl: './publicacion-detail.html',
   styleUrl: './publicacion-detail.css',
 })
@@ -23,6 +24,7 @@ export class PublicacionDetail implements OnInit {
   publicacion = signal<Publicacion | null>(null);
   miembroCreador = signal<Miembro | null>(null);
   miembroActual = signal<Miembro | null>(null);
+  cargando = signal<boolean>(true);
 
   // nombre completo del miembro creado
   nombreCreador = computed(() => {
@@ -44,9 +46,11 @@ export class PublicacionDetail implements OnInit {
       next: (pub) => {
         this.publicacion.set(pub);
         this.cargarMiembroCreador(pub.idMiembro);
+        this.cargando.set(false);
       },
       error: (error) => {
         console.log('Error al obtener la publicacion por ID', error);
+        this.cargando.set(false);
       },
     });
 
