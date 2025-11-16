@@ -1,6 +1,6 @@
 <a routerLink="/publicaciones">←Atrás</a>
 
-<div class="card max-w-3xl mx-auto relative w-full">
+<div class="card max-w-3xl mx-auto relative w-full shadow-md">
   <span class="bg-destructive p-1 text-amber-50 font-body absolute">Perdido</span>
   <div class="flex">
     <img
@@ -71,9 +71,10 @@
     </p>
   </div>
 
-  <!-- @if (publicacion()) {
-  <app-comentario-list [publicacionId]="1" />
-  } -->
 
-  <app-comentario-list [publicacionId]="1" />
 </div>
+
+@if (publicacion(); as pub) {
+  <app-comentario-list [publicacionId]="pub.id" />
+}
+
