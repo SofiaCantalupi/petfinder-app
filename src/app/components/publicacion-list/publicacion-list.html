@@ -1,3 +1,11 @@
-@for(publicacion of publicaciones(); track publicacion.id){
-    <app-publicacion-card [publicacion]="publicacion"></app-publicacion-card>
-}
+<div class="max-w-4xl mx-auto px-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    @for (pub of publicaciones(); track pub.id) {
+      <app-publicacion-card [publicacion]="pub" />
+    } @empty {
+      <p class="col-span-full text-center text-gray-500 py-8">
+        No hay publicaciones disponibles
+      </p>
+    }
+  </div>
+</div>
