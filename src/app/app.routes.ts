@@ -55,4 +55,8 @@ export const routes: Routes = [
     component: YaLogeado,
     canActivate: [authGuard],
   },
+  {
+    path: 'miPerfil',
+    component: MiPerfil,
+  },
 ];

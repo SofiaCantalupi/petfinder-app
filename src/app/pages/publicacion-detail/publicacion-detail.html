@@ -1,6 +1,6 @@
 <a routerLink="/publicaciones">←Atrás</a>
 
-<div class="card max-w-3xl mx-auto relative">
+<div class="card max-w-3xl mx-auto relative w-full">
   <span class="bg-destructive p-1 text-amber-50 font-body absolute">Perdido</span>
   <div class="flex">
     <img
@@ -61,6 +61,22 @@
     </div>
   </div>
   <div class="card-body bg-primary/10 border-t-3">
-    <p class="text-center text-pretty">Se perdió cerca de las 18 hs, en la zona de Constitución y José Mármol. Es un macho mestizo de tamaño mediano, de aproximadamente 4 años, color marrón claro con el pecho y las patitas blancas, y una mancha negra muy característica en la oreja izquierda. Llevaba un collar rojo de tela con una chapita identificatoria donde figura su nombre y mi número de teléfono. Es muy cariñoso y juguetón, aunque puede asustarse con los autos o ruidos fuertes. Responde cuando se lo llama por su nombre, Tobi. No tiene chip, pero está vacunado y en buen estado de salud. Agradezco muchísimo si alguien lo ve o puede darme información. Pueden comunicarse al 223-5551234 o por mensaje. Lo estamos buscando con toda la familia, lo extrañamos un montón y cualquier ayuda es muy valiosa.</p>
+    <p class="text-center text-pretty">
+      Se perdió cerca de las 18 hs, en la zona de Constitución y José Mármol. Es un macho mestizo de
+      tamaño mediano, de aproximadamente 4 años, color marrón claro con el pecho y las patitas
+      blancas, y una mancha negra muy característica en la oreja izquierda. Llevaba un collar rojo
+      de tela con una chapita identificatoria donde figura su nombre y mi número de teléfono. Es muy
+      cariñoso y juguetón, aunque puede asustarse con los autos o ruidos fuertes. Responde cuando se
+      lo llama por su nombre, Tobi. No tiene chip, pero está vacunado y en buen estado de salud.
+      Agradezco muchísimo si alguien lo ve o puede darme información. Pueden comunicarse al
+      223-5551234 o por mensaje. Lo estamos buscando con toda la familia, lo extrañamos un montón y
+      cualquier ayuda es muy valiosa.
+    </p>
   </div>
+
+  <!-- @if (publicacion()) {
+  <app-comentario-list [publicacionId]="1" />
+  } -->
+
+  <app-comentario-list [publicacionId]="1" />
 </div>

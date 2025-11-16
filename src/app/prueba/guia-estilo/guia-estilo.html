@@ -1,36 +1,39 @@
 <style>
-    /* Utility Classes */
-    .color-swatch {
-      width: 100%;
-      height: 80px;
-      border-radius: 0.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      color: white;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    }
-    
-    .code-block {
-      background-color: rgb(31, 41, 55);
-      color: rgb(229, 231, 235);
-      padding: 1rem;
-      border-radius: 0.5rem;
-      overflow-x: auto;
-      font-family: 'Courier New', monospace;
-      font-size: 0.875rem;
-      margin-top: 0.5rem;
-    }
+  /* Utility Classes */
+  .color-swatch {
+    width: 100%;
+    height: 80px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .code-block {
+    background-color: rgb(31, 41, 55);
+    color: rgb(229, 231, 235);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
 </style>
 
-<div class="p-8">  <!-- ESTO VA EN EL BODY EN REALIDAD -->
+<div class="p-8">
+  <!-- ESTO VA EN EL BODY EN REALIDAD -->
   <div class="max-w-6xl mx-auto">
     <!-- Header -->
     <header class="mb-12">
       <h1 class="text-4xl font-bold mb-2">Lost & Found Pets</h1>
       <h2 class="text-2xl text-gray-600">Design System & Style Guide</h2>
-      <p class="mt-4 text-gray-600">A comprehensive guide to reusable UI components using Tailwind's @apply directive</p>
+      <p class="mt-4 text-gray-600">
+        A comprehensive guide to reusable UI components using Tailwind's @apply directive
+      </p>
     </header>
 
     <!-- Color Palette Section -->
@@ -38,32 +41,39 @@
       <h2 class="text-3xl font-bold mb-6">Color Palette</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-          <div class="color-swatch" style="background-color: var(--color-primary);">Primary</div>
+          <div class="color-swatch" style="background-color: var(--color-primary)">Primary</div>
           <p class="mt-2 text-sm font-mono">#ff971c</p>
           <p class="text-sm text-gray-600">rgb(255, 151, 28)</p>
         </div>
         <div>
-          <div class="color-swatch" style="background-color: var(--color-secondary);">Secondary</div>
+          <div class="color-swatch" style="background-color: var(--color-secondary)">Secondary</div>
           <p class="mt-2 text-sm font-mono">#85460f</p>
           <p class="text-sm text-gray-600">rgb(133, 70, 15)</p>
         </div>
         <div>
-          <div class="color-swatch" style="background-color: var(--color-accent);">Accent</div>
+          <div class="color-swatch" style="background-color: var(--color-accent)">Accent</div>
           <p class="mt-2 text-sm font-mono">#a7a043</p>
           <p class="text-sm text-gray-600">rgb(167, 160, 67)</p>
         </div>
         <div>
-          <div class="color-swatch" style="background-color: var(--color-destructive);">Destructive</div>
+          <div class="color-swatch" style="background-color: var(--color-destructive)">
+            Destructive
+          </div>
           <p class="mt-2 text-sm font-mono">#e85d4c</p>
           <p class="text-sm text-gray-600">rgb(232, 93, 76)</p>
         </div>
         <div>
-          <div class="color-swatch" style="background-color: var(--color-success);">Success</div>
+          <div class="color-swatch" style="background-color: var(--color-success)">Success</div>
           <p class="mt-2 text-sm font-mono">#55b36c</p>
           <p class="text-sm text-gray-600">rgb(85, 179, 108)</p>
         </div>
         <div>
-          <div class="color-swatch" style="background-color: var(--color-border); color: var(--foreground);">Border</div>
+          <div
+            class="color-swatch"
+            style="background-color: var(--color-border); color: var(--foreground)"
+          >
+            Border
+          </div>
           <p class="mt-2 text-sm font-mono">#f2d2b6</p>
           <p class="text-sm text-gray-600">rgb(242, 210, 182)</p>
         </div>
@@ -83,7 +93,10 @@
         </div>
         <div>
           <h3 class="text-xl font-semibold mb-2">Body Text - Nunito</h3>
-          <p class="text-base">Regular body text using Nunito font family. This is the default font for paragraphs, labels, and general content.</p>
+          <p class="text-base">
+            Regular body text using Nunito font family. This is the default font for paragraphs,
+            labels, and general content.
+          </p>
           <p class="text-sm text-gray-600 mt-2">Small text for captions and helper text.</p>
         </div>
       </div>
@@ -92,7 +105,7 @@
     <!-- Buttons Section -->
     <section class="mb-12">
       <h2 class="text-3xl font-bold mb-6">Buttons</h2>
-      
+
       <!-- Primary Buttons -->
       <div class="mb-8">
         <h3 class="text-xl font-semibold mb-4">Primary Buttons</h3>
@@ -103,10 +116,10 @@
           <button class="btn btn-primary btn-md" disabled>Disabled</button>
         </div>
         <div class="code-block">
-&lt;button class="btn btn-primary btn-sm"&gt;Small&lt;/button&gt;
-&lt;button class="btn btn-primary btn-md"&gt;Medium&lt;/button&gt;
-&lt;button class="btn btn-primary btn-lg"&gt;Large&lt;/button&gt;
-&lt;button class="btn btn-primary btn-md" disabled&gt;Disabled&lt;/button&gt;
+          &lt;button class="btn btn-primary btn-sm"&gt;Small&lt;/button&gt; &lt;button class="btn
+          btn-primary btn-md"&gt;Medium&lt;/button&gt; &lt;button class="btn btn-primary
+          btn-lg"&gt;Large&lt;/button&gt; &lt;button class="btn btn-primary btn-md"
+          disabled&gt;Disabled&lt;/button&gt;
         </div>
       </div>
 
@@ -119,9 +132,9 @@
           <button class="btn btn-secondary btn-lg">Large</button>
         </div>
         <div class="code-block">
-&lt;button class="btn btn-secondary btn-sm"&gt;Small&lt;/button&gt;
-&lt;button class="btn btn-secondary btn-md"&gt;Medium&lt;/button&gt;
-&lt;button class="btn btn-secondary btn-lg"&gt;Large&lt;/button&gt;
+          &lt;button class="btn btn-secondary btn-sm"&gt;Small&lt;/button&gt; &lt;button class="btn
+          btn-secondary btn-md"&gt;Medium&lt;/button&gt; &lt;button class="btn btn-secondary
+          btn-lg"&gt;Large&lt;/button&gt;
         </div>
       </div>
 
@@ -134,9 +147,9 @@
           <button class="btn btn-outline btn-lg">Large</button>
         </div>
         <div class="code-block">
-&lt;button class="btn btn-outline btn-sm"&gt;Small&lt;/button&gt;
-&lt;button class="btn btn-outline btn-md"&gt;Medium&lt;/button&gt;
-&lt;button class="btn btn-outline btn-lg"&gt;Large&lt;/button&gt;
+          &lt;button class="btn btn-outline btn-sm"&gt;Small&lt;/button&gt; &lt;button class="btn
+          btn-outline btn-md"&gt;Medium&lt;/button&gt; &lt;button class="btn btn-outline
+          btn-lg"&gt;Large&lt;/button&gt;
         </div>
       </div>
 
@@ -149,9 +162,9 @@
           <button class="btn btn-danger btn-lg">Large</button>
         </div>
         <div class="code-block">
-&lt;button class="btn btn-danger btn-sm"&gt;Small&lt;/button&gt;
-&lt;button class="btn btn-danger btn-md"&gt;Medium&lt;/button&gt;
-&lt;button class="btn btn-danger btn-lg"&gt;Large&lt;/button&gt;
+          &lt;button class="btn btn-danger btn-sm"&gt;Small&lt;/button&gt; &lt;button class="btn
+          btn-danger btn-md"&gt;Medium&lt;/button&gt; &lt;button class="btn btn-danger
+          btn-lg"&gt;Large&lt;/button&gt;
         </div>
       </div>
     </section>
@@ -159,23 +172,22 @@
     <!-- Input Fields Section -->
     <section class="mb-12">
       <h2 class="text-3xl font-bold mb-6">Input Fields</h2>
-      
+
       <!-- Default Input -->
       <div class="mb-8">
         <h3 class="text-xl font-semibold mb-4">Default Input</h3>
         <div class="max-w-md mb-4">
           <div class="input-group">
             <label class="input-label">Email Address</label>
-            <input type="email" class="input-field" placeholder="Enter your email">
+            <input type="email" class="input-field" placeholder="Enter your email" />
             <span class="input-helper">We'll never share your email with anyone else.</span>
           </div>
         </div>
         <div class="code-block">
-&lt;div class="input-group"&gt;
-  &lt;label class="input-label"&gt;Email Address&lt;/label&gt;
-  &lt;input type="email" class="input-field" placeholder="Enter your email"&gt;
-  &lt;span class="input-helper"&gt;We'll never share your email.&lt;/span&gt;
-&lt;/div&gt;
+          &lt;div class="input-group"&gt; &lt;label class="input-label"&gt;Email
+          Address&lt;/label&gt; &lt;input type="email" class="input-field" placeholder="Enter your
+          email"&gt; &lt;span class="input-helper"&gt;We'll never share your email.&lt;/span&gt;
+          &lt;/div&gt;
         </div>
       </div>
 
@@ -185,16 +197,20 @@
         <div class="max-w-md mb-4">
           <div class="input-group">
             <label class="input-label">Username</label>
-            <input type="text" class="input-field input-error" placeholder="Enter username" value="ab">
+            <input
+              type="text"
+              class="input-field input-error"
+              placeholder="Enter username"
+              value="ab"
+            />
             <span class="input-error-text">Username must be at least 3 characters long.</span>
           </div>
         </div>
         <div class="code-block">
-&lt;div class="input-group"&gt;
-  &lt;label class="input-label"&gt;Username&lt;/label&gt;
-  &lt;input type="text" class="input-field input-error" value="ab"&gt;
-  &lt;span class="input-error-text"&gt;Username must be at least 3 characters.&lt;/span&gt;
-&lt;/div&gt;
+          &lt;div class="input-group"&gt; &lt;label class="input-label"&gt;Username&lt;/label&gt;
+          &lt;input type="text" class="input-field input-error" value="ab"&gt; &lt;span
+          class="input-error-text"&gt;Username must be at least 3 characters.&lt;/span&gt;
+          &lt;/div&gt;
         </div>
       </div>
 
@@ -204,16 +220,19 @@
         <div class="max-w-md mb-4">
           <div class="input-group">
             <label class="input-label">Password</label>
-            <input type="password" class="input-field input-success" placeholder="Enter password" value="securepassword123">
+            <input
+              type="password"
+              class="input-field input-success"
+              placeholder="Enter password"
+              value="securepassword123"
+            />
             <span class="input-success-text">Password strength: Strong</span>
           </div>
         </div>
         <div class="code-block">
-&lt;div class="input-group"&gt;
-  &lt;label class="input-label"&gt;Password&lt;/label&gt;
-  &lt;input type="password" class="input-field input-success" value="***"&gt;
-  &lt;span class="input-success-text"&gt;Password strength: Strong&lt;/span&gt;
-&lt;/div&gt;
+          &lt;div class="input-group"&gt; &lt;label class="input-label"&gt;Password&lt;/label&gt;
+          &lt;input type="password" class="input-field input-success" value="***"&gt; &lt;span
+          class="input-success-text"&gt;Password strength: Strong&lt;/span&gt; &lt;/div&gt;
         </div>
       </div>
 
@@ -228,11 +247,9 @@
           </div>
         </div>
         <div class="code-block">
-&lt;div class="input-group"&gt;
-  &lt;label class="input-label"&gt;Description&lt;/label&gt;
-  &lt;textarea class="input-field" rows="4"&gt;&lt;/textarea&gt;
-  &lt;span class="input-helper"&gt;Maximum 500 characters.&lt;/span&gt;
-&lt;/div&gt;
+          &lt;div class="input-group"&gt; &lt;label class="input-label"&gt;Description&lt;/label&gt;
+          &lt;textarea class="input-field" rows="4"&gt;&lt;/textarea&gt; &lt;span
+          class="input-helper"&gt;Maximum 500 characters.&lt;/span&gt; &lt;/div&gt;
         </div>
       </div>
     </section>
@@ -240,7 +257,7 @@
     <!-- Cards Section -->
     <section class="mb-12">
       <h2 class="text-3xl font-bold mb-6">Cards</h2>
-      
+
       <!-- Basic Card -->
       <div class="mb-8">
         <h3 class="text-xl font-semibold mb-4">Basic Card</h3>
@@ -250,7 +267,10 @@
               <h3 class="card-title">Card Title</h3>
             </div>
             <div class="card-body">
-              <p>This is the card body content. You can add any content here including text, images, or other components.</p>
+              <p>
+                This is the card body content. You can add any content here including text, images,
+                or other components.
+              </p>
             </div>
             <div class="card-footer">
               <button class="btn btn-primary btn-sm">Action</button>
@@ -258,17 +278,10 @@
           </div>
         </div>
         <div class="code-block">
-&lt;div class="card"&gt;
-  &lt;div class="card-header"&gt;
-    &lt;h3 class="card-title"&gt;Card Title&lt;/h3&gt;
-  &lt;/div&gt;
-  &lt;div class="card-body"&gt;
-    &lt;p&gt;Card body content...&lt;/p&gt;
-  &lt;/div&gt;
-  &lt;div class="card-footer"&gt;
-    &lt;button class="btn btn-primary btn-sm"&gt;Action&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+          &lt;div class="card"&gt; &lt;div class="card-header"&gt; &lt;h3 class="card-title"&gt;Card
+          Title&lt;/h3&gt; &lt;/div&gt; &lt;div class="card-body"&gt; &lt;p&gt;Card body
+          content...&lt;/p&gt; &lt;/div&gt; &lt;div class="card-footer"&gt; &lt;button class="btn
+          btn-primary btn-sm"&gt;Action&lt;/button&gt; &lt;/div&gt; &lt;/div&gt;
         </div>
       </div>
 
@@ -281,19 +294,17 @@
               <h3 class="card-title">Hover Me</h3>
             </div>
             <div class="card-body">
-              <p>This card has a hover effect. Try hovering over it to see the shadow and border change.</p>
+              <p>
+                This card has a hover effect. Try hovering over it to see the shadow and border
+                change.
+              </p>
             </div>
           </div>
         </div>
         <div class="code-block">
-&lt;div class="card card-hover"&gt;
-  &lt;div class="card-header"&gt;
-    &lt;h3 class="card-title"&gt;Hover Me&lt;/h3&gt;
-  &lt;/div&gt;
-  &lt;div class="card-body"&gt;
-    &lt;p&gt;This card has a hover effect.&lt;/p&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+          &lt;div class="card card-hover"&gt; &lt;div class="card-header"&gt; &lt;h3
+          class="card-title"&gt;Hover Me&lt;/h3&gt; &lt;/div&gt; &lt;div class="card-body"&gt;
+          &lt;p&gt;This card has a hover effect.&lt;/p&gt; &lt;/div&gt; &lt;/div&gt;
         </div>
       </div>
 
@@ -304,17 +315,17 @@
           <div class="card">
             <div class="card-body">
               <h3 class="card-title mb-2">Simple Card</h3>
-              <p>A card doesn't need a header or footer. You can use just the body section for simpler layouts.</p>
+              <p>
+                A card doesn't need a header or footer. You can use just the body section for
+                simpler layouts.
+              </p>
             </div>
           </div>
         </div>
         <div class="code-block">
-&lt;div class="card"&gt;
-  &lt;div class="card-body"&gt;
-    &lt;h3 class="card-title mb-2"&gt;Simple Card&lt;/h3&gt;
-    &lt;p&gt;Card content...&lt;/p&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+          &lt;div class="card"&gt; &lt;div class="card-body"&gt; &lt;h3 class="card-title
+          mb-2"&gt;Simple Card&lt;/h3&gt; &lt;p&gt;Card content...&lt;/p&gt; &lt;/div&gt;
+          &lt;/div&gt;
         </div>
       </div>
     </section>
@@ -322,29 +333,32 @@
     <!-- Alerts Section -->
     <section class="mb-12">
       <h2 class="text-3xl font-bold mb-6">Alerts</h2>
-      
+
       <!-- Info Alert -->
       <div class="mb-8">
         <h3 class="text-xl font-semibold mb-4">Info Alert</h3>
         <div class="mb-4">
           <div class="alert alert-info">
             <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                clip-rule="evenodd"
+              />
             </svg>
             <div class="alert-content">
               <div class="alert-title">Information</div>
-              <div class="alert-message">This is an informational message to provide context or helpful tips.</div>
+              <div class="alert-message">
+                This is an informational message to provide context or helpful tips.
+              </div>
             </div>
           </div>
         </div>
         <div class="code-block">
-&lt;div class="alert alert-info"&gt;
-  &lt;svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20"&gt;...&lt;/svg&gt;
-  &lt;div class="alert-content"&gt;
-    &lt;div class="alert-title"&gt;Information&lt;/div&gt;
-    &lt;div class="alert-message"&gt;This is an informational message.&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+          &lt;div class="alert alert-info"&gt; &lt;svg class="alert-icon" fill="currentColor"
+          viewBox="0 0 20 20"&gt;...&lt;/svg&gt; &lt;div class="alert-content"&gt; &lt;div
+          class="alert-title"&gt;Information&lt;/div&gt; &lt;div class="alert-message"&gt;This is an
+          informational message.&lt;/div&gt; &lt;/div&gt; &lt;/div&gt;
         </div>
       </div>
 
@@ -354,22 +368,25 @@
         <div class="mb-4">
           <div class="alert alert-success">
             <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"
+              />
             </svg>
             <div class="alert-content">
               <div class="alert-title">Success!</div>
-              <div class="alert-message">Your pet post has been successfully created and is now visible to others.</div>
+              <div class="alert-message">
+                Your pet post has been successfully created and is now visible to others.
+              </div>
             </div>
           </div>
         </div>
         <div class="code-block">
-&lt;div class="alert alert-success"&gt;
-  &lt;svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20"&gt;...&lt;/svg&gt;
-  &lt;div class="alert-content"&gt;
-    &lt;div class="alert-title"&gt;Success!&lt;/div&gt;
-    &lt;div class="alert-message"&gt;Your pet post has been created.&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+          &lt;div class="alert alert-success"&gt; &lt;svg class="alert-icon" fill="currentColor"
+          viewBox="0 0 20 20"&gt;...&lt;/svg&gt; &lt;div class="alert-content"&gt; &lt;div
+          class="alert-title"&gt;Success!&lt;/div&gt; &lt;div class="alert-message"&gt;Your pet post
+          has been created.&lt;/div&gt; &lt;/div&gt; &lt;/div&gt;
         </div>
       </div>
 
@@ -379,22 +396,25 @@
         <div class="mb-4">
           <div class="alert alert-warning">
             <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              <path
+                fill-rule="evenodd"
+                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
             </svg>
             <div class="alert-content">
               <div class="alert-title">Warning</div>
-              <div class="alert-message">Please verify all information before submitting your pet post.</div>
+              <div class="alert-message">
+                Please verify all information before submitting your pet post.
+              </div>
             </div>
           </div>
         </div>
         <div class="code-block">
-&lt;div class="alert alert-warning"&gt;
-  &lt;svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20"&gt;...&lt;/svg&gt;
-  &lt;div class="alert-content"&gt;
-    &lt;div class="alert-title"&gt;Warning&lt;/div&gt;
-    &lt;div class="alert-message"&gt;Please verify all information.&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+          &lt;div class="alert alert-warning"&gt; &lt;svg class="alert-icon" fill="currentColor"
+          viewBox="0 0 20 20"&gt;...&lt;/svg&gt; &lt;div class="alert-content"&gt; &lt;div
+          class="alert-title"&gt;Warning&lt;/div&gt; &lt;div class="alert-message"&gt;Please verify
+          all information.&lt;/div&gt; &lt;/div&gt; &lt;/div&gt;
         </div>
       </div>
 
@@ -404,29 +424,34 @@
         <div class="mb-4">
           <div class="alert alert-error">
             <svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clip-rule="evenodd"
+              />
             </svg>
             <div class="alert-content">
               <div class="alert-title">Error</div>
-              <div class="alert-message">There was an error processing your request. Please try again later.</div>
+              <div class="alert-message">
+                There was an error processing your request. Please try again later.
+              </div>
             </div>
           </div>
         </div>
         <div class="code-block">
-&lt;div class="alert alert-error"&gt;
-  &lt;svg class="alert-icon" fill="currentColor" viewBox="0 0 20 20"&gt;...&lt;/svg&gt;
-  &lt;div class="alert-content"&gt;
-    &lt;div class="alert-title"&gt;Error&lt;/div&gt;
-    &lt;div class="alert-message"&gt;There was an error processing your request.&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
+          &lt;div class="alert alert-error"&gt; &lt;svg class="alert-icon" fill="currentColor"
+          viewBox="0 0 20 20"&gt;...&lt;/svg&gt; &lt;div class="alert-content"&gt; &lt;div
+          class="alert-title"&gt;Error&lt;/div&gt; &lt;div class="alert-message"&gt;There was an
+          error processing your request.&lt;/div&gt; &lt;/div&gt; &lt;/div&gt;
         </div>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="mt-16 pt-8 border-t-2" style="border-color: var(--border);">
-      <p class="text-center text-gray-600">Lost & Found Pets Design System - Built with Tailwind CSS</p>
+    <footer class="mt-16 pt-8 border-t-2" style="border-color: var(--border)">
+      <p class="text-center text-gray-600">
+        Lost & Found Pets Design System - Built with Tailwind CSS
+      </p>
     </footer>
   </div>
 </div>
