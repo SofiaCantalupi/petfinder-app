@@ -20,6 +20,10 @@ export class PublicacionService {
     this.publicacionesState().filter(publicacion => publicacion.activo === true)
   );
 
+  public publicacionesReencontrados = computed(()=>
+    this.publicacionesState().filter(publicacion => publicacion.activo === true && publicacion.estadoMascota ==='reencontrado')
+  );
+
   constructor(private http: HttpClient) {
     this.getPublicaciones();
   }
