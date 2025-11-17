@@ -55,7 +55,12 @@
   <div class="flex-2 flex flex-col mt-6">
     <div class="flex justify-between py-3">
       <h2 class="text-2xl font-semibold">Mis publicaciones</h2>
-      <a class="btn btn-sm btn-primary" routerLink="/publicaciones/crear">+ Crear Publicación </a>
+
+      <!-- si el usuario no administrador, se muestra el boton para crear un publicacion -->
+      @if (!authService.isAdmin()) {
+        <a class="btn btn-sm btn-primary" routerLink="/publicaciones/crear">+ Crear Publicación </a>
+      }
+      
     </div>
     <p>Componente de las cards llamadas por el ID del miembro</p>
   </div>
