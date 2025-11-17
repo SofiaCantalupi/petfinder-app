@@ -4,10 +4,11 @@ import { PublicacionList } from '../../components/publicacion-list/publicacion-l
 import { EstadoMascota, TipoMascota } from '../../models/publicacion';
 import { NgClass } from '@angular/common';
 import { Hero } from '../../components/hero/hero';
+import { CarruselPublicaciones } from '../../components/carrusel-publicaciones/carrusel-publicaciones';
 
 @Component({
   selector: 'app-muro-publicaciones',
-  imports: [PublicacionList, NgClass, Hero],
+  imports: [PublicacionList, NgClass, Hero, CarruselPublicaciones],
   templateUrl: './muro-publicaciones.html',
   styleUrl: './muro-publicaciones.css',
 })
@@ -16,12 +17,15 @@ export class MuroPublicaciones {
 
   publicacionesActivas = this.publicacionService.publicacionesActivas;
 
+  publicacionesReencontrados = this.publicacionService.publicacionesReencontrados;
+
   filtroEstadoMascota = signal<EstadoMascota | null>(null);
   filtroTipoMascota = signal<TipoMascota | null>(null);
 
   // si existe un cambio en los signlas de filtros, se ejecuta computed, que va a filtrar las publicaciones
   publicacionesFiltradas = computed(() => {
-    let pubs = this.publicacionesActivas();
+    // primero se filtran las publicaciones que tiene estado como reencontrado
+    let pubs = this.publicacionesActivas().filter(pub => pub.estadoMascota !== 'reencontrado');
 
     if (this.filtroEstadoMascota() !== null) {
       pubs = pubs.filter((pub) => pub.estadoMascota === this.filtroEstadoMascota());
