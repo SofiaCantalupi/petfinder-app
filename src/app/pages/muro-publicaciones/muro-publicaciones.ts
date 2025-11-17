@@ -3,10 +3,11 @@ import { PublicacionService } from '../../services/publicacion-service';
 import { PublicacionList } from '../../components/publicacion-list/publicacion-list';
 import { EstadoMascota, TipoMascota } from '../../models/publicacion';
 import { NgClass } from '@angular/common';
+import { Hero } from '../../components/hero/hero';
 
 @Component({
   selector: 'app-muro-publicaciones',
-  imports: [PublicacionList, NgClass],
+  imports: [PublicacionList, NgClass, Hero],
   templateUrl: './muro-publicaciones.html',
   styleUrl: './muro-publicaciones.css',
 })
