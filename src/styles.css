@@ -274,3 +274,12 @@
 @utility tag-reencontrado {
   @apply bg-chart-1;
 }
+
+/* Botones de filtros */
+
+@utility filter {
+  @apply cursor-pointer items-center justify-center font-medium transition-all duration-200 rounded-md btn-sm bg-gray-200/70;
+}
+@utility filter-active {
+  @apply bg-primary text-white;
+}
