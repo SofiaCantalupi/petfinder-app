@@ -189,7 +189,7 @@
 }
 
 @utility input-error-text {
-  @apply text-sm text-destructive;
+  @apply text-sm font-semibold text-destructive;
 }
 
 @utility input-success-text {
