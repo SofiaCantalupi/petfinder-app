@@ -154,7 +154,7 @@ export class PublicacionFormComponent implements OnInit {
           this.publicacionService.putPublicacion(this.publicacionId()!, publicacion).subscribe({
             next: () => {
               console.log('Publicación actualizada');
-              this.toastService.showToast('¡Publicación actualizada con éxito!', 'success', 5000);
+              this.toastService.showToast('¡Publicación actualizada!', 'success', 5000);
               this.publicacionForm.reset();
               this.router.navigate(['/publicaciones', this.publicacionId()]);
             },
@@ -168,7 +168,7 @@ export class PublicacionFormComponent implements OnInit {
           this.publicacionService.postPublicacion(publicacion).subscribe({
             next: (pub) => {
               console.log('Publicación creada', pub);
-              this.toastService.showToast('¡Publicación creada con éxito!', 'success', 5000);
+              this.toastService.showToast('¡Publicación creada!', 'success', 5000);
               this.publicacionForm.reset();
               this.router.navigate(['/publicaciones', pub.id]);
             },
