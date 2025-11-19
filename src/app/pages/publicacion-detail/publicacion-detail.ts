@@ -7,6 +7,7 @@ import { Miembro } from '../../models/miembro';
 import { ComentarioList } from '../../components/comentarios/comentario-list/comentario-list';
 import { AuthService } from '../../services/auth-service';
 import { DatePipe, NgClass } from '@angular/common';
+import { ToastService } from '../../services/toast-service';
 
 @Component({
   selector: 'app-publicacion-detail',
@@ -19,6 +20,7 @@ export class PublicacionDetail implements OnInit {
   private publicacionService = inject(PublicacionService);
   private miembroService = inject(MiembroService);
   authService = inject(AuthService);
+  private toastService = inject(ToastService);
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -97,6 +99,7 @@ export class PublicacionDetail implements OnInit {
       this.publicacionService.deletePublicacion(publicacion.id).subscribe({
         next: () => {
           console.log('Publicación eliminada.');
+          this.toastService.showToast('Publicación eliminada', 'error');
           this.router.navigate(['/publicaciones']); // volver al muro de publicaciones
         },
         error: (error) => {

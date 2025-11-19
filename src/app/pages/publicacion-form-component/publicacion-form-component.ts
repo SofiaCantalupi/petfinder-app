@@ -10,6 +10,8 @@ import { TipoMascota } from '../../models/publicacion';
 import { EstadoMascota } from '../../models/publicacion';
 import { Publicacion } from '../../models/publicacion';
 import { MiembroService } from '../../services/miembro-service';
+import { ToastService } from '../../services/toast-service';
+
 
 @Component({
   selector: 'app-publicacion-form-component',
@@ -22,6 +24,7 @@ export class PublicacionFormComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private publicacionService = inject(PublicacionService);
   private miembroService = inject(MiembroService);
+  private toastService =  inject(ToastService);
 
   route = inject(ActivatedRoute);
   router = inject(Router);
@@ -151,6 +154,7 @@ export class PublicacionFormComponent implements OnInit {
           this.publicacionService.putPublicacion(this.publicacionId()!, publicacion).subscribe({
             next: () => {
               console.log('Publicación actualizada');
+              this.toastService.showToast('¡Publicación actualizada con éxito!', 'success', 5000);
               this.publicacionForm.reset();
               this.router.navigate(['/publicaciones', this.publicacionId()]);
             },
@@ -162,10 +166,11 @@ export class PublicacionFormComponent implements OnInit {
         } else {
           // CREAR
           this.publicacionService.postPublicacion(publicacion).subscribe({
-            next: () => {
-              console.log('Publicación creada');
+            next: (pub) => {
+              console.log('Publicación creada', pub);
+              this.toastService.showToast('¡Publicación creada con éxito!', 'success', 5000);
               this.publicacionForm.reset();
-              this.router.navigate(['/publicaciones']);
+              this.router.navigate(['/publicaciones', pub.id]);
             },
             error: (error) => {
               console.error('Error creando:', error);
