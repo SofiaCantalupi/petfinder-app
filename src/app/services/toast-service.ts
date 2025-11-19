@@ -7,7 +7,7 @@ export class ToastService {
   showToast(
     message: string,
     type: 'success' | 'error' | 'warning' | 'info' = 'success',
-    duration: number = 50000 // duracion por defecto mas larga
+    duration: number = 5000 // duracion por defecto mas larga
   ) {
     // Crear elementos
     const toast = document.createElement('div');
