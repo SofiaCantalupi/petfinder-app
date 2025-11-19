@@ -19,17 +19,9 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  private currentUserSignal = signal<Miembro | null>(null);
-
-  //Uso de computed -> Solo recalcula cuando cambia currentUserSignal, ahorrando recursos.
-  //Si el usuario esta logeado, retorna true. Lee el signal y determina si es distinto de nulo.
-  isAuthenticated = computed(() => this.currentUserSignal() !== null);
-
-  //Hace lo mismo, se fija que rol tiene.
-  isAdmin = computed(() => this.currentUserSignal()?.rol === 'administrador');
-  isUsuario = computed(() => this.currentUserSignal()?.rol === 'usuario');
-
   private apiUrl = 'http://localhost:3000/miembros';
+
+  private currentUserSignal = signal<Miembro | null>(null);
 
   // BehaviorSubject: guarda el estado del usuario actual
   // Cualquier componente puede suscribirse y recibir actualizaciones. La diferencia con un subject es que
@@ -42,9 +34,29 @@ export class AuthService {
   //Al ser solo lectura (Observable) solo se puede escuhar (".subscribe()")
   public currentUser$ = this.currentUserSubject.asObservable();
 
+  /* --------------- COMPUTED --------------------*/
+  //Uso de computed -> Solo recalcula cuando cambia currentUserSignal, ahorrando recursos.
+  //Si el usuario esta logeado, retorna true. Lee el signal y determina si es distinto de nulo.
+  isAuthenticated = computed(() => this.currentUserSignal() !== null);
+
+  //Hace lo mismo, se fija que rol tiene.
+  isAdmin = computed(() => this.currentUserSignal()?.rol === 'administrador');
+  isUsuario = computed(() => this.currentUserSignal()?.rol === 'usuario');
+
+  // usado para que componentes muestren el nombre completo del usuario loggeado
+  nombreCompleto = computed(() => {
+    const user = this.currentUserSignal();
+    return user ? `${user.nombre} ${user.apellido}` : '';
+  });
+
+  usuarioId = computed(() => this.currentUserSignal()?.id ?? null);
+
   constructor() {
     // Al iniciar el servicio, intentar cargar usuario del localStorage
     this.loadUserFromStorage();
+
+    // sincronizar BehaviorSubject con signal
+    this.currentUser$.subscribe((user) => this.currentUserSignal.set(user));
   }
 
   //Si existe, carga el usuario desde LocalStorage.
@@ -120,13 +132,6 @@ export class AuthService {
     );
   }
 
-  //Metodo auxiliar para modularizar el metodo register.
-  emailYaRegistrado(email: string): Observable<boolean> {
-    return this.http
-      .get<MiembroDdDTO[]>(`${this.apiUrl}?email=${email}`)
-      .pipe(map((miembros) => miembros.length > 0));
-  }
-
   //Registro
   register(registroDto: RegistroRequestDTO): Observable<Miembro> {
     // Verificar que el email no exista
@@ -179,8 +184,37 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  /*  METODOS HELPER  */
   //El !! significa que devuelve true or false aunque el valor que obtenga sea un string. Si esta vacio seria false
   estaLogeado(): boolean {
     return !!localStorage.getItem('currentUser');
+  }
+
+  //Metodo auxiliar para modularizar el metodo register.
+  emailYaRegistrado(email: string): Observable<boolean> {
+    return this.http
+      .get<MiembroDdDTO[]>(`${this.apiUrl}?email=${email}`)
+      .pipe(map((miembros) => miembros.length > 0));
+  }
+
+  // verificar si el usuario actual es duenio de un recurso, por ej, una publicaicon
+  esDueno(idMiembro: number): boolean {
+    const user = this.currentUserSignal();
+    return user !== null && user.id === idMiembro;
+  }
+
+  // verifica si el usuario puede editar un recurso
+  puedeEditar(idMiembro: number): boolean {
+    return this.esDueno(idMiembro);
+  }
+
+  // verifica si el usuario puede eliminar un recurso (es duenio o admin)
+  puedeEliminar(idMiembro: number): boolean {
+    return this.isAdmin() || this.esDueno(idMiembro);
+  }
+
+  // Obtiene el ID del usuario actual
+  obtenerIdUsuarioActual(): number | null {
+    return this.usuarioId();
   }
 }

@@ -28,7 +28,7 @@ export class MiembroService {
   public readonly miembroId = computed(() => this.miembro()?.id);
 
   //Obtiene un miembro por ID y actualiza el state
-  getMiembroById(id: string): Observable<Miembro> {
+  getMiembroById(id: number): Observable<Miembro> {
     return this.http
       .get<Miembro>(`${this.urlApi}/${id}`)
       .pipe(tap((miembro) => this.miembroState.set(miembro)));

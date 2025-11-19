@@ -8,11 +8,12 @@ import { MiPerfil } from './pages/mi-perfil/mi-perfil';
 import { noAuthGuard } from './guards/no-auth-guard';
 import { authGuard } from './guards/auth-guard';
 import { YaLogeado } from './components/ya-logeado/ya-logeado';
+import { GuiaEstilo } from './prueba/guia-estilo/guia-estilo';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'publicaciones/crear',
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {
@@ -58,5 +59,16 @@ export const routes: Routes = [
   {
     path: 'miPerfil',
     component: MiPerfil,
+    canActivate: [authGuard]
   },
+  {
+    path: 'guia',
+    component: GuiaEstilo,
+    canActivate: [authGuard]
+  },
+  {
+    path: '**',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  }
 ];

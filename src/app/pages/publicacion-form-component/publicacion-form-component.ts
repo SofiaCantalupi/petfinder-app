@@ -6,6 +6,12 @@ import { Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { NgClass } from '@angular/common';
+import { TipoMascota } from '../../models/publicacion';
+import { EstadoMascota } from '../../models/publicacion';
+import { Publicacion } from '../../models/publicacion';
+import { MiembroService } from '../../services/miembro-service';
+import { ToastService } from '../../services/toast-service';
+
 
 @Component({
   selector: 'app-publicacion-form-component',
@@ -17,6 +23,8 @@ export class PublicacionFormComponent implements OnInit {
   // Inyeccion de dependencias
   private formBuilder = inject(FormBuilder);
   private publicacionService = inject(PublicacionService);
+  private miembroService = inject(MiembroService);
+  private toastService =  inject(ToastService);
 
   route = inject(ActivatedRoute);
   router = inject(Router);
@@ -26,13 +34,13 @@ export class PublicacionFormComponent implements OnInit {
   publicacionId = signal<number | undefined>(undefined);
 
   // Arrays para las opciones
-  estadosMascota = [
+  estadosMascota: { value: EstadoMascota; label: string }[] = [
     { value: 'perdido', label: 'Perdido' },
     { value: 'encontrado', label: 'Encontrado' },
     { value: 'reencontrado', label: 'Reencontrado' },
   ];
 
-  tiposMascota = [
+  tiposMascota: { value: TipoMascota; label: string }[] = [
     { value: 'perro', label: 'Perro' },
     { value: 'gato', label: 'Gato' },
   ];
@@ -45,7 +53,6 @@ export class PublicacionFormComponent implements OnInit {
     return this.estadosMascota.filter((e) => e.value !== 'reencontrado');
   }
 
-  //
   ngOnInit(): void {
     // se fija si en la URL existe un id
     const id = this.route.snapshot.params['id'];
@@ -61,66 +68,123 @@ export class PublicacionFormComponent implements OnInit {
   cargarFormulario(id: number) {
     this.publicacionService.getPublicacionById(id).subscribe({
       next: (publicacion) => {
-        this.publicacionForm.patchValue(publicacion);
+        // se cargan los datos con lo retornado por el mappeo de la publicacion plana, a una estructura anidada
+        this.publicacionForm.patchValue(this.mappearPublicacionAForm(publicacion));
       },
       error: (error) => {
-        console.log('Error cargando el formulario.');
+        console.log('Error cargando el formulario.', error);
         // si no existe la publicacion redirigir
         this.router.navigate(['/publicaciones']);
       },
     });
   }
 
+  // metodo helper para convertir la estructura plana de la interfaz, a una anidada como la que requiere el formulario
+  mappearPublicacionAForm(publicacion: Publicacion) {
+    return {
+      mascota: {
+        nombreMascota: publicacion.nombreMascota,
+        tipoMascota: publicacion.tipoMascota,
+        estadoMascota: publicacion.estadoMascota,
+        urlFoto: publicacion.urlFoto,
+      },
+      descripcion: publicacion.descripcion,
+      ubicacion: {
+        calle: publicacion.calle,
+        altura: publicacion.altura,
+      },
+    };
+  }
+
   // Creacion del formulario
   publicacionForm = this.formBuilder.nonNullable.group({
-    nombreMascota: ['', [Validators.required, Validators.minLength(3)]],
-    tipoMascota: ['', Validators.required],
-    estadoMascota: ['', Validators.required],
-    urlFoto: ['', [Validators.required, Validators.pattern(/^https?:\/\/.+/)]],
+    mascota: this.formBuilder.nonNullable.group({
+      nombreMascota: ['', Validators.minLength(3)],
+      tipoMascota: ['' as TipoMascota, Validators.required],
+      estadoMascota: ['' as EstadoMascota, Validators.required],
+      urlFoto: ['', [Validators.required, Validators.pattern(/^https?:\/\/.+/)]],
+    }),
     descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
-    calle: ['', [Validators.required, Validators.minLength(3)]],
-    altura: [0, [Validators.required, Validators.min(2)]],
+    ubicacion: this.formBuilder.nonNullable.group({
+      calle: ['', [Validators.required, Validators.minLength(3)]],
+      altura: [0, [Validators.required, Validators.min(2)]],
+    }),
   });
 
   onSubmit() {
-    if (this.publicacionForm.valid) {
-      const publicacion = {
-        ...this.publicacionForm.getRawValue(),
-        fecha: new Date(),
-      };
-
-      if (this.esEdicion()) {
-        // EDITAR
-        this.publicacionService.putPublicacion(this.publicacionId()!, publicacion).subscribe({
-          next: () => {
-            console.log('Publicación actualizada');
-            this.publicacionForm.reset();
-            this.router.navigate(['/publicaciones', this.publicacionId()]);
-          },
-          error: (error) => {
-            console.error('Error actualizando:', error);
-            alert('Error al actualizar la publicación');
-          },
-        });
-      } else {
-        // CREAR
-        this.publicacionService.postPublicacion(publicacion).subscribe({
-          next: () => {
-            console.log('Publicación creada');
-            this.publicacionForm.reset();
-            this.router.navigate(['/publicaciones']);
-          },
-          error: (error) => {
-            console.error('Error creando:', error);
-            alert('Error al crear la publicación');
-          },
-        });
-      }
-    } else {
-      // Marcar campos como touched para mostrar errores
-      Object.keys(this.publicacionForm.controls).forEach((key) => {
-        this.publicacionForm.get(key)?.markAsTouched();
-      });
+    if (this.publicacionForm.invalid) {
+      // marcar todos los campos como touched, incluyendo los anidados
+      this.publicacionForm.markAllAsTouched();
+      return;
     }
+
+    // obtener el miembro loggeado
+    const miembroActual$ = this.miembroService.cargarMiembroActual();
+    if (!miembroActual$) {
+      alert('Debes iniciar sesión para publicar');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // se obtienen los datos cargados en el formulario
+    const formValue = this.publicacionForm.getRawValue();
+
+    //  toda la lógica de editar y crear esta dentro del subscribe
+    miembroActual$.subscribe({
+      next: (miembro) => {
+        const publicacion: Omit<Publicacion, 'id'> = {
+          idMiembro: miembro.id, // id del miembro loggeado
+          // mascota
+          nombreMascota: formValue.mascota.nombreMascota,
+          tipoMascota: formValue.mascota.tipoMascota,
+          estadoMascota: formValue.mascota.estadoMascota,
+          urlFoto: formValue.mascota.urlFoto,
+          // descripcion
+          descripcion: formValue.descripcion,
+          calle: formValue.ubicacion.calle,
+          altura: formValue.ubicacion.altura,
+          // datos que no vienen del formulario
+          fecha: new Date().toISOString(),
+          activo: true,
+        };
+
+        // esto se tiene que cambiar en la integracion con spring boot
+        if (this.esEdicion()) {
+          // EDITAR
+          this.publicacionService.putPublicacion(this.publicacionId()!, publicacion).subscribe({
+            next: () => {
+              console.log('Publicación actualizada');
+              this.toastService.showToast('¡Publicación actualizada con éxito!', 'success', 5000);
+              this.publicacionForm.reset();
+              this.router.navigate(['/publicaciones', this.publicacionId()]);
+            },
+            error: (error) => {
+              console.error('Error actualizando:', error);
+              alert('Error al actualizar la publicación');
+            },
+          });
+        } else {
+          // CREAR
+          this.publicacionService.postPublicacion(publicacion).subscribe({
+            next: (pub) => {
+              console.log('Publicación creada', pub);
+              this.toastService.showToast('¡Publicación creada con éxito!', 'success', 5000);
+              this.publicacionForm.reset();
+              this.router.navigate(['/publicaciones', pub.id]);
+            },
+            error: (error) => {
+              console.error('Error creando:', error);
+              alert('Error al crear la publicación');
+            },
+          });
+        }
+      },
+      // este error correspone el subscribe de cargarmiembrologeado
+      error: (error) => {
+        console.error('Error al cargar miembro:', error);
+        alert('Error al obtener datos del usuario');
+        this.router.navigate(['/login']);
+      },
+    });
   }
 }

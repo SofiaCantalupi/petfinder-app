@@ -3,6 +3,7 @@ import { ComentarioService } from '../../../services/comentario-service';
 import { ComentarioItem } from '../comentario-item/comentario-item';
 import { ComentarioForm } from '../comentario-form/comentario-form';
 import { Comentario } from '../../../models/comentario';
+import { ToastService } from '../../../services/toast-service';
 
 @Component({
   selector: 'app-comentario-list',
@@ -13,6 +14,7 @@ import { Comentario } from '../../../models/comentario';
 })
 export class ComentarioList implements OnInit {
   private comentarioService = inject(ComentarioService);
+  private toastService = inject(ToastService);
 
   publicacionId = input.required<number>();
 
@@ -49,6 +51,7 @@ export class ComentarioList implements OnInit {
     this.comentarioService.deleteComentario(id).subscribe({
       next: () => {
         console.log('Comentario eliminado');
+        this.toastService.showToast('Comentario eliminado', 'success');
       },
       error: (err) => {
         console.error('Error al eliminar comentario:', err);

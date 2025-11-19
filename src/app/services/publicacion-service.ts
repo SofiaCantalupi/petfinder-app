@@ -1,7 +1,9 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { Publicacion } from '../models/publicacion';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
+import { switchMap } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +14,15 @@ export class PublicacionService {
   private publicacionesState = signal<Publicacion[]>([]);
 
   public publicaciones = this.publicacionesState.asReadonly();
+
+  // computed usado para filtrar publicaciones activas, filtra solo cuando hay cambios
+  public publicacionesActivas = computed(()=>
+    this.publicacionesState().filter(publicacion => publicacion.activo === true)
+  );
+
+  public publicacionesReencontrados = computed(()=>
+    this.publicacionesState().filter(publicacion => publicacion.activo === true && publicacion.estadoMascota ==='reencontrado')
+  );
 
   constructor(private http: HttpClient) {
     this.getPublicaciones();
@@ -47,8 +58,19 @@ export class PublicacionService {
   }
 
   deletePublicacion(id: number) {
-    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+    return this.getPublicacionById(id).pipe(
+      switchMap((publicacion) => {
+        // cambia el estado activo a false (baja pasiva)
+        const publicacionActualizada = {
+          ...publicacion,
+          activo: false,
+        };
+
+        // PUT con la publicacion actualizada
+        return this.http.put<Publicacion>(`${this.apiUrl}/${id}`, publicacionActualizada);
+      }),
       tap(() => {
+        // actualizar el state removiendo la publicacion eliminada
         this.publicacionesState.update((publicaciones) =>
           publicaciones.filter((pub) => pub.id !== id)
         );

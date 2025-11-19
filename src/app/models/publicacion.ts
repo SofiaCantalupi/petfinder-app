@@ -1,10 +1,16 @@
+//Union type
+export type EstadoMascota = 'perdido' | 'encontrado' | 'reencontrado';
+export type TipoMascota = 'perro' | 'gato';
+
 export interface Publicacion{
     id: number,
+    idMiembro: number,
+    activo: boolean,
     nombreMascota: string,
-    tipoMascota: string,
-    estadoMascota: string,
+    tipoMascota: TipoMascota,
+    estadoMascota: EstadoMascota,
     urlFoto: string,
-    fecha: Date,
+    fecha: string,
     descripcion: string,
     calle: string,
     altura: number

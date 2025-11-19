@@ -1,11 +1,60 @@
+<app-hero></app-hero>
+<!-- Barra de Filtrado -->
+<div class="card py-3 px-6 mb-8 flex justify-around gap-30 max-w-4xl mx-auto">
+  <div class="flex gap-4 align-center">
+    <p class="pt-1.5 text-sm font-semibold">Tipo de Mascota:</p>
+    <div class="buttons flex justify-between align-center gap-4">
+      <button
+        class="filter"
+        [ngClass]="{
+          'filter-active': filtroTipoMascota() === 'gato'
+        }"
+        (click)="toggleTipoMascota('gato')"
+      >
+        Gato
+      </button>
+      <button
+        class="filter"
+        [ngClass]="{
+          'filter-active': filtroTipoMascota() === 'perro'
+        }"
+        (click)="toggleTipoMascota('perro')"
+      >
+        Perro
+      </button>
+    </div>
+  </div>
 
-<!-- <a>
-    <button>+Crear Publicación</button>
-</a>
+  <div class="flex gap-4 align-center">
+    <p class="pt-1.5 text-sm font-semibold">Estado:</p>
+    <div class="buttons flex justify-between align-center gap-4">
+      <button
+        class="filter"
+        [ngClass]="{
+          'filter-active': filtroEstadoMascota() === 'perdido'
+        }"
+        (click)="toggleEstadoMascota('perdido')"
+      >
+        Perdido
+      </button>
+      <button
+        class="filter"
+        [ngClass]="{
+          'filter-active': filtroEstadoMascota() === 'encontrado'
+        }"
+        (click)="toggleEstadoMascota('encontrado')"
+      >
+        Encontrado
+      </button>
+    </div>
+  </div>
+</div>
 
-@for(pub of listaPublicaciones(); track pub.id){
-    <article>
-        <h3>{{pub.nombreMascota}}</h3>
-        <a [routerLink]="['/publicaciones', pub.id]">Ver más</a>
-    </article>
-} -->
+<app-publicacion-list [publicaciones]="publicacionesFiltradas()"></app-publicacion-list>
+
+<!-- Carrusel section -->
+<section class="max-w-4xl mx-auto my-20">
+  <h2 class="text-center text-4xl">Finales Felices</h2>
+  <p class="text-center text-xl py-6">Mascotas que lograron reencontrarse con sus familias gracias a Pet Finder.</p>
+  <app-carrusel-publicaciones [publicaciones]="publicacionesReencontrados()"></app-carrusel-publicaciones>
+</section>

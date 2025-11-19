@@ -2,11 +2,12 @@ import { Component, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Comentario } from '../../../models/comentario';
 import { AuthService } from '../../../services/auth-service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-comentario-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgClass],
   templateUrl: './comentario-form.html',
   styleUrl: './comentario-form.css',
 })

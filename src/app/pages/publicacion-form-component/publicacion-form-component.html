@@ -1,114 +1,129 @@
-<div class="card max-w-3xl mx-auto"> 
+<div class="card max-w-3xl mx-auto">
+  <!-- Header del formulario -->
   <div class="card-header">
-    <h2 class="card-title">Crear una publicación</h2>
+    <h2 class="card-title">{{ esEdicion() ? 'Editar publicación' : 'Crear una publicación' }}</h2>
   </div>
+
+  @if(esEdicion()){
+  <p class="pt-2 text-center text-pretty">
+    Revisá los datos de tu publicación y cambiá lo que necesites. <br />
+    Al finalizar, tocá “Actualizar” para guardar los cambios.
+  </p>
+  }
+
+  <!-- Formulario -->
   <form [formGroup]="publicacionForm" (ngSubmit)="onSubmit()">
     <div class="card-body space-y-4 pb-16">
+      <!-- Seccion Datos Mascota -->
       <h3 class="font-semibold">Datos de la mascota:</h3>
 
-      <div class="input-group">
-        <label class="input-label" for="nombreMascota">Nombre:</label>
-        <!-- Se utiliza ngClass para sumar la clase de error si el campo no es valido -->
-        <input
-          class="input-field"
-          [ngClass]="{
-            'input-error':
-              publicacionForm.get('nombreMascota')?.invalid &&
-              publicacionForm.get('nombreMascota')?.touched
-          }"
-          formControlName="nombreMascota"
-          type="text"
-          id="nombreMascota"
-        />
+      <!-- Seccion Datos Mascota -->
+      <div formGroupName="mascota">
+        <div class="input-group">
+          <label class="input-label" for="nombreMascota">Nombre:</label>
+          <!-- Se utiliza ngClass para sumar la clase de error si el campo no es valido -->
+          <input
+            class="input-field text-gray-500"
+            [ngClass]="{
+              'input-error':
+                publicacionForm.get('mascota.nombreMascota')?.invalid &&
+                publicacionForm.get('mascota.nombreMascota')?.touched
+            }"
+            formControlName="nombreMascota"
+            type="text"
+            id="nombreMascota"
+            placeholder="Ingrese el nombre..."
+          />
 
-        @if(publicacionForm.get("nombreMascota")?.invalid &&
-        publicacionForm.get("nombreMascota")?.touched){
-        <p class="input-error-text">
-          @if(publicacionForm.get("nombreMascota")?.errors?.['required']){ Este campo es
-          obligatorio. } @if(publicacionForm.get("nombreMascota")?.errors?.['minlength']){ El nombre
-          debe tener más de tres caracteres. }
-        </p>
-        }
-      </div>
-
-      <div class="input-group">
-        <label class="input-label" for="estadoMascota">Estado:</label>
-        <select
-          class="input-field"
-          [ngClass]="{
-            'input-error':
-              publicacionForm.get('estadoMascota')?.invalid &&
-              publicacionForm.get('estadoMascota')?.touched
-          }"
-          formControlName="estadoMascota"
-          id="estadoMascota"
-        >
-          <option value="">Seleccione...</option>
-          @for (estado of estadosMascotaFiltrados; track estado.value) {
-          <option [value]="estado.value">
-            {{ estado.label }}
-          </option>
+          @if(publicacionForm.get("mascota.nombreMascota")?.invalid &&
+          publicacionForm.get("mascota.nombreMascota")?.touched){
+          <p class="input-error-text">El nombre debe tener más de tres caracteres.</p>
           }
-        </select>
+        </div>
 
-        @if (publicacionForm.get("estadoMascota")?.invalid &&
-        publicacionForm.get("estadoMascota")?.touched) {
-        <p class="input-error-text">Debe seleccionar una opción.</p>
-        }
-      </div>
+        <!-- Estado Mascota -->
+        <div class="input-group">
+          <label class="input-label" for="estadoMascota">Estado:</label>
+          <select
+            class="input-field text-gray-500"
+            [ngClass]="{
+              'input-error':
+                publicacionForm.get('mascota.estadoMascota')?.invalid &&
+                publicacionForm.get('mascota.estadoMascota')?.touched
+            }"
+            formControlName="estadoMascota"
+            id="estadoMascota"
+          >
+            <option value="">Seleccione...</option>
+            @for (estado of estadosMascotaFiltrados; track estado.value) {
+            <option [value]="estado.value">
+              {{ estado.label }}
+            </option>
+            }
+          </select>
 
-      <div class="input-group">
-        <label class="input-label" for="tipoMascota">Tipo:</label>
-        <select
-          class="input-field"
-          [ngClass]="{
-            'input-error':
-              publicacionForm.get('tipoMascota')?.invalid &&
-              publicacionForm.get('tipoMascota')?.touched
-          }"
-          formControlName="tipoMascota"
-          id="tipoMascota"
-        >
-          <option value="">Seleccione...</option>
-          @for (tipo of tiposMascota; track tipo.value) {
-          <option [value]="tipo.value">
-            {{ tipo.label }}
-          </option>
+          @if (publicacionForm.get("mascota.estadoMascota")?.invalid &&
+          publicacionForm.get("mascota.estadoMascota")?.touched) {
+          <p class="input-error-text">Debe seleccionar una opción.</p>
           }
-        </select>
+        </div>
 
-        @if (publicacionForm.get("tipoMascota")?.invalid &&
-        publicacionForm.get("tipoMascota")?.touched) {
-        <p class="input-error-text">Debe seleccionar una opción.</p>
-        }
+        <!-- Tipo Mascota -->
+        <div class="input-group">
+          <label class="input-label" for="tipoMascota">Tipo:</label>
+          <select
+            class="input-field text-gray-500"
+            [ngClass]="{
+              'input-error':
+                publicacionForm.get('mascota.tipoMascota')?.invalid &&
+                publicacionForm.get('mascota.tipoMascota')?.touched
+            }"
+            formControlName="tipoMascota"
+            id="tipoMascota"
+          >
+            <option value="">Seleccione...</option>
+            @for (tipo of tiposMascota; track tipo.value) {
+            <option [value]="tipo.value">
+              {{ tipo.label }}
+            </option>
+            }
+          </select>
+
+          @if (publicacionForm.get("mascota.tipoMascota")?.invalid &&
+          publicacionForm.get("mascota.tipoMascota")?.touched) {
+          <p class="input-error-text">Debe seleccionar una opción.</p>
+          }
+        </div>
+
+        <!-- Foto -->
+        <div class="input-group">
+          <label class="input-label" for="urlFoto">URL de la foto:</label>
+          <input
+            class="input-field text-gray-500"
+            [ngClass]="{
+              'input-error':
+                publicacionForm.get('mascota.urlFoto')?.invalid && publicacionForm.get('mascota.urlFoto')?.touched
+            }"
+            formControlName="urlFoto"
+            type="url"
+            id="urlFoto"
+            placeholder="https://ejemplo.com/foto.jpg"
+          />
+
+          @if (publicacionForm.get("mascota.urlFoto")?.invalid && publicacionForm.get("mascota.urlFoto")?.touched) {
+          <p class="input-error-text">
+            @if(publicacionForm.get("mascota.urlFoto")?.errors?.['required']){ Este campo es obligatorio. }
+            @if(publicacionForm.get("mascota.urlFoto")?.errors?.['pattern']){ Debe ser una dirección URL. }
+          </p>
+          }
+        </div>
       </div>
 
-      <div class="input-group">
-        <label class="input-label" for="urlFoto">URL de la foto:</label>
-        <input
-          class="input-field"
-          [ngClass]="{
-            'input-error':
-              publicacionForm.get('urlFoto')?.invalid && publicacionForm.get('urlFoto')?.touched
-          }"
-          formControlName="urlFoto"
-          type="url"
-          id="urlFoto"
-          placeholder="https://ejemplo.com/foto.jpg"
-        />
-
-        @if (publicacionForm.get("urlFoto")?.invalid && publicacionForm.get("urlFoto")?.touched) {
-        <p class="input-error-text">
-          @if(publicacionForm.get("urlFoto")?.errors?.['required']){ Este campo es obligatorio. }
-          @if(publicacionForm.get("urlFoto")?.errors?.['pattern']){ Debe ser una dirección URL. }
-        </p>
-        }
-      </div>
-
+      <!-- Seccion Descripcion -->
       <div class="input-group">
         <label class="input-label" for="descripcion">Descripción:</label>
         <textarea
-          class="input-field"
+          class="input-field text-gray-500"
           [ngClass]="{
             'input-error':
               publicacionForm.get('descripcion')?.invalid &&
@@ -125,61 +140,67 @@
         <p class="input-error-text">
           @if(publicacionForm.get("descripcion")?.errors?.['required']){ Este campo es obligatorio.
           } @if(publicacionForm.get("descripcion")?.errors?.['minlength']) { La descripción debe
-          tener mas de 10 caracteres. }
+          tener más de 10 caracteres. }
           @if(publicacionForm.get("descripcion")?.errors?.['maxlength']) { La descripción no debe
           superar los 500 caracteres. }
         </p>
         }
       </div>
 
+      <!-- Seccion Datos Ubicacion -->
       <h3 class="font-semibold">Dirección:</h3>
 
-      <div class="input-group">
-        <label class="input-label" for="calle">Calle:</label>
-        <input
-          class="input-field"
-          [ngClass]="{
-            'input-error':
-              publicacionForm.get('calle')?.invalid && publicacionForm.get('calle')?.touched
-          }"
-          formControlName="calle"
-          type="text"
-          id="calle"
-        />
+      <!-- Calle -->
+      <div formGroupName="ubicacion">
+        <div class="input-group">
+          <label class="input-label" for="calle">Calle:</label>
+          <input
+            class="input-field text-gray-500"
+            [ngClass]="{
+              'input-error':
+                publicacionForm.get('ubicacion.calle')?.invalid && publicacionForm.get('ubicacion.calle')?.touched
+            }"
+            formControlName="calle"
+            type="text"
+            id="calle"
+          />
 
-        @if (publicacionForm.get("calle")?.invalid && publicacionForm.get("calle")?.touched) {
-        <p class="input-error-text">
-          @if (publicacionForm.get("calle")?.errors?.['required']) { Este campo es obligatorio. }
-          @if (publicacionForm.get("calle")?.errors?.['minlength']){ La calle debe tener mas de 3
-          caracteres. }
-        </p>
-        }
-      </div>
+          @if (publicacionForm.get("ubicacion.calle")?.invalid && publicacionForm.get("ubicacion.calle")?.touched) {
+          <p class="input-error-text">
+            @if (publicacionForm.get("ubicacion.calle")?.errors?.['required']) { Este campo es obligatorio. }
+            @if (publicacionForm.get("ubicacion.calle")?.errors?.['minlength']){ La calle debe tener más de 3
+            caracteres. }
+          </p>
+          }
+        </div>
 
-      <div class="input-group">
-        <label class="input-label" for="altura">Altura:</label>
-        <input
-          class="input-field"
-          [ngClass]="{
-            'input-error':
-              publicacionForm.get('altura')?.invalid && publicacionForm.get('altura')?.touched
-          }"
-          formControlName="altura"
-          type="number"
-          id="altura"
-          min="1"
-        />
+        <!-- Altura -->
+        <div class="input-group">
+          <label class="input-label" for="altura">Altura:</label>
+          <input
+            class="input-field text-gray-500"
+            [ngClass]="{
+              'input-error':
+                publicacionForm.get('ubicacion.altura')?.invalid && publicacionForm.get('ubicacion.altura')?.touched
+            }"
+            formControlName="altura"
+            type="number"
+            id="altura"
+            min="1"
+          />
 
-        @if(publicacionForm.get("altura")?.invalid && publicacionForm.get("altura")?.touched) {
-        <p class="input-error-text">
-          @if (publicacionForm.get("altura")?.errors?.['required']) { Este campo es obligatorio. }
-          @if (publicacionForm.get("altura")?.errors?.['min']) { La altura debe tener mas de 1
-          digito. }
-        </p>
-        }
+          @if(publicacionForm.get("ubicacion.altura")?.invalid && publicacionForm.get("ubicacion.altura")?.touched) {
+          <p class="input-error-text">
+            @if (publicacionForm.get("ubicacion.altura")?.errors?.['required']) { Este campo es obligatorio. }
+            @if (publicacionForm.get("ubicacion.altura")?.errors?.['min']) { La altura debe tener más de 1
+            dígito. }
+          </p>
+          }
+        </div>
       </div>
     </div>
 
+    <!-- Botones -->
     <div class="card-footer space-x-3 flex justify-center">
       <button class="btn btn-primary btn-md" type="submit" [disabled]="publicacionForm.invalid">
         {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
