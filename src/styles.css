@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import "swiper/swiper-bundle.css"; 
+@import 'swiper/swiper-bundle.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -41,11 +41,12 @@
   --color-sidebar-accent-foreground: oklch(0.205 0 0);
   --color-sidebar-border: oklch(0.922 0 0);
   --color-sidebar-ring: oklch(0.708 0 0);
-
   --color-white: #fafafa;
 
   --font-body: 'Nunito', sans-serif;
   --font-display: 'Quicksand', sans-serif;
+
+  --spacing-header: 4.375rem;
 }
 
 .dark {
@@ -222,40 +223,40 @@
   @apply px-6 py-4 border-t-2 border-border bg-muted;
 }
 
-/* Alert Components */
-@utility alert {
-  @apply flex items-start gap-3 p-4 rounded-lg border-2 border-l-4;
+/* Toast Components */
+@utility toast {
+  @apply fixed flex items-start gap-3 p-4 rounded-lg border-2 border-l-4 top-header mt-4 right-4 z-100;
 }
 
-@utility alert-info {
-  @apply alert bg-blue-50 border-blue-200 border-l-blue-500 text-blue-900;
+.toast-info {
+  @apply toast bg-blue-50 border-blue-200 border-l-blue-500 text-blue-900;
 }
 
-@utility alert-success {
-  @apply alert bg-green-50 border-green-200 border-l-green-500 text-green-900;
+.toast-success {
+  @apply toast bg-green-50 border-green-200 border-l-green-500 text-green-900;
 }
 
-@utility alert-warning {
-  @apply alert bg-amber-50 border-amber-200 border-l-amber-500 text-amber-900;
+.toast-warning {
+  @apply toast bg-amber-50 border-amber-200 border-l-amber-500 text-amber-900;
 }
 
-@utility alert-error {
-  @apply alert bg-red-50 border-red-200 border-l-red-500 text-red-900;
+.toast-error {
+  @apply toast bg-red-50 border-red-200 border-l-red-500 text-red-900;
 }
 
-@utility alert-icon {
+.toast-icon {
   @apply shrink-0 w-5 h-5;
 }
 
-@utility alert-content {
+.toast-content {
   @apply flex-1;
 }
 
-@utility alert-title {
+.toast-title {
   @apply font-semibold mb-1;
 }
 
-@utility alert-message {
+.toast-message {
   @apply text-sm;
 }
 
@@ -284,3 +285,4 @@
 @utility filter-active {
   @apply bg-primary text-white;
 }
+
