@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
 import { computed } from '@angular/core';
 import { signal } from '@angular/core';
+import { CambiarContraseniaDTO } from '../models/auth/cambiar-contrasenia-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -166,6 +167,31 @@ export class AuthService {
       }),
       catchError((error) => {
         console.error('Error en registro:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  //Cambiar contraseña
+  cambiarPassword(dto: CambiarContraseniaDTO) {
+    const userId = this.currentUserSignal()?.id;
+
+    if (!userId) {
+      return throwError(() => new Error('No hay usuario logeado.'));
+    }
+
+    return this.http.get<MiembroDdDTO>(`${this.apiUrl}/${userId}`).pipe(
+      switchMap((miembroDb) => {
+        if (miembroDb.contrasenia !== dto.actual) {
+          return throwError(() => new Error('La contraseña actual es incorrecta'));
+        }
+
+        return this.http.patch<{ message: string }>(`${this.apiUrl}/${userId}`, {
+          contrasenia: dto.nueva,
+        });
+      }),
+      catchError((error) => {
+        console.error('Error al cambiar contraseña:', error);
         return throwError(() => error);
       })
     );

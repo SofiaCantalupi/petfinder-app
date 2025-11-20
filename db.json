@@ -271,6 +271,19 @@
       "fecha": "2025-11-18T19:55:35.042Z",
       "activo": true,
       "id": 18
+    },
+    {
+      "idMiembro": 1,
+      "nombreMascota": "Lola",
+      "tipoMascota": "perro",
+      "estadoMascota": "perdido",
+      "urlFoto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqC8wvz4gS3CIvkKZ-DBq0PbSeV2xn1Nhzo_6Jl5ZHbsQ-EZludTh0kQXbTjsReBzh6H0mKraNUXi4ArEW1DlzMEtFokzNc5RaKuUukno&s=10",
+      "descripcion": "Tenia un collar violeta",
+      "calle": "Alberti",
+      "altura": 5138,
+      "fecha": "2025-11-20T19:33:53.827Z",
+      "activo": true,
+      "id": 19
     }
   ],
   "comentarios": [
@@ -323,6 +336,16 @@
       "miembroNombre": "sofia",
       "miembroApellido": "canta",
       "id": "pxIi4T7"
+    },
+    {
+      "texto": "Probando...",
+      "fechaPublicacion": "2025-11-20T19:34:03.280Z",
+      "activo": true,
+      "publicacionId": 19,
+      "miembroId": 1,
+      "miembroNombre": "Fran",
+      "miembroApellido": "Cancino",
+      "id": "xO0JONP"
     }
   ]
 }

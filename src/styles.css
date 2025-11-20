@@ -152,6 +152,9 @@
 @utility btn-danger {
   @apply btn bg-destructive text-destructive-foreground hover:opacity-90 focus:ring-destructive;
 }
+@utility btn-sucess {
+  @apply btn bg-success text-destructive-foreground hover:opacity-90 focus:ring-success;
+}
 
 @utility btn-sm {
   @apply px-3 py-1.5 text-sm;
