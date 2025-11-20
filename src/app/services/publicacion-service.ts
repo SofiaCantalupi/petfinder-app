@@ -2,7 +2,9 @@ import { Injectable, signal, computed } from '@angular/core';
 import { EstadoMascota, Publicacion } from '../models/publicacion';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
-import { switchMap } from 'rxjs';
+
+// permite cualquier objeto que tenga campos de la publicacion, menos el ID. Usado para el update (patch)
+type UpdatePayload = Partial<Omit<Publicacion, 'id'>>; 
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +16,7 @@ export class PublicacionService {
   private publicacionesState = signal<Publicacion[]>([]);
 
   public publicaciones = this.publicacionesState.asReadonly();
+
 
   public publicacionesReencontrados = computed(() =>
     this.publicacionesState().filter(
@@ -44,9 +47,12 @@ export class PublicacionService {
     );
   }
 
-  putPublicacion(id: number, nuevaPublicacion: Omit<Publicacion, 'id'>) {
-    return this.http.put<Publicacion>(`${this.apiUrl}/${id}`, nuevaPublicacion).pipe(
+
+  updatePublicacion(id: number, cambios: UpdatePayload) {
+    // se envia solo los campos que cambiaron
+    return this.http.patch<Publicacion>(`${this.apiUrl}/${id}`, cambios).pipe(
       tap((data) => {
+        // actualización del state
         this.publicacionesState.update((publicaciones) =>
           publicaciones.map((pub) => (pub.id === id ? data : pub))
         );

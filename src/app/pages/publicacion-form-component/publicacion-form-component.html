@@ -202,7 +202,7 @@
         {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
       </button>
 
-      <button class="btn btn-danger btn-md" routerLink="/publicaciones">Cancelar</button>
+      <button class="btn btn-danger btn-md" [routerLink]="['/publicaciones', publicacionId()]">Cancelar</button>
     </div>
   </form>
 </div>

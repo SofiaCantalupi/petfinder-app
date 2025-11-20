@@ -12,7 +12,6 @@ import { Publicacion } from '../../models/publicacion';
 import { MiembroService } from '../../services/miembro-service';
 import { ToastService } from '../../services/toast-service';
 
-
 @Component({
   selector: 'app-publicacion-form-component',
   imports: [ReactiveFormsModule, NgClass, RouterLink],
@@ -24,7 +23,7 @@ export class PublicacionFormComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private publicacionService = inject(PublicacionService);
   private miembroService = inject(MiembroService);
-  private toastService =  inject(ToastService);
+  private toastService = inject(ToastService);
 
   route = inject(ActivatedRoute);
   router = inject(Router);
@@ -99,7 +98,7 @@ export class PublicacionFormComponent implements OnInit {
   // Creacion del formulario
   publicacionForm = this.formBuilder.nonNullable.group({
     mascota: this.formBuilder.nonNullable.group({
-      nombreMascota: (''),
+      nombreMascota: '',
       tipoMascota: ['' as TipoMascota, Validators.required],
       estadoMascota: ['' as EstadoMascota, Validators.required],
       urlFoto: ['', [Validators.required, Validators.pattern(/^https?:\/\/.+/)]],
@@ -132,8 +131,8 @@ export class PublicacionFormComponent implements OnInit {
     //  toda la lógica de editar y crear esta dentro del subscribe
     miembroActual$.subscribe({
       next: (miembro) => {
-        const publicacion: Omit<Publicacion, 'id'> = {
-          idMiembro: miembro.id, // id del miembro loggeado
+        const publicacionBase: Omit<Publicacion, 'id'> = {
+          idMiembro: miembro.id,
           // mascota
           nombreMascota: formValue.mascota.nombreMascota,
           tipoMascota: formValue.mascota.tipoMascota,
@@ -150,8 +149,19 @@ export class PublicacionFormComponent implements OnInit {
 
         // esto se tiene que cambiar en la integracion con spring boot
         if (this.esEdicion()) {
+          // se extraen solo los campos que pueden llegar a cambiar, no se incluye fecha, estado ni idMiembro
+          const cambios = {
+            nombreMascota: publicacionBase.nombreMascota,
+            tipoMascota: publicacionBase.tipoMascota,
+            estadoMascota: publicacionBase.estadoMascota,
+            urlFoto: publicacionBase.urlFoto,
+            descripcion: publicacionBase.descripcion,
+            calle: publicacionBase.calle,
+            altura: publicacionBase.altura,
+          };
+
           // EDITAR
-          this.publicacionService.putPublicacion(this.publicacionId()!, publicacion).subscribe({
+          this.publicacionService.updatePublicacion(this.publicacionId()!, cambios).subscribe({
             next: () => {
               console.log('Publicación actualizada');
               this.toastService.showToast('¡Publicación actualizada!', 'success', 5000);
@@ -165,7 +175,7 @@ export class PublicacionFormComponent implements OnInit {
           });
         } else {
           // CREAR
-          this.publicacionService.postPublicacion(publicacion).subscribe({
+          this.publicacionService.postPublicacion(publicacionBase).subscribe({
             next: (pub) => {
               console.log('Publicación creada', pub);
               this.toastService.showToast('¡Publicación creada!', 'success', 5000);
