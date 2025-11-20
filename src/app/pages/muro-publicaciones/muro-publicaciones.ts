@@ -15,12 +15,14 @@ import { CarruselPublicaciones } from '../../components/carrusel-publicaciones/c
 export class MuroPublicaciones {
   private publicacionService = inject(PublicacionService);
 
-  publicacionesActivas = this.publicacionService.publicaciones;
-
   publicacionesReencontrados = this.publicacionService.publicacionesReencontrados;
 
   filtroEstadoMascota = signal<EstadoMascota | null>(null);
   filtroTipoMascota = signal<TipoMascota | null>(null);
+
+  publicacionesActivas = computed(() => 
+    this.publicacionService.publicaciones().filter(pub => pub.activo)
+  )
 
   // si existe un cambio en los signlas de filtros, se ejecuta computed, que va a filtrar las publicaciones
   publicacionesFiltradas = computed(() => {
