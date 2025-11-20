@@ -47,4 +47,12 @@ export class MiembroService {
       return null;
     }
   }
+
+  actualizarMiembro(id: number, nuevoMiembro: Omit<Miembro, 'id'>) {
+    return this.http.put<Miembro>(`${this.urlApi}/${id}`, nuevoMiembro).pipe(
+      tap((data) => {
+        this.miembrosState.update((miembros) => miembros.map((m) => (m.id === id ? data : m)));
+      })
+    );
+  }
 }
