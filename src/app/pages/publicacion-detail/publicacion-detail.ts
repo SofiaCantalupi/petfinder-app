@@ -117,23 +117,25 @@ export class PublicacionDetail implements OnInit {
   }
 
   // metodo que cambiar el estadoMascota 'perdido' o 'encontrado' a 'reencontrado'
-  cambiarEstadoAReencontrado(){
+  cambiarEstadoAReencontrado() {
     const estado: EstadoMascota = 'reencontrado';
     const id = this.publicacion()?.id;
 
     if (!id) return;
 
-    this.publicacionService.updateEstadoMascota(id, estado).subscribe({
-      next: (pub) => {
-        console.log('Estado Actualizado');
-        this.toastService.showToast('Estado Actualizado', 'success');
-        // se actualiza el objeto local completo con la ultima version, es decir, el estado actualizado
-        this.publicacion.set(pub);
-      }, 
-      error: (error) => {
-        console.log('No se ha podido actualizar el estado', error);
-        this.toastService.showToast('Error al actualizar el estado', 'error');
-      }
-    })
+    if (confirm('¿Estás seguro de querer cambiar el estado de esta mascota a REENCONTRADO?')) {
+      this.publicacionService.updateEstadoMascota(id, estado).subscribe({
+        next: (pub) => {
+          console.log('Estado Actualizado');
+          this.toastService.showToast('Estado de la mascota ctualizado', 'success');
+          // se actualiza el objeto local completo con la ultima version, es decir, el estado actualizado
+          this.publicacion.set(pub);
+        },
+        error: (error) => {
+          console.log('No se ha podido actualizar el estado', error);
+          this.toastService.showToast('Error al actualizar el estado', 'error');
+        },
+      });
+    }
   }
 }
