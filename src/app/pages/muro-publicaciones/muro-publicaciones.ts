@@ -15,7 +15,7 @@ import { CarruselPublicaciones } from '../../components/carrusel-publicaciones/c
 export class MuroPublicaciones {
   private publicacionService = inject(PublicacionService);
 
-  publicacionesActivas = this.publicacionService.publicacionesActivas;
+  publicacionesActivas = this.publicacionService.publicaciones;
 
   publicacionesReencontrados = this.publicacionService.publicacionesReencontrados;
 

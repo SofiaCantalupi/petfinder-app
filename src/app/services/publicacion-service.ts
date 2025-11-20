@@ -10,14 +10,10 @@ import { switchMap } from 'rxjs';
 export class PublicacionService {
   private readonly apiUrl = 'http://localhost:3000/publicaciones';
 
+  // al actualizar publicacionesState cada vez que se realiza una baja pasiva o una actualizacion, este contiene solo las publicaciones ACTIVAS
   private publicacionesState = signal<Publicacion[]>([]);
 
   public publicaciones = this.publicacionesState.asReadonly();
-
-  // computed usado para filtrar publicaciones activas, filtra solo cuando hay cambios
-  public publicacionesActivas = computed(() =>
-    this.publicacionesState().filter((publicacion) => publicacion.activo === true)
-  );
 
   public publicacionesReencontrados = computed(() =>
     this.publicacionesState().filter(
@@ -58,20 +54,18 @@ export class PublicacionService {
     );
   }
 
+  // Metodo que realiza baja pasiva a una publicacion
   deletePublicacion(id: number) {
-    return this.getPublicacionById(id).pipe(
-      switchMap((publicacion) => {
-        // cambia el estado activo a false (baja pasiva)
-        const publicacionActualizada = {
-          ...publicacion,
-          activo: false,
-        };
+    // 'payload' con solo el campo a cambiar
+    const payload = {
+      activo: false,
+    };
 
-        // PUT con la publicacion actualizada
-        return this.http.put<Publicacion>(`${this.apiUrl}/${id}`, publicacionActualizada);
-      }),
+    // solo actualiza el campo 'activo' en el servidor
+    return this.http.patch<Publicacion>(`${this.apiUrl}/${id}`, payload).pipe(
+      //'tap' para actualizar el signal local despues del exito
       tap(() => {
-        // actualizar el state removiendo la publicacion eliminada
+        // actualizar el state removiendo la publicacion
         this.publicacionesState.update((publicaciones) =>
           publicaciones.filter((pub) => pub.id !== id)
         );
@@ -84,7 +78,7 @@ export class PublicacionService {
   }
 
   // Actualiza el estado de la mascota en el backend y luego actualiza el estado local (signal).
-  updateEstadoMascota(id: number, estadoNuevo: EstadoMascota){
+  updateEstadoMascota(id: number, estadoNuevo: EstadoMascota) {
     // constante con solo que se modifica
     const payload = { estadoMascota: estadoNuevo };
 
