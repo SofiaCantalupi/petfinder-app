@@ -9,6 +9,7 @@ import { noAuthGuard } from './guards/no-auth-guard';
 import { authGuard } from './guards/auth-guard';
 import { YaLogeado } from './components/ya-logeado/ya-logeado';
 import { GuiaEstilo } from './prueba/guia-estilo/guia-estilo';
+import { PoliticasDeUso } from './pages/politicas-de-uso/politicas-de-uso';
 
 export const routes: Routes = [
   {
@@ -59,16 +60,20 @@ export const routes: Routes = [
   {
     path: 'miPerfil',
     component: MiPerfil,
-    canActivate: [authGuard]
+    canActivate: [authGuard],
   },
   {
     path: 'guia',
     component: GuiaEstilo,
-    canActivate: [authGuard]
+    canActivate: [authGuard],
+  },
+  {
+    path: 'normas',
+    component: PoliticasDeUso,
   },
   {
     path: '**',
     redirectTo: 'login',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
