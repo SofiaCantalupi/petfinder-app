@@ -1,9 +1,8 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Publicacion } from '../models/publicacion';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs';
+import { map, tap } from 'rxjs';
 import { switchMap } from 'rxjs';
-
 
 @Injectable({
   providedIn: 'root',
@@ -16,12 +15,14 @@ export class PublicacionService {
   public publicaciones = this.publicacionesState.asReadonly();
 
   // computed usado para filtrar publicaciones activas, filtra solo cuando hay cambios
-  public publicacionesActivas = computed(()=>
-    this.publicacionesState().filter(publicacion => publicacion.activo === true)
+  public publicacionesActivas = computed(() =>
+    this.publicacionesState().filter((publicacion) => publicacion.activo === true)
   );
 
-  public publicacionesReencontrados = computed(()=>
-    this.publicacionesState().filter(publicacion => publicacion.activo === true && publicacion.estadoMascota ==='reencontrado')
+  public publicacionesReencontrados = computed(() =>
+    this.publicacionesState().filter(
+      (publicacion) => publicacion.activo === true && publicacion.estadoMascota === 'reencontrado'
+    )
   );
 
   constructor(private http: HttpClient) {
@@ -37,6 +38,11 @@ export class PublicacionService {
         console.log('Error al obtener publicaciones', error);
       },
     });
+  }
+
+  //obtiene publicaciones de un miembro específico
+  getPublicacionesByMiembro(idMiembro: number) {
+    return this.http.get<Publicacion[]>(`${this.apiUrl}?idMiembro=${idMiembro}`);
   }
 
   postPublicacion(nuevaPublicacion: Omit<Publicacion, 'id'>) {
