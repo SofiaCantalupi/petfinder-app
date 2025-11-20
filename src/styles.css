@@ -260,6 +260,26 @@
   @apply text-sm;
 }
 
+.alert-popUp-info {
+  @apply bg-blue-100 border border-blue-300 text-blue-800 px-4 py-3 rounded-lg flex items-start gap-3;
+}
+
+.alert-popUp-icon {
+  @apply w-6 h-6 shrink-0;
+}
+
+.alert-popUp-content {
+  @apply flex flex-col;
+}
+
+.alert-popUp-title {
+  @apply font-semibold text-blue-900;
+}
+
+.alert-popUp-message {
+  @apply text-sm leading-snug;
+}
+
 /* EstadoMascota tags */
 @utility tag {
   @apply absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white rounded-full uppercase;
@@ -285,4 +305,3 @@
 @utility filter-active {
   @apply bg-primary text-white;
 }
-
