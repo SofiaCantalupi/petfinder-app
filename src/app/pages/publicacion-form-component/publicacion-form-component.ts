@@ -99,7 +99,7 @@ export class PublicacionFormComponent implements OnInit {
   // Creacion del formulario
   publicacionForm = this.formBuilder.nonNullable.group({
     mascota: this.formBuilder.nonNullable.group({
-      nombreMascota: ['', Validators.minLength(3)],
+      nombreMascota: (''),
       tipoMascota: ['' as TipoMascota, Validators.required],
       estadoMascota: ['' as EstadoMascota, Validators.required],
       urlFoto: ['', [Validators.required, Validators.pattern(/^https?:\/\/.+/)]],
