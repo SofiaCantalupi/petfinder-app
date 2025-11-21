@@ -5,7 +5,7 @@ import { PublicacionService } from '../../services/publicacion-service';
 import { ComentarioService } from '../../services/comentario-service';
 import { AuthService } from '../../services/auth-service';
 import { ToastService } from '../../services/toast-service';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Miembro } from '../../models/miembro';
@@ -23,7 +23,6 @@ export class AdminUsuarios implements OnInit {
   private comentarioService = inject(ComentarioService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
-  private router = inject(Router);
 
   miembros = signal<Miembro[]>([]);
   cargando = signal<boolean>(true);

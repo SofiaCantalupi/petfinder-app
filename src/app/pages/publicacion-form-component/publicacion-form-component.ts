@@ -16,7 +16,6 @@ import { ToastService } from '../../services/toast-service';
   selector: 'app-publicacion-form-component',
   imports: [ReactiveFormsModule, NgClass, RouterLink],
   templateUrl: './publicacion-form-component.html',
-  styleUrl: './publicacion-form-component.css',
 })
 export class PublicacionFormComponent implements OnInit {
   // Inyeccion de dependencias

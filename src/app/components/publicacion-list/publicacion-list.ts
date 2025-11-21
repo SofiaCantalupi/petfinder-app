@@ -6,7 +6,6 @@ import { PublicacionCard } from '../publicacion-card/publicacion-card';
   selector: 'app-publicacion-list',
   imports: [PublicacionCard],
   templateUrl: './publicacion-list.html',
-  styleUrl: './publicacion-list.css',
 })
 export class PublicacionList {
   publicaciones = input.required<Publicacion[]>();
