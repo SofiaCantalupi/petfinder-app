@@ -10,6 +10,7 @@ import { authGuard } from './guards/auth-guard';
 import { YaLogeado } from './components/ya-logeado/ya-logeado';
 import { GuiaEstilo } from './prueba/guia-estilo/guia-estilo';
 import { PoliticasDeUso } from './pages/politicas-de-uso/politicas-de-uso';
+import { BorrarCuenta } from './components/borrar-cuenta/borrar-cuenta';
 
 export const routes: Routes = [
   {
@@ -72,7 +73,11 @@ export const routes: Routes = [
     component: PoliticasDeUso,
   },
   {
-    path: '**',
+    path: 'borrarCuenta',
+    component: BorrarCuenta,
+  },
+  {
+    path: '*',
     redirectTo: 'login',
     pathMatch: 'full',
   },

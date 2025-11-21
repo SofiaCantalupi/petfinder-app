@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { inject } from '@angular/core';
 import { MiembroService } from '../../services/miembro-service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth-service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -14,7 +14,7 @@ import { ToastService } from '../../services/toast-service';
 
 @Component({
   selector: 'app-mi-perfil',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './mi-perfil.html',
   styleUrl: './mi-perfil.css',
 })

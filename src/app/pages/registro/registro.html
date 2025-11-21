@@ -140,6 +140,13 @@
               Crear cuenta
             </button>
           </form>
+          @if (errorMessage()) {
+          <div class="flex justify-center m-3">
+            <span class="input-error-text text-center text-pretty font-extrabold"
+              >Upps...{{ errorMessage() }}</span
+            >
+          </div>
+          }
         </div>
 
         <div class="card-footer text-center">

@@ -35,6 +35,24 @@
       "rol": "administrador",
       "activo": true,
       "id": 4
+    },
+    {
+      "nombre": "admin",
+      "apellido": "istrador",
+      "email": "admin@gmail.com",
+      "contrasenia": "RiverPlate123_",
+      "rol": "usuario",
+      "activo": true,
+      "id": 5
+    },
+    {
+      "nombre": "Mauro",
+      "apellido": "Triaca",
+      "email": "prueba@gmail.com",
+      "contrasenia": "Probando123_",
+      "rol": "usuario",
+      "activo": false,
+      "id": 6
     }
   ],
   "publicaciones": [
