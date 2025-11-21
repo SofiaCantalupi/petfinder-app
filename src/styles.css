@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'swiper/swiper-bundle.css';
+@import "leaflet/dist/leaflet.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -293,4 +294,3 @@
 @utility filter-active {
   @apply bg-primary text-white;
 }
-
