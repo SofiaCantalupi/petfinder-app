@@ -27,6 +27,12 @@ export class MiembroService {
   //Guarda el ID de ese miembro cargado.
   public readonly miembroId = computed(() => this.miembro()?.id);
 
+  // obtener todos los miembros activos (para admin)
+  getAllMiembros(): Observable<Miembro[]> {
+    return this.http
+      .get<Miembro[]>(`${this.urlApi}?activo=true`)
+      .pipe(tap((miembros) => this.miembrosState.set(miembros)));
+  }
   //Obtiene un miembro por ID y actualiza el state
   getMiembroById(id: number): Observable<Miembro> {
     return this.http
@@ -46,5 +52,16 @@ export class MiembroService {
       console.error('Error al parsear datos de auth:', error);
       return null;
     }
+  }
+
+  // baja logica del miembro baneado
+  deleteMiembro(id: number): Observable<Miembro> {
+    const payload = { activo: false };
+
+    return this.http.patch<Miembro>(`${this.urlApi}/${id}`, payload).pipe(
+      tap(() => {
+        this.miembrosState.update((miembros) => miembros.filter((m) => m.id !== id));
+      })
+    );
   }
 }
