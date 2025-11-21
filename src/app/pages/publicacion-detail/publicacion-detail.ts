@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PublicacionService } from '../../services/publicacion-service';
-import { Publicacion } from '../../models/publicacion';
+import { EstadoMascota, Publicacion } from '../../models/publicacion';
 import { MiembroService } from '../../services/miembro-service';
 import { Miembro } from '../../models/miembro';
 import { ComentarioList } from '../../components/comentarios/comentario-list/comentario-list';
@@ -99,7 +99,7 @@ export class PublicacionDetail implements OnInit {
       this.publicacionService.deletePublicacion(publicacion.id).subscribe({
         next: () => {
           console.log('Publicación eliminada.');
-          this.toastService.showToast('Publicación eliminada', 'error');
+          this.toastService.showToast('Publicación eliminada', 'success');
           this.router.navigate(['/publicaciones']); // volver al muro de publicaciones
         },
         error: (error) => {
@@ -110,8 +110,32 @@ export class PublicacionDetail implements OnInit {
   }
 
   irAComentarios() {
+    // se obtiene el elemento html que representa el formulario
     const element = document.getElementById('formComentario');
     element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     element?.focus({ preventScroll: true });
+  }
+
+  // metodo que cambiar el estadoMascota 'perdido' o 'encontrado' a 'reencontrado'
+  cambiarEstadoAReencontrado() {
+    const estado: EstadoMascota = 'reencontrado';
+    const id = this.publicacion()?.id;
+
+    if (!id) return;
+
+    if (confirm('¿Estás seguro de querer cambiar el estado de esta mascota a REENCONTRADO?')) {
+      this.publicacionService.updateEstadoMascota(id, estado).subscribe({
+        next: (pub) => {
+          console.log('Estado Actualizado');
+          this.toastService.showToast('Estado de la mascota ctualizado', 'success');
+          // se actualiza el objeto local completo con la ultima version, es decir, el estado actualizado
+          this.publicacion.set(pub);
+        },
+        error: (error) => {
+          console.log('No se ha podido actualizar el estado', error);
+          this.toastService.showToast('Error al actualizar el estado', 'error');
+        },
+      });
+    }
   }
 }
