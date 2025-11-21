@@ -152,7 +152,7 @@
 @utility btn-danger {
   @apply btn bg-destructive text-destructive-foreground hover:opacity-90 focus:ring-destructive;
 }
-@utility btn-sucess {
+@utility btn-success {
   @apply btn bg-success text-destructive-foreground hover:opacity-90 focus:ring-success;
 }
 

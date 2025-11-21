@@ -10,6 +10,7 @@ import { signal } from '@angular/core';
 import { Miembro } from '../../models/miembro';
 import { Validator } from '@angular/forms';
 import { CambiarContraseniaDTO } from '../../models/auth/cambiar-contrasenia-dto';
+import { ToastService } from '../../services/toast-service';
 
 @Component({
   selector: 'app-mi-perfil',
@@ -22,6 +23,7 @@ export class MiPerfil implements OnInit {
   public authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  toastService = inject(ToastService);
 
   perfilForm!: FormGroup;
 
@@ -30,48 +32,43 @@ export class MiPerfil implements OnInit {
 
   miembroActual!: Miembro;
 
+  errorPassword = signal<string>('');
+
   ngOnInit(): void {
     this.inicializarForm();
-    this.cargarMiembro();
+
+    // Cargar miembro desde localStorage
+    const miembro = localStorage.getItem('currentUser');
+    if (miembro) {
+      this.miembroActual = JSON.parse(miembro);
+      this.perfilForm.patchValue({
+        nombre: this.miembroActual.nombre,
+        apellido: this.miembroActual.apellido,
+        email: this.miembroActual.email,
+      });
+    }
 
     this.perfilForm.get('nombre')?.disable();
     this.perfilForm.get('apellido')?.disable();
   }
 
-  private cargarMiembro(): void {
-    const miembro$ = this.miembroService.cargarMiembroActual();
-
-    if (!miembro$) {
-      return;
-    }
-
-    miembro$.subscribe({
-      //Si hay un miembro...
-      next: (miembro) => {
-        // Se rellena el form con los datos del miembro logeado.
-        this.perfilForm.patchValue({
-          nombre: miembro.nombre,
-          apellido: miembro.apellido,
-          email: miembro.email,
-        });
-        this.miembroActual = miembro;
-      },
-      error: (err) => {
-        console.error('Error al cargar perfil:', err);
-        this.router.navigate(['/login']);
-      },
-    });
-  }
-
   //Metodo para inicializar el form con valores deshabilitados para mostrar la info del miembro logeado.
   private inicializarForm(): void {
     this.perfilForm = this.fb.group({
-      nombre: [{ value: '' }, [Validators.required, Validators.minLength(2)]],
-      apellido: [{ value: '' }, [Validators.required, Validators.minLength(2)]],
+      nombre: [{ value: '' }, [Validators.required, Validators.minLength(3)]],
+      apellido: [{ value: '' }, [Validators.required, Validators.minLength(3)]],
       email: [{ value: '', disabled: true }],
 
       actual: [{ value: '', disabled: true }, [Validators.required]],
-      nueva: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(8)]],
+      nueva: [
+        { value: '', disabled: true },
+        [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+={}[\]|\\:;"'<>,.?/~`]).{8,}$/
+          ),
+        ],
+      ],
       confirmar: [{ value: '', disabled: true }, [Validators.required]],
     });
   }
@@ -101,7 +98,9 @@ export class MiPerfil implements OnInit {
 
       // Deshabilitar inputs otra vez
       this.perfilForm.get('nombre')?.disable();
+      this.perfilForm.get('nombre')?.markAsUntouched();
       this.perfilForm.get('apellido')?.disable();
+      this.perfilForm.get('apellido')?.markAsUntouched();
 
       this.perfilForm.patchValue({
         nombre: this.miembroActual.nombre,
@@ -112,6 +111,7 @@ export class MiPerfil implements OnInit {
       return;
     } else {
       this.modoContrasenia.set(false);
+      this.errorPassword.set('');
 
       // Limpiar campos
       this.perfilForm.patchValue({
@@ -122,8 +122,13 @@ export class MiPerfil implements OnInit {
 
       // Deshabilitar los campos password
       this.perfilForm.get('actual')?.disable();
+      this.perfilForm.get('actual')?.markAsUntouched();
+
       this.perfilForm.get('nueva')?.disable();
+      this.perfilForm.get('nueva')?.markAsUntouched();
+
       this.perfilForm.get('confirmar')?.disable();
+      this.perfilForm.get('confirmar')?.markAsUntouched();
 
       // re-habilitar vista original
       this.perfilForm.patchValue({
@@ -142,17 +147,18 @@ export class MiPerfil implements OnInit {
 
       this.miembroService
         .actualizarMiembro(this.miembroActual.id, {
-          ...this.miembroActual,
           nombre,
           apellido,
         })
         .subscribe({
           next: (actualizado) => {
-            this.miembroActual = actualizado; // actualizamos el local
+            this.miembroActual = actualizado; // guardamos el cambio
+            this.authService.actualizarUsuarioLocal(actualizado); //Tmb en el localStorage.
             this.modoEditar.set(false);
 
             this.perfilForm.get('nombre')?.disable();
             this.perfilForm.get('apellido')?.disable();
+            this.toastService.showToast('¡Perfil actualizado con éxito!', 'success', 5000);
           },
           error: (err) => console.error('Error al actualizar:', err),
         });
@@ -171,8 +177,12 @@ export class MiPerfil implements OnInit {
           this.perfilForm.get('actual')?.disable();
           this.perfilForm.get('nueva')?.disable();
           this.perfilForm.get('confirmar')?.disable();
+          this.errorPassword.set(''); // Limpiamos errores
+          this.toastService.showToast('¡Contraseña actualizada con éxito!', 'success', 5000);
         },
-        error: (err) => alert(err.message),
+        error: (err: Error) => {
+          this.errorPassword.set(err.message);
+        },
       });
     }
   }

@@ -48,8 +48,8 @@ export class MiembroService {
     }
   }
 
-  actualizarMiembro(id: number, nuevoMiembro: Omit<Miembro, 'id'>) {
-    return this.http.put<Miembro>(`${this.urlApi}/${id}`, nuevoMiembro).pipe(
+  actualizarMiembro(id: number, cambios: Partial<Omit<Miembro, 'id'>>) {
+    return this.http.patch<Miembro>(`${this.urlApi}/${id}`, cambios).pipe(
       tap((data) => {
         this.miembrosState.update((miembros) => miembros.map((m) => (m.id === id ? data : m)));
       })

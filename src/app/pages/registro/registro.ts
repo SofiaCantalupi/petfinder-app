@@ -27,10 +27,19 @@ export class Registro {
   // Creacion del formulario
   registerForm = this.formBuilder.nonNullable.group(
     {
-      nombre: ['', [Validators.required]],
-      apellido: ['', [Validators.required]],
+      nombre: ['', [Validators.required, Validators.minLength(3)]],
+      apellido: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      contrasenia: ['', [Validators.required, Validators.minLength(8)]],
+      //Este regex asegura 1 mayuscula, 1 miniscula, 1 letra, un caracter especial y minimo 8 caracteres.
+      contrasenia: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+={}[\]|\\:;"'<>,.?/~`]).{8,}$/
+          ),
+        ],
+      ],
       confirmarContrasenia: ['', [Validators.required]],
     },
     {

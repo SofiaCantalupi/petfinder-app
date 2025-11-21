@@ -12,6 +12,7 @@ import { map, catchError, switchMap } from 'rxjs/operators';
 import { computed } from '@angular/core';
 import { signal } from '@angular/core';
 import { CambiarContraseniaDTO } from '../models/auth/cambiar-contrasenia-dto';
+import { ToastService } from './toast-service';
 
 @Injectable({
   providedIn: 'root',
@@ -82,6 +83,9 @@ export class AuthService {
     localStorage.setItem('currentUser', JSON.stringify(user));
     this.currentUserSubject.next(user); //Lo pongo en el BehaviorSubject.
     this.currentUserSignal.set(user); //Tambien en el CurrentUserSignal para lectura de roles.
+  }
+  public actualizarUsuarioLocal(usuarioActualizado: Miembro) {
+    this.setCurrentUser(usuarioActualizado);
   }
 
   //Pasamos de la base de datos a un miembro para el LocalStorage (Sin la contraseña expuesta)
@@ -177,13 +181,13 @@ export class AuthService {
     const userId = this.currentUserSignal()?.id;
 
     if (!userId) {
-      return throwError(() => new Error('No hay usuario logeado.'));
+      throw new Error('No hay usuario logeado.');
     }
 
     return this.http.get<MiembroDdDTO>(`${this.apiUrl}/${userId}`).pipe(
       switchMap((miembroDb) => {
         if (miembroDb.contrasenia !== dto.actual) {
-          return throwError(() => new Error('La contraseña actual es incorrecta'));
+          return throwError(() => new Error('La contraseña ingresada es incorrecta'));
         }
 
         return this.http.patch<{ message: string }>(`${this.apiUrl}/${userId}`, {
@@ -192,7 +196,7 @@ export class AuthService {
       }),
       catchError((error) => {
         console.error('Error al cambiar contraseña:', error);
-        return throwError(() => error);
+        return throwError(() => error); // Ya es un Error, no lo envuelvas de nuevo
       })
     );
   }

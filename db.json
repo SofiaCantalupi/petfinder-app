@@ -1,13 +1,13 @@
 {
   "miembros": [
     {
+      "id": 1,
       "nombre": "Franco",
       "apellido": "Cancino",
-      "email": "Franco@gmail.com",
-      "contrasenia": "riverplate",
+      "email": "f@gmail.com",
       "rol": "usuario",
-      "activo": true,
-      "id": 1
+      "contrasenia": "a",
+      "activo": true
     },
     {
       "id": "2",
@@ -336,16 +336,6 @@
       "miembroNombre": "sofia",
       "miembroApellido": "canta",
       "id": "pxIi4T7"
-    },
-    {
-      "texto": "Probando...",
-      "fechaPublicacion": "2025-11-20T19:34:03.280Z",
-      "activo": true,
-      "publicacionId": 19,
-      "miembroId": 1,
-      "miembroNombre": "Fran",
-      "miembroApellido": "Cancino",
-      "id": "xO0JONP"
     }
   ]
 }
