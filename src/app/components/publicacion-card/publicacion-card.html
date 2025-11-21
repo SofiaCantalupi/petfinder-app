@@ -18,6 +18,14 @@
     >
       {{ publicacion().estadoMascota }}
     </span>
+
+    @if (!publicacion().activo) {
+    <span
+      class="absolute top-3 right-3 px-3 py-1 text-xs font-semibold bg-gray-600 text-white rounded-full uppercase"
+    >
+      Eliminada
+    </span>
+    }
   </div>
 
   <!-- Contenido -->

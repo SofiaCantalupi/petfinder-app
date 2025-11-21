@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 
 // permite cualquier objeto que tenga campos de la publicacion, menos el ID. Usado para el update (patch)
-type UpdatePayload = Partial<Omit<Publicacion, 'id'>>; 
+type UpdatePayload = Partial<Omit<Publicacion, 'id'>>;
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +17,10 @@ export class PublicacionService {
 
   public publicaciones = this.publicacionesState.asReadonly();
 
+  // computed usado para filtrar publicaciones activas, filtra solo cuando hay cambios
+  public publicacionesActivas = computed(() =>
+    this.publicacionesState().filter((publicacion) => publicacion.activo === true)
+  );
 
   public publicacionesReencontrados = computed(() =>
     this.publicacionesState().filter(
@@ -39,6 +43,11 @@ export class PublicacionService {
     });
   }
 
+  //obtiene publicaciones de un miembro específico
+  getPublicacionesByMiembro(idMiembro: number) {
+    return this.http.get<Publicacion[]>(`${this.apiUrl}?idMiembro=${idMiembro}`);
+  }
+
   postPublicacion(nuevaPublicacion: Omit<Publicacion, 'id'>) {
     return this.http.post<Publicacion>(this.apiUrl, nuevaPublicacion).pipe(
       tap((data) => {
@@ -46,7 +55,6 @@ export class PublicacionService {
       })
     );
   }
-
 
   updatePublicacion(id: number, cambios: UpdatePayload) {
     // se envia solo los campos que cambiaron
