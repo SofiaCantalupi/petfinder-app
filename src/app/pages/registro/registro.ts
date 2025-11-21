@@ -15,7 +15,6 @@ import { RegistroRequestDTO } from '../../models/auth/registro-request-dto';
   standalone: true,
   imports: [RouterLink, NgClass, FormsModule, ReactiveFormsModule],
   templateUrl: './registro.html',
-  styleUrl: './registro.css',
 })
 export class Registro {
   private formBuilder = inject(FormBuilder);

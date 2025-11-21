@@ -7,7 +7,6 @@ import { AuthService } from '../../../services/auth-service';
   standalone: true,
   imports: [],
   templateUrl: './comentario-item.html',
-  styleUrl: './comentario-item.css',
 })
 export class ComentarioItem {
   //para saber quien esta logueado (asi sabae si puede eliminar comentarios propios)

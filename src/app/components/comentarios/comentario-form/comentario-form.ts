@@ -9,7 +9,6 @@ import { NgClass } from '@angular/common';
   standalone: true,
   imports: [ReactiveFormsModule, NgClass],
   templateUrl: './comentario-form.html',
-  styleUrl: './comentario-form.css',
 })
 export class ComentarioForm {
   private fb = inject(FormBuilder);

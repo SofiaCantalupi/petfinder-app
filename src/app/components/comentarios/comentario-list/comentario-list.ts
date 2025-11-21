@@ -10,7 +10,6 @@ import { ToastService } from '../../../services/toast-service';
   standalone: true,
   imports: [ComentarioItem, ComentarioForm],
   templateUrl: './comentario-list.html',
-  styleUrl: './comentario-list.css',
 })
 export class ComentarioList implements OnInit {
   private comentarioService = inject(ComentarioService);
