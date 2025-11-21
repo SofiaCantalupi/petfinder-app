@@ -193,6 +193,19 @@
           </p>
           }
         </div>
+
+        <input type="number" formControlName="longitud" name="longitud" id="longitud" hidden />
+        <input type="number" formControlName="latitud" name="latitud" id="latitud" hidden />
+
+        <button type="button" class="btn btn-sm btn-primary" (click)="validarUbicacion()">
+          Validar dirección
+        </button>
+
+        @if(ubicacionValida()){
+        <p>La ubicación es válida.</p>
+        }@else {
+        <p>Ubicación inválida. Intentelo nuevamente.</p>
+        }
       </div>
     </div>
 
@@ -202,7 +215,9 @@
         {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
       </button>
 
-      <button class="btn btn-danger btn-md" [routerLink]="['/publicaciones', publicacionId()]">Cancelar</button>
+      <button class="btn btn-danger btn-md" [routerLink]="['/publicaciones', publicacionId()]">
+        Cancelar
+      </button>
     </div>
   </form>
 </div>

@@ -11,6 +11,7 @@ import { EstadoMascota } from '../../models/publicacion';
 import { Publicacion } from '../../models/publicacion';
 import { MiembroService } from '../../services/miembro-service';
 import { ToastService } from '../../services/toast-service';
+import { GeocodingService } from '../../services/geocoding-service';
 
 @Component({
   selector: 'app-publicacion-form-component',
@@ -24,6 +25,7 @@ export class PublicacionFormComponent implements OnInit {
   private publicacionService = inject(PublicacionService);
   private miembroService = inject(MiembroService);
   private toastService = inject(ToastService);
+  private geoService = inject(GeocodingService);
 
   route = inject(ActivatedRoute);
   router = inject(Router);
@@ -31,6 +33,9 @@ export class PublicacionFormComponent implements OnInit {
   // input para saber si estamos editando CAMBIAR POR SIGNAL
   esEdicion = signal(false);
   publicacionId = signal<number | undefined>(undefined);
+
+  //
+  ubicacionValida = signal(false);
 
   // Arrays para las opciones
   estadosMascota: { value: EstadoMascota; label: string }[] = [
@@ -107,6 +112,8 @@ export class PublicacionFormComponent implements OnInit {
     ubicacion: this.formBuilder.nonNullable.group({
       calle: ['', [Validators.required, Validators.minLength(3)]],
       altura: [0, [Validators.required, Validators.min(2)]],
+      latitud: 0,
+      longitud: 0,
     }),
   });
 
@@ -142,6 +149,8 @@ export class PublicacionFormComponent implements OnInit {
           descripcion: formValue.descripcion,
           calle: formValue.ubicacion.calle,
           altura: formValue.ubicacion.altura,
+          latitud: formValue.ubicacion.latitud,
+          longitud: formValue.ubicacion.longitud,
           // datos que no vienen del formulario
           fecha: new Date().toISOString(),
           activo: true,
@@ -194,6 +203,21 @@ export class PublicacionFormComponent implements OnInit {
         console.error('Error al cargar miembro:', error);
         alert('Error al obtener datos del usuario');
         this.router.navigate(['/login']);
+      },
+    });
+  }
+
+  validarUbicacion() {
+    const ubicacionValue = this.publicacionForm.getRawValue().ubicacion;
+
+    this.geoService.validateAddress(ubicacionValue.calle, ubicacionValue.altura).subscribe({
+      next: (ubicacion) => {
+        const { latitud, longitud } = ubicacion;
+        this.ubicacionValida.set(ubicacion.isValid);
+        this.publicacionForm.patchValue({ ubicacion: { latitud, longitud } });
+      },
+      error: (error) => {
+        console.log('Error validando ubicacion', error);
       },
     });
   }
