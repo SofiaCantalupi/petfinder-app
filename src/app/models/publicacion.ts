@@ -13,5 +13,7 @@ export interface Publicacion{
     fecha: string,
     descripcion: string,
     calle: string,
-    altura: number
+    altura: number,
+    latitud: number,
+    longitud: number
 }
