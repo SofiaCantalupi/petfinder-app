@@ -53,7 +53,13 @@ export class MiembroService {
       return null;
     }
   }
-
+  actualizarMiembro(id: number, cambios: Partial<Omit<Miembro, 'id'>>) {
+    return this.http.patch<Miembro>(`${this.urlApi}/${id}`, cambios).pipe(
+      tap((data) => {
+        this.miembrosState.update((miembros) => miembros.map((m) => (m.id === id ? data : m)));
+      })
+    );
+  }
   // baja logica del miembro baneado
   deleteMiembro(id: number): Observable<Miembro> {
     const payload = { activo: false };

@@ -1,0 +1,58 @@
+<article class="flex h-screen items-start justify-center p-25">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Atención...</h3>
+    </div>
+    <div class="card-body p-6 space-y-4 text-gray-700">
+      <p>
+        Estás a punto de <span class="font-bold text-red-600">eliminar tu cuenta</span> de
+        <span class="font-semibold">PetFinder</span>.
+      </p>
+      <p>
+        <span class="font-bold text-red-600">Esta acción es irreversible.</span> Una vez que
+        confirmes, todos tus datos, publicaciones y preferencias se
+        <span class="underline">eliminarán permanentemente</span>.
+      </p>
+      <p>
+        Por favor, asegúrate de que realmente deseas realizar esta acción. No hay posibilidad de
+        recuperación.
+      </p>
+      <p class="text-gray-700">
+        Para confirmar, ingresa <span class="font-semibold text-primary">"confirmar"</span> en el
+        campo abajo:
+      </p>
+
+      <form [formGroup]="borrarGroup">
+        <div class="input-group">
+          <input
+            type="text"
+            class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 w-full placeholder:text-gray-400 text-accent-foreground"
+            formControlName="confirmar"
+            placeholder="confirmar"
+          />
+          @if (confirmarError()) {
+          <span class="input-error-text font-bold"
+            >Debes escribir 'confirmar' correctamente. (Sin las comillas)
+          </span>
+          }
+        </div>
+      </form>
+    </div>
+    <div class="card-footer flex flex-row justify-around">
+      <button
+        type="button"
+        class="btn btn-outline btn-sm"
+        (click)="router.navigate(['/publicaciones'])"
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="btn btn-danger btn-sm"
+        (click)="eliminarCuenta(borrarGroup.value.confirmar)"
+      >
+        Cerrar mi cuenta
+      </button>
+    </div>
+  </div>
+</article>

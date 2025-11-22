@@ -5,9 +5,113 @@
     <div class="card">
       <div class="card-body">
         <h3 class="card-title mb-2"></h3>
-        <form [formGroup]="perfilForm" class="mt-50">
+        <div class="shrink-0 flex justify-center">
+          <div
+            class="w-40 h-40 rounded-full bg-[#d1d5db] flex items-center justify-center text-white font-semibold uppercase text-6xl"
+          >
+            {{ miembroActual.nombre.charAt(0) }}
+          </div>
+        </div>
+
+        <form [formGroup]="perfilForm" class="mt-5">
+          @if(modoContrasenia()){
+
           <div class="input-group py-2">
-            <label class="input-helper">Nombre:</label>
+            <label class="input-helper"> Ingresa tu contraseña actual</label>
+            <input
+              type="password"
+              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              formControlName="actual"
+            />
+            @if (perfilForm.get('actual')?.invalid && perfilForm.get('actual')?.touched) {
+            <p class="input-error-text">Este campo es obligatorio.</p>
+            } @if (errorPassword()) {
+            <div class="input-error-text">
+              {{ errorPassword() }}
+            </div>
+            }
+          </div>
+
+          <div class="input-group py-2">
+            <label class="input-helper"> Ingresa la nueva contraseña</label>
+            <input
+              type="password"
+              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              formControlName="nueva"
+            />
+            <span>La contraseña debe tener al menos: <br /></span>
+            <span class="input-helper"
+              >- Ocho caracteres.<br />- Una letra mayúscula. <br />- Una letra minúscula. <br />-
+              Un número.<br />- Un carácter especial (!%$&_@).</span
+            >
+            @if (perfilForm.get("nueva")?.touched) {
+            <p class="input-error-text">
+              @if(perfilForm.get("nueva")?.errors?.['required']){ Campo requerido. }
+              @if(perfilForm.get("nueva")?.errors?.['pattern']){ La contraseña nueva no cumple con
+              los requisitos. }
+            </p>
+            }
+          </div>
+
+          <div class="input-group py-2">
+            <label class="input-helper"> Confirma tu contraseña nueva</label>
+            <input
+              type="password"
+              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              formControlName="confirmar"
+            />
+            @if (perfilForm.get("confirmar")?.touched) {
+            <p class="input-error-text">
+              @if(perfilForm.get("confirmar")?.errors?.['required']){ Campo requerido. }
+              @if(perfilForm.get("confirmar")?.value !== perfilForm.get("nueva")?.value){ Las
+              contraseñas no coinciden. }
+            </p>
+            }
+          </div>
+
+          } @else if(modoEditar()){
+
+          <div class="input-group py-2">
+            <label class="input-helper"> Ingresa el nombre nuevo</label>
+            <input
+              type="text"
+              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              formControlName="nombre"
+            /><span class="input-error-text">
+              @if (perfilForm.get("nombre")?.invalid && perfilForm.get("nombre")?.touched) { @if
+              (perfilForm.get("nombre")?.errors?.["required"]) {Campo requerido.} @if
+              (perfilForm.get("nombre")?.errors?.["minlength"]) {El nombre debe tener al menos 3
+              letras.} }
+            </span>
+          </div>
+
+          <div class="input-group py-2">
+            <label class="input-helper">Ingresa el apellido nuevo </label>
+            <input
+              type="text"
+              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              formControlName="apellido"
+            /><span class="input-error-text">
+              @if (perfilForm.get("apellido")?.invalid && perfilForm.get("apellido")?.touched) { @if
+              (perfilForm.get("apellido")?.errors?.["required"]) {Campo requerido.} @if
+              (perfilForm.get("apellido")?.errors?.["minlength"]) {El apellido debe tener al menos 3
+              letras.} }
+            </span>
+          </div>
+
+          <div class="input-group py-2">
+            <label class="input-helper">Gmail:</label>
+            <input
+              type="text"
+              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              formControlName="email"
+            />
+            <span class="text-primary">El mail no puede ser editado.</span>
+          </div>
+          } @else{
+
+          <div class="input-group py-2">
+            <label class="input-helper">Nombre</label>
             <input
               type="text"
               class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
@@ -16,7 +120,7 @@
           </div>
 
           <div class="input-group py-2">
-            <label class="input-helper">Apellido:</label>
+            <label class="input-helper">Apellido</label>
             <input
               type="text"
               class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
@@ -31,24 +135,52 @@
               formControlName="email"
             />
           </div>
+          }
 
-          <div class="input-group py-2">
-            <label class="input-helper">Rol:</label>
-            <input
-              type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
-              formControlName="rol"
-            />
-          </div>
-          <div></div>
           <div class="flex flex-col gap-4 py-4">
-            <button class="btn btn-primary btn-md">Editar Perfil</button>
-            <button class="btn btn-outline btn-md">Cambiar Contraseña</button>
-            <button class="btn btn-danger btn-md" (click)="authService.logout()">
+            <div class="flex flex-row gap-4">
+              @if (!modoEditar() && !modoContrasenia()) {
+              <button
+                type="button"
+                class="btn btn-outline btn-sm flex-1"
+                (click)="activarModoEditar()"
+              >
+                Editar Perfil
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline btn-sm flex-1"
+                (click)="activarEditarContrasenia()"
+              >
+                Cambiar Contraseña
+              </button>
+              }@else{
+              <button
+                type="button"
+                class="btn btn-success btn-md flex-1"
+                (click)="guardarCambios()"
+              >
+                Aceptar cambios
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger btn-md flex-1"
+                (click)="cancelarEdicion()"
+              >
+                Cancelar cambios
+              </button>
+              }
+            </div>
+
+            <button type="button" class="btn btn-danger btn-sm mt-5" (click)="authService.logout()">
               Cerrar sesión
             </button>
           </div>
         </form>
+        <span class="text-sm text-muted-foreground"
+          >¿Deseas eliminar tu cuenta? Hacé click
+          <a routerLink="/borrarCuenta" class="input-error-text font-extrabold">acá</a></span
+        >
       </div>
     </div>
   </div>

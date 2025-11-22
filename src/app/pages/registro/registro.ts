@@ -9,6 +9,8 @@ import { NgClass } from '@angular/common';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
 import { RegistroRequestDTO } from '../../models/auth/registro-request-dto';
+import { ToastService } from '../../services/toast-service';
+import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-registro',
@@ -20,16 +22,26 @@ export class Registro {
   private formBuilder = inject(FormBuilder);
 
   private authService = inject(AuthService);
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
+  toastService = inject(ToastService);
+  errorMessage = signal<string | null>(null);
 
   // Creacion del formulario
   registerForm = this.formBuilder.nonNullable.group(
     {
-      nombre: ['', [Validators.required]],
-      apellido: ['', [Validators.required]],
+      nombre: ['', [Validators.required, Validators.minLength(3)]],
+      apellido: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      contrasenia: ['', [Validators.required, Validators.minLength(8)]],
+      //Este regex asegura 1 mayuscula, 1 miniscula, 1 letra, un caracter especial y minimo 8 caracteres.
+      contrasenia: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+={}[\]|\\:;"'<>,.?/~`]).{8,}$/
+          ),
+        ],
+      ],
       confirmarContrasenia: ['', [Validators.required]],
     },
     {
@@ -78,11 +90,11 @@ export class Registro {
     //Registro a través del authService.
     this.authService.register(registroDto).subscribe({
       next: (miembro) => {
-        console.log('Registro exitoso:', miembro);
-        this.router.navigate(['/publicaciones/crear']);
+        this.toastService.showToast('¡Registro con éxito!', 'success', 5000);
+        this.router.navigate(['/publicaciones']);
       },
       error: (error) => {
-        console.error('Error al registrar el miembro', error);
+        this.errorMessage.set(error.message);
       },
     });
   }

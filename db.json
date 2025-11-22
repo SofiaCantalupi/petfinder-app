@@ -1,13 +1,13 @@
 {
   "miembros": [
     {
+      "id": 1,
       "nombre": "Franco",
       "apellido": "Cancino",
-      "email": "Franco@gmail.com",
-      "contrasenia": "riverplate",
+      "email": "f@gmail.com",
       "rol": "usuario",
-      "activo": true,
-      "id": 1
+      "contrasenia": "a",
+      "activo": true
     },
     {
       "id": "2",
@@ -35,6 +35,24 @@
       "rol": "administrador",
       "activo": true,
       "id": 4
+    },
+    {
+      "nombre": "admin",
+      "apellido": "istrador",
+      "email": "admin@gmail.com",
+      "contrasenia": "RiverPlate123_",
+      "rol": "usuario",
+      "activo": true,
+      "id": 5
+    },
+    {
+      "nombre": "Mauro",
+      "apellido": "Triaca",
+      "email": "prueba@gmail.com",
+      "contrasenia": "Probando123_",
+      "rol": "usuario",
+      "activo": false,
+      "id": 6
     }
   ],
   "publicaciones": [
