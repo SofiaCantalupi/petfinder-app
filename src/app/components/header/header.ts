@@ -7,7 +7,6 @@ import { inject } from '@angular/core';
   selector: 'app-header',
   imports: [RouterLink],
   templateUrl: './header.html',
-  styleUrl: './header.css',
 })
 export class Header {
   authService = inject(AuthService);

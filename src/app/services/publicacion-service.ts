@@ -1,11 +1,9 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { EstadoMascota, Publicacion } from '../models/publicacion';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
 
 // permite cualquier objeto que tenga campos de la publicacion, menos el ID. Usado para el update (patch)
 type UpdatePayload = Partial<Omit<Publicacion, 'id'>>;
@@ -86,6 +84,29 @@ export class PublicacionService {
         // actualizar el state removiendo la publicacion
         this.publicacionesState.update((publicaciones) =>
           publicaciones.filter((pub) => pub.id !== id)
+        );
+      })
+    );
+  }
+
+  //elimina todas las publicaciones asociadas a un Miembro en particular
+  deletePublicacionesByMiembro(idMiembro: number): Observable<Publicacion[]> {
+    return this.getPublicacionesByMiembro(idMiembro).pipe(
+      switchMap((publicaciones) => {
+        if (publicaciones.length === 0) {
+          return of([]);
+        }
+
+        // baja logica en cada publicación de un Miembro (sirve para eliminar todo lo asociado a un Miembro)
+        const updateObservables = publicaciones.map((pub) =>
+          this.http.patch<Publicacion>(`${this.apiUrl}/${pub.id}`, { activo: false })
+        );
+
+        return forkJoin(updateObservables).pipe(
+          tap(() => {
+            this.publicacionesState.update((pubs) => pubs.filter((p) => p.idMiembro !== idMiembro));
+          }),
+          map(() => publicaciones)
         );
       })
     );

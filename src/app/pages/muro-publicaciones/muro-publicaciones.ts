@@ -11,7 +11,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
   selector: 'app-muro-publicaciones',
   imports: [PublicacionList, NgClass, Hero, CarruselPublicaciones, NgxPaginationModule],
   templateUrl: './muro-publicaciones.html',
-  styleUrl: './muro-publicaciones.css',
 })
 export class MuroPublicaciones {
   private publicacionService = inject(PublicacionService);

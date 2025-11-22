@@ -359,3 +359,11 @@
   cursor: not-allowed;
   pointer-events: none;
 }
+
+.badge-admin {
+  @apply bg-red-100 text-red-800;
+}
+
+.badge-usuario {
+  @apply bg-blue-100 text-blue-800;
+}

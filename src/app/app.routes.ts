@@ -9,9 +9,14 @@ import { noAuthGuard } from './guards/no-auth-guard';
 import { authGuard } from './guards/auth-guard';
 import { YaLogeado } from './components/ya-logeado/ya-logeado';
 import { GuiaEstilo } from './prueba/guia-estilo/guia-estilo';
+<<<<<<< HEAD
 import { PoliticasDeUso } from './pages/politicas-de-uso/politicas-de-uso';
 import { BorrarCuenta } from './components/borrar-cuenta/borrar-cuenta';
 import { publicacionActivaGuard } from './guards/publicacion-inactiva-guard';
+=======
+import { AdminUsuarios } from './pages/admin-usuarios/admin-usuarios';
+import { adminGuard } from './guards/admin-guard';
+>>>>>>> origin/develop
 
 export const routes: Routes = [
   {
@@ -68,6 +73,14 @@ export const routes: Routes = [
     path: 'guia',
     component: GuiaEstilo,
     canActivate: [authGuard],
+<<<<<<< HEAD
+=======
+  },
+  {
+    path: 'admin/usuarios',
+    component: AdminUsuarios,
+    canActivate: [adminGuard],
+>>>>>>> origin/develop
   },
   {
     path: 'normas',

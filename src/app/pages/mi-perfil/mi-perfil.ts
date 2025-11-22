@@ -17,7 +17,6 @@ import { Publicacion } from '../../models/publicacion';
   selector: 'app-mi-perfil',
   imports: [CommonModule, ReactiveFormsModule, RouterLink, PublicacionList],
   templateUrl: './mi-perfil.html',
-  styleUrl: './mi-perfil.css',
 })
 export class MiPerfil implements OnInit {
   miembroService = inject(MiembroService);

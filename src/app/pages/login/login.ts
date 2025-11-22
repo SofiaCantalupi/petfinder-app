@@ -16,7 +16,6 @@ import { ToastService } from '../../services/toast-service';
   standalone: true,
   imports: [FormsModule, NgClass, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
-  styleUrl: './login.css',
 })
 export class Login {
   private formBuilder = inject(FormBuilder);

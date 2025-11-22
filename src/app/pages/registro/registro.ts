@@ -17,7 +17,6 @@ import { signal } from '@angular/core';
   standalone: true,
   imports: [RouterLink, NgClass, FormsModule, ReactiveFormsModule],
   templateUrl: './registro.html',
-  styleUrl: './registro.css',
 })
 export class Registro {
   private formBuilder = inject(FormBuilder);

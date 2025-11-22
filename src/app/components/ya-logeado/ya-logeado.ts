@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
   selector: 'app-ya-logeado',
   imports: [],
   templateUrl: './ya-logeado.html',
-  styleUrl: './ya-logeado.css',
 })
 export class YaLogeado {
   router = inject(Router);
