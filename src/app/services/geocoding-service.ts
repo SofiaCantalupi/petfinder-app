@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
+import { NominatimSearchResult } from '../types/nominatim';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ export class GeocodingService {
 
   constructor(private http: HttpClient) {}
 
-  searchAddress(query: string): Observable<any> {
+  searchAddress(query: string): Observable<NominatimSearchResult[]> {
     const params = new HttpParams()
       .set('q', `${query}, Mar del Plata, Buenos Aires, Argentina`)
       .set('format', 'json')

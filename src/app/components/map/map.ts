@@ -1,6 +1,7 @@
 import { Component, OnInit, input, effect } from '@angular/core';
 import * as L from 'leaflet';
 import { Publicacion } from '../../models/publicacion';
+import { formatUbicacion } from '../../utils';
 
 @Component({
   selector: 'app-map',
@@ -20,9 +21,9 @@ export class Map implements OnInit {
       const pub = this.publicacion();
       if (pub && this.map) {
         this.clearMarkers();
-        this.addMarker(pub.latitud, pub.longitud);
+        this.addMarker(Number(pub.latitud), Number(pub.longitud));
         // Centra el mapa en la ubicación de la publicación
-        this.map.setView([pub.latitud, pub.longitud], 15);
+        this.map.setView([Number(pub.latitud), Number(pub.longitud)], 15);
       }
     });
   }
@@ -57,13 +58,13 @@ export class Map implements OnInit {
       .addTo(this.layerGroup)
       .bindPopup(
         `<strong>${this.publicacion()?.nombreMascota || 'Sin nombre'}</strong><br>${
-          this.publicacion()?.calle
-        } ${this.publicacion()?.altura}<br>${this.publicacion()?.tipoMascota}<br><em>Estado: ${
+          formatUbicacion(this.publicacion()?.ubicacion || '')}<br>${this.publicacion()?.tipoMascota}<br><em>Estado: ${
           this.publicacion()?.estadoMascota
         }</em>`
       );
     marker.on('mouseover', () => marker.openPopup());
     marker.on('mouseout', () => marker.closePopup());
+    marker.on('click', () => {console.log('marker was clicked')})
   }
 
   clearMarkers(): void {
