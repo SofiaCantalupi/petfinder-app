@@ -14,7 +14,6 @@ import { Map } from '../../components/map/map';
   selector: 'app-publicacion-detail',
   imports: [ComentarioList, DatePipe, RouterLink, NgClass, Map],
   templateUrl: './publicacion-detail.html',
-  styleUrl: './publicacion-detail.css',
 })
 export class PublicacionDetail implements OnInit {
   // injeccion de dependencias

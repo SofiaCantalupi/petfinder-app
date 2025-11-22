@@ -10,7 +10,6 @@ Swiper.use([Navigation, Autoplay]); // ACTIVACION  MODULOS
   selector: 'app-carrusel-publicaciones',
   standalone: true, // swipper no es un componente angular, es JS, por eso no se importa
   templateUrl: './carrusel-publicaciones.html',
-  styleUrl: './carrusel-publicaciones.css',
 })
 export class CarruselPublicaciones {
   publicaciones = input.required<Publicacion[]>();
@@ -20,7 +19,6 @@ export class CarruselPublicaciones {
 
   // inicializacion del swipper, se crea el carrusel
   ngAfterViewInit() {
-
     new Swiper(this.swiperContainer.nativeElement, {
       modules: [Navigation, Autoplay],
 
@@ -44,7 +42,7 @@ export class CarruselPublicaciones {
       breakpoints: {
         640: { slidesPerView: 2 },
         1024: { slidesPerView: 3 },
-      }
+      },
     });
   }
 }
