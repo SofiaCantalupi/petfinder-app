@@ -22,7 +22,7 @@ export class MuroPublicaciones {
   filtroTipoMascota = signal<TipoMascota | null>(null);
 
   currentPage = signal<number>(1);
-  itemsPerPage = 2;
+  itemsPerPage = 8;
 
   publicacionesActivas = computed(() =>
     this.publicacionService.publicaciones().filter((pub) => pub.activo)

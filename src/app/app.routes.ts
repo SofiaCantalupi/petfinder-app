@@ -11,6 +11,7 @@ import { YaLogeado } from './components/ya-logeado/ya-logeado';
 import { GuiaEstilo } from './prueba/guia-estilo/guia-estilo';
 import { PoliticasDeUso } from './pages/politicas-de-uso/politicas-de-uso';
 import { BorrarCuenta } from './components/borrar-cuenta/borrar-cuenta';
+import { publicacionActivaGuard } from './guards/publicacion-inactiva-guard';
 
 export const routes: Routes = [
   {
@@ -41,7 +42,7 @@ export const routes: Routes = [
   {
     path: 'publicaciones/:id',
     component: PublicacionDetail,
-    canActivate: [authGuard],
+    canActivate: [authGuard, publicacionActivaGuard],
   },
   {
     path: 'publicaciones/:id/editar',
