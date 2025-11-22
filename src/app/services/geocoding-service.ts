@@ -10,35 +10,18 @@ export class GeocodingService {
 
   constructor(private http: HttpClient) {}
 
-  validateAddress(calle: string, altura: number): Observable<{
-    latitud: number;
-    longitud: number;
-    isValid: boolean;
-  }> {
-    const query = `${calle} ${altura}, Mar del Plata, Buenos Aires, Argentina`;
-
+  searchAddress(query: string): Observable<any> {
     const params = new HttpParams()
-      .set('q', query)
+      .set('q', `${query}, Mar del Plata, Buenos Aires, Argentina`)
       .set('format', 'json')
-      .set('limit', '1');
+      .set('limit', '10');
 
     return this.http.get<any[]>(this.baseUrl, { params }).pipe(
       map((results) => {
-        const result = results[0];
-
-        if (!result) {
-          return {
-            latitud: 0,
-            longitud: 0,
-            isValid: false,
-          };
+        if (results.length === 0) {
+          return [];
         }
-
-        return {
-          latitud: parseFloat(result.lat), 
-          longitud: parseFloat(result.lon),   
-          isValid: true,
-        };
+        return results;
       })
     );
   }

@@ -144,6 +144,24 @@
 
       <!-- Calle -->
       <div formGroupName="ubicacion">
+        <label id="query">
+          <ng-select
+            [items]="resultadoBusquedaUbicacion"
+            [editableSearchTerm]
+            [searchable]
+            bindLabel="display_name"
+            labelForId="query"
+            placeholder="Ubicacion"
+            formControlName="query"
+            [loading]="isBuscandoUbicacion"
+            (search)="onSearchUbicacion($event.term)">
+          >
+            <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
+             <div><p>{{ item.display_name }}</p></div>
+            </ng-template>
+          </ng-select>
+        </label>
+
         <div class="input-group">
           <label class="input-label" for="calle">Calle:</label>
           <input
@@ -196,16 +214,6 @@
 
         <input type="number" formControlName="longitud" name="longitud" id="longitud" hidden />
         <input type="number" formControlName="latitud" name="latitud" id="latitud" hidden />
-
-        <button type="button" class="btn btn-sm btn-primary" (click)="validarUbicacion()">
-          Validar dirección
-        </button>
-
-        @if(ubicacionValida()){
-        <p>La ubicación es válida.</p>
-        }@else {
-        <p>Ubicación inválida. Intentelo nuevamente.</p>
-        }
       </div>
     </div>
 

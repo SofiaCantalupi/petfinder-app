@@ -12,10 +12,13 @@ import { Publicacion } from '../../models/publicacion';
 import { MiembroService } from '../../services/miembro-service';
 import { ToastService } from '../../services/toast-service';
 import { GeocodingService } from '../../services/geocoding-service';
+import { NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
+import { Subject, Observable, of  } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-publicacion-form-component',
-  imports: [ReactiveFormsModule, NgClass, RouterLink],
+  imports: [ReactiveFormsModule, NgClass, RouterLink, NgOptionTemplateDirective, NgSelectComponent],
   templateUrl: './publicacion-form-component.html',
 })
 export class PublicacionFormComponent implements OnInit {
@@ -29,12 +32,26 @@ export class PublicacionFormComponent implements OnInit {
   route = inject(ActivatedRoute);
   router = inject(Router);
 
-  // input para saber si estamos editando CAMBIAR POR SIGNAL
+  //
   esEdicion = signal(false);
   publicacionId = signal<number | undefined>(undefined);
 
-  //
-  ubicacionValida = signal(false);
+  resultadoBusquedaUbicacion: { string: any }[] = [];
+  isBuscandoUbicacion: boolean = false
+  private ubicacionSearchTerms = new Subject<string>();
+
+  constructor() {
+    this.ubicacionSearchTerms
+      .pipe(
+        debounceTime(300), // Wait for 300ms after the last keystroke
+        distinctUntilChanged(), // Only emit if the search term has changed
+        tap(() => this.isBuscandoUbicacion = true),
+        switchMap((term: string) => this.buscarUbicacion(term)) // Call your backend API
+      )
+      .subscribe((data) => {
+        this.resultadoBusquedaUbicacion = data; // Update the ng-select items with the fetched data
+      });
+  }
 
   // Arrays para las opciones
   estadosMascota: { value: EstadoMascota; label: string }[] = [
@@ -68,6 +85,7 @@ export class PublicacionFormComponent implements OnInit {
     }
   }
 
+  // metodo utilizado para cargar el formulario con los datos actuales de la publicacion a editar
   cargarFormulario(id: number) {
     this.publicacionService.getPublicacionById(id).subscribe({
       next: (publicacion) => {
@@ -111,11 +129,13 @@ export class PublicacionFormComponent implements OnInit {
     ubicacion: this.formBuilder.nonNullable.group({
       calle: ['', [Validators.required, Validators.minLength(3)]],
       altura: [0, [Validators.required, Validators.min(2)]],
+      query: '',
       latitud: 0,
       longitud: 0,
     }),
   });
 
+  // Submit, crea o edita la publicacion
   onSubmit() {
     if (this.publicacionForm.invalid) {
       // marcar todos los campos como touched, incluyendo los anidados
@@ -206,18 +226,16 @@ export class PublicacionFormComponent implements OnInit {
     });
   }
 
-  validarUbicacion() {
-    const ubicacionValue = this.publicacionForm.getRawValue().ubicacion;
+  onSearchUbicacion(terms: string) {
+    this.ubicacionSearchTerms.next(terms);
+  }
 
-    this.geoService.validateAddress(ubicacionValue.calle, ubicacionValue.altura).subscribe({
-      next: (ubicacion) => {
-        const { latitud, longitud } = ubicacion;
-        this.ubicacionValida.set(ubicacion.isValid);
-        this.publicacionForm.patchValue({ ubicacion: { latitud, longitud } });
-      },
-      error: (error) => {
-        console.log('Error validando ubicacion', error);
-      },
-    });
+  // metodo que hace la peticion al servicio de geocodificacion
+  buscarUbicacion(query: string): Observable<{ string: any }[]> {
+    if(query === '') {
+      this.isBuscandoUbicacion = false
+      return of([])
+    }
+    return this.geoService.searchAddress(query).pipe(tap(() => this.isBuscandoUbicacion = false));
   }
 }

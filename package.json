@@ -28,6 +28,7 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@ng-select/ng-select": "^20.0.1",
     "@tailwindcss/postcss": "^4.1.17",
     "leaflet": "^1.9.4",
     "postcss": "^8.5.6",
