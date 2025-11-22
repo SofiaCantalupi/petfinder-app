@@ -2,6 +2,10 @@ import { Injectable, signal, computed } from '@angular/core';
 import { EstadoMascota, Publicacion } from '../models/publicacion';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs';
+import { HttpResponse } from '@angular/common/http';
+import { catchError, throwError } from 'rxjs';
 
 // permite cualquier objeto que tenga campos de la publicacion, menos el ID. Usado para el update (patch)
 type UpdatePayload = Partial<Omit<Publicacion, 'id'>>;

@@ -20,7 +20,7 @@
   --color-accent-foreground: oklch(0.205 0 0);
   --color-destructive: rgb(232, 93, 76);
   --color-destructive-foreground: rgb(244, 244, 244);
-   --color-success: oklch(49.9% 0.13724 148.086);
+  --color-success: oklch(49.9% 0.13724 148.086);
   --color-success-foreground: oklch(80.901% 0.16444 164.179);
   --color-success: rgb(85, 179, 108);
   --color-border: rgb(242, 210, 182);
@@ -161,7 +161,7 @@
 }
 
 @utility btn-success {
-   @apply btn bg-success text-white hover:opacity-90 focus:ring-success;
+  @apply btn bg-success text-white hover:opacity-90 focus:ring-success;
 }
 
 @utility btn-sm {
@@ -315,4 +315,47 @@
 }
 @utility filter-active {
   @apply bg-primary text-white;
+}
+
+/* ESTILOS PARA NGX-PAGINATION */
+
+/* Paginador */
+.ngx-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 0;
+  list-style: none;
+}
+
+.ngx-pagination li {
+  display: flex;
+  align-items: center;
+}
+
+.ngx-pagination li a,
+.ngx-pagination li button {
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  background-color: var(--color-card);
+  color: var(--color-foreground);
+  text-align: center;
+}
+
+.ngx-pagination li.current,
+.ngx-pagination li.current span {
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+  border-color: var(--color-primary);
+  border-radius: 0.375rem;
+  font-weight: 600;
+}
+
+.ngx-pagination li.disabled,
+.ngx-pagination li.disabled a,
+.ngx-pagination li.disabled button {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
 }
