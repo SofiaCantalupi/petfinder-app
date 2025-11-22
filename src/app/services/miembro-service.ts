@@ -60,7 +60,6 @@ export class MiembroService {
       })
     );
   }
-
   // baja logica del miembro baneado
   deleteMiembro(id: number): Observable<Miembro> {
     const payload = { activo: false };
