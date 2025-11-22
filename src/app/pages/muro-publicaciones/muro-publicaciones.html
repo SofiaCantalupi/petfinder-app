@@ -50,11 +50,44 @@
   </div>
 </div>
 
-<app-publicacion-list [publicaciones]="publicacionesFiltradas()"></app-publicacion-list>
+<!-- El signo | es un pipe para transformar como se muestran los datos de la izquierda, en este caso para paginarlos. -->
+<!-- De todas las publicaciones, lo pagino pasandole los valores que yo quiero al paginate (Paginate = transformador especifico de ngxPagination) y le pongo un id- -->
+
+<app-publicacion-list
+  [publicaciones]="
+    publicacionesFiltradas()
+      | paginate
+        : {
+            itemsPerPage: itemsPerPage,
+            currentPage: currentPage(),
+            id: 'publicaciones-main'
+          }
+  "
+>
+</app-publicacion-list>
+
+<!-- Paginador -->
+<div class="mt-8 flex justify-center">
+  <pagination-controls
+    id="publicaciones-main"
+    (pageChange)="cambioDePagina($event)"
+    previousLabel="Anterior"
+    nextLabel="Siguiente"
+    [maxSize]="7"
+    [autoHide]="true"
+    [responsive]="true"
+    [directionLinks]="true"
+  >
+  </pagination-controls>
+</div>
 
 <!-- Carrusel section -->
 <section class="max-w-4xl mx-auto my-20">
   <h2 class="text-center text-4xl">Finales Felices</h2>
-  <p class="text-center text-xl py-6">Mascotas que lograron reencontrarse con sus familias gracias a Pet Finder.</p>
-  <app-carrusel-publicaciones [publicaciones]="publicacionesReencontrados()"></app-carrusel-publicaciones>
+  <p class="text-center text-xl py-6">
+    Mascotas que lograron reencontrarse con sus familias gracias a Pet Finder.
+  </p>
+  <app-carrusel-publicaciones
+    [publicaciones]="publicacionesReencontrados()"
+  ></app-carrusel-publicaciones>
 </section>

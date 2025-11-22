@@ -9,6 +9,9 @@ import { noAuthGuard } from './guards/no-auth-guard';
 import { authGuard } from './guards/auth-guard';
 import { YaLogeado } from './components/ya-logeado/ya-logeado';
 import { GuiaEstilo } from './prueba/guia-estilo/guia-estilo';
+import { PoliticasDeUso } from './pages/politicas-de-uso/politicas-de-uso';
+import { BorrarCuenta } from './components/borrar-cuenta/borrar-cuenta';
+import { publicacionActivaGuard } from './guards/publicacion-inactiva-guard';
 import { AdminUsuarios } from './pages/admin-usuarios/admin-usuarios';
 import { adminGuard } from './guards/admin-guard';
 
@@ -41,7 +44,7 @@ export const routes: Routes = [
   {
     path: 'publicaciones/:id',
     component: PublicacionDetail,
-    canActivate: [authGuard],
+    canActivate: [authGuard, publicacionActivaGuard],
   },
   {
     path: 'publicaciones/:id/editar',
@@ -74,7 +77,15 @@ export const routes: Routes = [
     canActivate: [adminGuard],
   },
   {
-    path: '**',
+    path: 'normas',
+    component: PoliticasDeUso,
+  },
+  {
+    path: 'borrarCuenta',
+    component: BorrarCuenta,
+  },
+  {
+    path: '*',
     redirectTo: 'login',
     pathMatch: 'full',
   },

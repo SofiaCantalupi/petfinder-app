@@ -1,13 +1,13 @@
 {
   "miembros": [
     {
+      "id": 1,
       "nombre": "Franco",
       "apellido": "Cancino",
-      "email": "Franco@gmail.com",
-      "contrasenia": "riverplate",
+      "email": "f@gmail.com",
       "rol": "usuario",
-      "activo": true,
-      "id": 1
+      "contrasenia": "a",
+      "activo": true
     },
     {
       "id": "2",
@@ -35,6 +35,24 @@
       "rol": "administrador",
       "activo": true,
       "id": 4
+    },
+    {
+      "nombre": "admin",
+      "apellido": "istrador",
+      "email": "admin@gmail.com",
+      "contrasenia": "RiverPlate123_",
+      "rol": "usuario",
+      "activo": true,
+      "id": 5
+    },
+    {
+      "nombre": "Mauro",
+      "apellido": "Triaca",
+      "email": "prueba@gmail.com",
+      "contrasenia": "Probando123_",
+      "rol": "usuario",
+      "activo": false,
+      "id": 6
     }
   ],
   "publicaciones": [
@@ -271,6 +289,32 @@
       "fecha": "2025-11-18T19:55:35.042Z",
       "activo": true,
       "id": 18
+    },
+    {
+      "idMiembro": 1,
+      "nombreMascota": "Lola",
+      "tipoMascota": "perro",
+      "estadoMascota": "reencontrado",
+      "urlFoto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqC8wvz4gS3CIvkKZ-DBq0PbSeV2xn1Nhzo_6Jl5ZHbsQ-EZludTh0kQXbTjsReBzh6H0mKraNUXi4ArEW1DlzMEtFokzNc5RaKuUukno&s=10",
+      "descripcion": "Tenia un collar violeta",
+      "calle": "Alberti",
+      "altura": 5138,
+      "fecha": "2025-11-20T19:33:53.827Z",
+      "activo": false,
+      "id": 19
+    },
+    {
+      "idMiembro": 1,
+      "nombreMascota": "Lola",
+      "tipoMascota": "gato",
+      "estadoMascota": "encontrado",
+      "urlFoto": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFz5fYgrepcP696Zm4ZtlldGLC6hEr83HUhDcUWJoyK2l-Rqp2YrkMskunDA_R5Hy-722xpQrOgG2-ZhAuOhuQ1aBRtwaf4jp3tfRNlNQKmg&s=10",
+      "descripcion": "asdgfsadfasdfdfasasdfasdf",
+      "calle": "Alberti",
+      "altura": 2029,
+      "fecha": "2025-11-22T01:09:47.112Z",
+      "activo": true,
+      "id": 20
     }
   ],
   "comentarios": [
@@ -323,6 +367,16 @@
       "miembroNombre": "sofia",
       "miembroApellido": "canta",
       "id": "pxIi4T7"
+    },
+    {
+      "texto": "Wow!!",
+      "fechaPublicacion": "2025-11-21T23:07:52.680Z",
+      "activo": true,
+      "publicacionId": 14,
+      "miembroId": 1,
+      "miembroNombre": "Franco",
+      "miembroApellido": "Cancino",
+      "id": "0r7DQML"
     }
   ]
 }

@@ -9,6 +9,7 @@ import { NgClass } from '@angular/common';
 import { AuthService } from '../../services/auth-service';
 import { LoginRequestDTO } from '../../models/auth/login-request-dto';
 import { signal } from '@angular/core';
+import { ToastService } from '../../services/toast-service';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class Login {
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   public router = inject(Router);
+  toastService = inject(ToastService);
 
   errorMessage = signal<string | null>(null);
 
@@ -47,6 +49,7 @@ export class Login {
     //Login a través del authService.
     this.authService.login(LoginDto).subscribe({
       next: (miembro) => {
+        this.toastService.showToast('¡Ingreso de sesión con éxito!', 'success', 5000);
         this.router.navigate(['/publicaciones']);
       },
       error: (error) => {
