@@ -1,7 +1,8 @@
-import { Component, OnInit, input, effect } from '@angular/core';
+import { Component, OnInit, input, effect, inject } from '@angular/core';
 import * as L from 'leaflet';
 import { Publicacion } from '../../models/publicacion';
 import { formatUbicacion } from '../../utils';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-map',
@@ -10,20 +11,25 @@ import { formatUbicacion } from '../../utils';
   styleUrl: './map.css',
 })
 export class Map implements OnInit {
+  private router = inject(Router);
   map!: L.Map;
   private layerGroup!: L.LayerGroup;
 
-  publicacion = input.required<Publicacion | null>();
+  publicaciones = input.required<Publicacion[] | null>();
 
   constructor() {
     // Usa effect para reaccionar cuando publicacion cambie
     effect(() => {
-      const pub = this.publicacion();
-      if (pub && this.map) {
-        this.clearMarkers();
-        this.addMarker(Number(pub.latitud), Number(pub.longitud));
-        // Centra el mapa en la ubicación de la publicación
-        this.map.setView([Number(pub.latitud), Number(pub.longitud)], 15);
+      this.clearMarkers();
+      console.log(this.publicaciones)
+      if (this.publicaciones()?.length !== 0 && this.map) {
+        this.publicaciones()?.forEach((pub, _, lista) => {
+          this.addMarker(Number(pub.latitud), Number(pub.longitud), pub);
+          if (lista.length === 1) {
+            // Centra el mapa en la ubicación de la publicación
+            this.map.setView([Number(pub.latitud), Number(pub.longitud)], 15);
+          }
+        });
       }
     });
   }
@@ -44,12 +50,10 @@ export class Map implements OnInit {
   }
 
   // metodo para agregar marcadores en el mapa
-  addMarker(lat: number, lng: number) {
+  addMarker(lat: number, lng: number, publicacion: Publicacion) {
     const icon = L.divIcon({
       className: 'circular-icon',
-      html: `<div class='circle-image' style="background-image: url('${
-        this.publicacion()?.urlFoto
-      }')"></div>`,
+      html: `<div class='circle-image' style="background-image: url('${publicacion.urlFoto}')"></div>`,
       iconSize: [60, 60],
       iconAnchor: [30, 30],
     });
@@ -57,14 +61,13 @@ export class Map implements OnInit {
     const marker = L.marker([lat, lng], { icon })
       .addTo(this.layerGroup)
       .bindPopup(
-        `<strong>${this.publicacion()?.nombreMascota || 'Sin nombre'}</strong><br>${
-          formatUbicacion(this.publicacion()?.ubicacion || '')}<br>${this.publicacion()?.tipoMascota}<br><em>Estado: ${
-          this.publicacion()?.estadoMascota
-        }</em>`
+        `<strong>${publicacion.nombreMascota || 'Sin nombre'}</strong><br>${formatUbicacion(
+          publicacion.ubicacion || ''
+        )}<br>${publicacion.tipoMascota}<br><em>Estado: ${publicacion.estadoMascota}</em>`
       );
     marker.on('mouseover', () => marker.openPopup());
     marker.on('mouseout', () => marker.closePopup());
-    marker.on('click', () => {console.log('marker was clicked')})
+    marker.on('click', () => this.router.navigate(['/publicaciones', publicacion.id]));
   }
 
   clearMarkers(): void {

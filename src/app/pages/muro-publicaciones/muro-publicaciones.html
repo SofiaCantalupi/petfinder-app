@@ -1,9 +1,9 @@
 <app-hero></app-hero>
 <!-- Barra de Filtrado -->
-<div class="card py-3 px-6 mb-8 flex justify-around gap-30 max-w-4xl mx-auto">
+<div class="card py-3 px-6 mb-8 flex justify-around items-center gap-2 max-w-4xl mx-auto">
   <div class="flex gap-4 align-center">
     <p class="pt-1.5 text-sm font-semibold">Tipo de Mascota:</p>
-    <div class="buttons flex justify-between align-center gap-4">
+    <div class="buttons flex justify-between align-center gap-2">
       <button
         class="filter"
         [ngClass]="{
@@ -27,7 +27,7 @@
 
   <div class="flex gap-4 align-center">
     <p class="pt-1.5 text-sm font-semibold">Estado:</p>
-    <div class="buttons flex justify-between align-center gap-4">
+    <div class="buttons flex justify-between align-center gap-2">
       <button
         class="filter"
         [ngClass]="{
@@ -48,13 +48,49 @@
       </button>
     </div>
   </div>
+
+  <div class="w-0.5 h-6 bg-border"></div>
+
+  <div class="flex gap-4 align-center">
+    <p class="pt-1.5 text-sm font-semibold">Tipo de Vista:</p>
+    <div class="buttons flex justify-between align-center gap-2">
+      <button
+        class="filter"
+        [ngClass]="{
+          'filter-active': filtroTipoVista() === 'grilla'
+        }"
+        (click)="toggleTipoVista('grilla')"
+      >
+        Grilla
+      </button>
+      <button
+        class="filter"
+        [ngClass]="{
+          'filter-active': filtroTipoVista() === 'mapa'
+        }"
+        (click)="toggleTipoVista('mapa')"
+      >
+        Mapa
+      </button>
+    </div>
+  </div>
 </div>
 
+@if(filtroTipoVista() === 'mapa'){
+<div class="max-w-4xl mx-auto">
+  <app-map [publicaciones]="publicacionesFiltradas()"></app-map>
+</div>
+}@else(){
 <app-publicacion-list [publicaciones]="publicacionesFiltradas()"></app-publicacion-list>
+}
 
 <!-- Carrusel section -->
 <section class="max-w-4xl mx-auto my-20">
   <h2 class="text-center text-4xl">Finales Felices</h2>
-  <p class="text-center text-xl py-6">Mascotas que lograron reencontrarse con sus familias gracias a Pet Finder.</p>
-  <app-carrusel-publicaciones [publicaciones]="publicacionesReencontrados()"></app-carrusel-publicaciones>
+  <p class="text-center text-xl py-6">
+    Mascotas que lograron reencontrarse con sus familias gracias a Pet Finder.
+  </p>
+  <app-carrusel-publicaciones
+    [publicaciones]="publicacionesReencontrados()"
+  ></app-carrusel-publicaciones>
 </section>

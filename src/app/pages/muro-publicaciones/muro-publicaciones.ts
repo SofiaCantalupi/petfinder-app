@@ -5,10 +5,11 @@ import { EstadoMascota, TipoMascota } from '../../models/publicacion';
 import { NgClass } from '@angular/common';
 import { Hero } from '../../components/hero/hero';
 import { CarruselPublicaciones } from '../../components/carrusel-publicaciones/carrusel-publicaciones';
+import { Map } from '../../components/map/map';
 
 @Component({
   selector: 'app-muro-publicaciones',
-  imports: [PublicacionList, NgClass, Hero, CarruselPublicaciones],
+  imports: [PublicacionList, NgClass, Hero, CarruselPublicaciones, Map],
   templateUrl: './muro-publicaciones.html',
 })
 export class MuroPublicaciones {
@@ -18,6 +19,8 @@ export class MuroPublicaciones {
 
   filtroEstadoMascota = signal<EstadoMascota | null>(null);
   filtroTipoMascota = signal<TipoMascota | null>(null);
+
+  filtroTipoVista = signal<string>('grilla');
 
   publicacionesActivas = computed(() =>
     this.publicacionService.publicaciones().filter((pub) => pub.activo)
@@ -54,6 +57,14 @@ export class MuroPublicaciones {
       this.filtroTipoMascota.set(null);
     } else {
       this.filtroTipoMascota.set(tipo);
+    }
+  }
+
+  toggleTipoVista(tipo: string){
+    if(this.filtroTipoVista() === tipo){
+      this.filtroTipoVista.set('');
+    } else {
+      this.filtroTipoVista.set(tipo);
     }
   }
 }
