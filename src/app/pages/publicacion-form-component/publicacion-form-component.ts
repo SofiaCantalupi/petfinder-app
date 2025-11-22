@@ -16,6 +16,7 @@ import { NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-sele
 import { Subject, Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { NominatimSearchResult } from '../../types/nominatim';
+import { formatUbicacion } from '../../utils';
 
 @Component({
   selector: 'app-publicacion-form-component',
@@ -91,9 +92,14 @@ export class PublicacionFormComponent implements OnInit {
   cargarFormulario(id: number) {
     this.publicacionService.getPublicacionById(id).subscribe({
       next: (publicacion) => {
+         this.publicacionForm.patchValue(this.mappearPublicacionAForm(publicacion));
         // se cargan los datos con lo retornado por el mappeo de la publicacion plana, a una estructura anidada
-        this.publicacionForm.patchValue(this.mappearPublicacionAForm(publicacion));
-        this.ubicacionSearchTerms.next(publicacion.ubicacion)
+        this.buscarUbicacion(formatUbicacion(publicacion.ubicacion)).subscribe({
+          next: (data) => {
+            this.resultadoBusquedaUbicacion.set(data);
+             this.publicacionForm.get('ubicacionQuery')?.setValue(this.resultadoBusquedaUbicacion()[0]);
+          },
+        });
       },
       error: (error) => {
         console.log('Error cargando el formulario.', error);
@@ -150,7 +156,7 @@ export class PublicacionFormComponent implements OnInit {
     //  toda la lógica de editar y crear esta dentro del subscribe
     miembroActual$.subscribe({
       next: (miembro) => {
-        const { display_name: ubicacion, lat: latitud, lon: longitud} = formValue.ubicacionQuery;
+        const { display_name: ubicacion, lat: latitud, lon: longitud } = formValue.ubicacionQuery;
 
         const publicacionBase: Omit<Publicacion, 'id'> = {
           idMiembro: miembro.id,
@@ -166,7 +172,7 @@ export class PublicacionFormComponent implements OnInit {
           activo: true,
           ubicacion,
           latitud,
-          longitud
+          longitud,
         };
 
         // esto se tiene que cambiar en la integracion con spring boot
@@ -180,7 +186,7 @@ export class PublicacionFormComponent implements OnInit {
             descripcion: publicacionBase.descripcion,
             ubicacion,
             latitud,
-            longitud
+            longitud,
           };
 
           // EDITAR
@@ -248,5 +254,4 @@ export class PublicacionFormComponent implements OnInit {
       })
     );
   }
-
 }
