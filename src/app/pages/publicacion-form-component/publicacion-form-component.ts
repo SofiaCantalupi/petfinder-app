@@ -13,8 +13,8 @@ import { MiembroService } from '../../services/miembro-service';
 import { ToastService } from '../../services/toast-service';
 import { GeocodingService } from '../../services/geocoding-service';
 import { NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
-import { Subject, Observable, of  } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { Subject, Observable, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-publicacion-form-component',
@@ -36,20 +36,21 @@ export class PublicacionFormComponent implements OnInit {
   esEdicion = signal(false);
   publicacionId = signal<number | undefined>(undefined);
 
-  resultadoBusquedaUbicacion: { string: any }[] = [];
-  isBuscandoUbicacion: boolean = false
+  resultadoBusquedaUbicacion = signal<{ string: any }[]>([]);
+  isBuscandoUbicacion = signal<boolean>(false);
   private ubicacionSearchTerms = new Subject<string>();
 
   constructor() {
+    // manejo de terminos de la busqueda del ng-select
     this.ubicacionSearchTerms
       .pipe(
-        debounceTime(300), // Wait for 300ms after the last keystroke
-        distinctUntilChanged(), // Only emit if the search term has changed
-        tap(() => this.isBuscandoUbicacion = true),
-        switchMap((term: string) => this.buscarUbicacion(term)) // Call your backend API
+        debounceTime(300), // espera 300ms despues de la ultima tecla tipiada
+        distinctUntilChanged(), // solo emite si el termino cambio
+        tap(() => this.isBuscandoUbicacion.set(true)),
+        switchMap((term: string) => this.buscarUbicacion(term)) // llama al servicio
       )
       .subscribe((data) => {
-        this.resultadoBusquedaUbicacion = data; // Update the ng-select items with the fetched data
+        this.resultadoBusquedaUbicacion.set(data); // actualiza los resultados que muestra ng-select
       });
   }
 
@@ -226,16 +227,26 @@ export class PublicacionFormComponent implements OnInit {
     });
   }
 
+  // metodo que se le pasa al componente ng-select para buscar la ubicacion mientras el usuario tipea
   onSearchUbicacion(terms: string) {
     this.ubicacionSearchTerms.next(terms);
   }
 
   // metodo que hace la peticion al servicio de geocodificacion
   buscarUbicacion(query: string): Observable<{ string: any }[]> {
-    if(query === '') {
-      this.isBuscandoUbicacion = false
-      return of([])
+    // si esta vacio, no busca
+    if (!query.trim()) {
+      this.isBuscandoUbicacion.set(false);
+      return of([]);
     }
-    return this.geoService.searchAddress(query).pipe(tap(() => this.isBuscandoUbicacion = false));
+    // conexion con el servicio (nominatim)
+    return this.geoService.searchAddress(query).pipe(
+      tap(() => this.isBuscandoUbicacion.set(false)),
+      catchError((error) => {
+        this.isBuscandoUbicacion.set(false);
+        console.error(error);
+        return of([]);
+      })
+    );
   }
 }

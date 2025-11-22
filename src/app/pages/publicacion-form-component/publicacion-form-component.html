@@ -146,14 +146,14 @@
       <div formGroupName="ubicacion">
         <label id="query">
           <ng-select
-            [items]="resultadoBusquedaUbicacion"
+            [items]="resultadoBusquedaUbicacion()"
             [editableSearchTerm]
             [searchable]
             bindLabel="display_name"
             labelForId="query"
             placeholder="Ubicacion"
             formControlName="query"
-            [loading]="isBuscandoUbicacion"
+            [loading]="isBuscandoUbicacion()"
             (search)="onSearchUbicacion($event.term)">
           >
             <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
