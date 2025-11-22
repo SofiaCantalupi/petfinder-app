@@ -232,6 +232,10 @@ export class PublicacionFormComponent implements OnInit {
     this.ubicacionSearchTerms.next(terms);
   }
 
+  returnTrue() {
+    return true;
+  }
+
   // metodo que hace la peticion al servicio de geocodificacion
   buscarUbicacion(query: string): Observable<{ string: any }[]> {
     // si esta vacio, no busca

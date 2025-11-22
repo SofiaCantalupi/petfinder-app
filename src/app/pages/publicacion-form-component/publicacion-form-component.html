@@ -154,7 +154,10 @@
             placeholder="Ubicacion"
             formControlName="query"
             [loading]="isBuscandoUbicacion()"
-            (search)="onSearchUbicacion($event.term)">
+            loadingText="Buscando ubicaciones..."
+            notFoundText="No hay resultados."
+            (search)="onSearchUbicacion($event.term)"
+            [searchFn]="returnTrue">
           >
             <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
              <div><p>{{ item.display_name }}</p></div>
