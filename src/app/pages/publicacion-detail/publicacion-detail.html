@@ -178,7 +178,11 @@
       {{ publicacion()?.descripcion }}
     </p>
   </div>
+
+  <app-map [publicacion]="publicacion()"></app-map>
+
 </div>
+  
 
 <!-- renderizacion de los comentarios de la publicacion -->
 @if (publicacion(); as pub) {

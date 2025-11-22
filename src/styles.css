@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @import 'swiper/swiper-bundle.css';
-@import "leaflet/dist/leaflet.css";
+@import 'leaflet/dist/leaflet.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -21,7 +21,7 @@
   --color-accent-foreground: oklch(0.205 0 0);
   --color-destructive: rgb(232, 93, 76);
   --color-destructive-foreground: rgb(244, 244, 244);
-   --color-success: oklch(49.9% 0.13724 148.086);
+  --color-success: oklch(49.9% 0.13724 148.086);
   --color-success-foreground: oklch(80.901% 0.16444 164.179);
   --color-success: rgb(85, 179, 108);
   --color-border: rgb(242, 210, 182);
@@ -159,7 +159,7 @@
 }
 
 @utility btn-success {
-   @apply btn bg-success text-white hover:opacity-90 focus:ring-success;
+  @apply btn bg-success text-white hover:opacity-90 focus:ring-success;
 }
 
 @utility btn-sm {
@@ -293,4 +293,10 @@
 }
 @utility filter-active {
   @apply bg-primary text-white;
+}
+
+/* Leafet */
+
+.circle-image {
+  @apply size-[60px] rounded-full bg-cover bg-center border-2 border-primary;
 }

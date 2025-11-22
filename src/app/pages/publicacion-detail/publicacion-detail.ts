@@ -8,10 +8,11 @@ import { ComentarioList } from '../../components/comentarios/comentario-list/com
 import { AuthService } from '../../services/auth-service';
 import { DatePipe, NgClass } from '@angular/common';
 import { ToastService } from '../../services/toast-service';
+import { Map } from '../../components/map/map';
 
 @Component({
   selector: 'app-publicacion-detail',
-  imports: [ComentarioList, DatePipe, RouterLink, NgClass],
+  imports: [ComentarioList, DatePipe, RouterLink, NgClass, Map],
   templateUrl: './publicacion-detail.html',
   styleUrl: './publicacion-detail.css',
 })
