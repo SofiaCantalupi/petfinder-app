@@ -1,7 +1,7 @@
-<h2 class="text-3xl font-bold px-3">Mi Perfil</h2>
+<h1 class="text-3xl font-semibold px-3 pb-4">Mi Perfil</h1>
 
 <article class="flex flex-col md:flex-row w-full min-h-screen gap-10">
-  <div class="flex-1 flex flex-col mt-10">
+  <div class="flex-1 flex flex-col">
     <div class="card">
       <div class="card-body">
         <h3 class="card-title mb-2"></h3>
@@ -187,16 +187,7 @@
 
   <!-- lado derecho de "mi perfil" -->
 
-  <div class="flex-2 flex flex-col mt-6 w-full">
-    <div class="flex justify-between items-center py-3">
-      @if (!authService.isAdmin()) {
-      <a class="btn btn-sm btn-primary" routerLink="/publicaciones/crear">+ Crear Publicación</a>
-
-      <h2 class="text-2xl font-semibold">Mis publicaciones</h2>
-
-      <!-- solamente Miembros (no admin) pueden crear publicaciones -->
-      }
-    </div>
+  <div class="flex-2 flex flex-col w-full">
     <!-- el primer if es para no mostrar NADA sobre publicaciones al Admin -->
     @if (!authService.isAdmin()) { @if (cargandoPublicaciones()) {
     <div class="flex justify-center items-center py-10">
@@ -204,7 +195,15 @@
     </div>
     } @else if (misPublicaciones().length > 0) {
     <div class="card p-4 bg-primary/5">
+      @if (!authService.isAdmin()) {
+      <div class="flex justify-between items-center pb-1">
+        <h2 class="text-2xl font-semibold">Mis publicaciones</h2>
+        <a class="btn btn-sm btn-primary" routerLink="/publicaciones/crear">+ Crear Publicación</a>
+
+        <!-- solamente Miembros (no admin) pueden crear publicaciones -->
+      </div>
       <p class="text-sm text-muted-foreground mb-4">Historial completo de tus publicaciones.</p>
+      }
       <app-publicacion-list [publicaciones]="misPublicaciones()" />
     </div>
     }
@@ -218,6 +217,10 @@
         Crear mi primera publicación
       </a>
     </div>
-    } }
+    } } @if (authService.isAdmin()) {
+    <div class="card p-8 text-center">
+      <p class="text-gray-500 mb-4">Como administrador no podés realizar publicaciones.</p>
+    </div>
+    }
   </div>
 </article>
