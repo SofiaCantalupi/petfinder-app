@@ -10,11 +10,12 @@ import { AuthService } from '../../services/auth-service';
 import { LoginRequestDTO } from '../../models/auth/login-request-dto';
 import { signal } from '@angular/core';
 import { ToastService } from '../../services/toast-service';
+import { CatAstronautAnimation } from '../../components/cat-astronaut-animation/cat-astronaut-animation';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, NgClass, ReactiveFormsModule, RouterLink],
+  imports: [FormsModule, NgClass, ReactiveFormsModule, RouterLink, CatAstronautAnimation],
   templateUrl: './login.html',
 })
 export class Login {

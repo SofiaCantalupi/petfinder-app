@@ -11,11 +11,12 @@ import { AuthService } from '../../services/auth-service';
 import { RegistroRequestDTO } from '../../models/auth/registro-request-dto';
 import { ToastService } from '../../services/toast-service';
 import { signal } from '@angular/core';
+import { CatAstronautAnimation } from '../../components/cat-astronaut-animation/cat-astronaut-animation';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [RouterLink, NgClass, FormsModule, ReactiveFormsModule],
+  imports: [RouterLink, NgClass, FormsModule, ReactiveFormsModule, CatAstronautAnimation],
   templateUrl: './registro.html',
 })
 export class Registro {
