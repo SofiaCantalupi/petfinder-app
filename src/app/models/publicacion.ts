@@ -12,6 +12,7 @@ export interface Publicacion{
     urlFoto: string,
     fecha: string,
     descripcion: string,
-    calle: string,
-    altura: number
+    ubicacion: string,
+    latitud: string,
+    longitud: string,
 }

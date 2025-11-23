@@ -8,10 +8,12 @@ import { ComentarioList } from '../../components/comentarios/comentario-list/com
 import { AuthService } from '../../services/auth-service';
 import { DatePipe, NgClass } from '@angular/common';
 import { ToastService } from '../../services/toast-service';
+import { Map } from '../../components/map/map';
+import { formatUbicacion } from '../../utils';
 
 @Component({
   selector: 'app-publicacion-detail',
-  imports: [ComentarioList, DatePipe, RouterLink, NgClass],
+  imports: [ComentarioList, DatePipe, RouterLink, NgClass, Map],
   templateUrl: './publicacion-detail.html',
 })
 export class PublicacionDetail implements OnInit {
@@ -28,6 +30,8 @@ export class PublicacionDetail implements OnInit {
   publicacion = signal<Publicacion | null>(null);
   miembroCreador = signal<Miembro | null>(null);
   cargando = signal<boolean>(true);
+
+  ubicacionFormateada: string = '';
 
   // nombre completo del miembro creador
   nombreCreador = computed(() => {
@@ -58,6 +62,7 @@ export class PublicacionDetail implements OnInit {
     this.publicacionService.getPublicacionById(idPublicacion).subscribe({
       next: (pub) => {
         this.publicacion.set(pub);
+        this.ubicacionFormateada = formatUbicacion(pub.ubicacion);
         this.cargarMiembroCreador(pub.idMiembro);
         this.cargando.set(false);
       },

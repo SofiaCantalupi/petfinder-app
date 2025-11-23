@@ -142,57 +142,36 @@
       <!-- Seccion Datos Ubicacion -->
       <h3 class="font-semibold">Dirección:</h3>
 
-      <!-- Calle -->
-      <div formGroupName="ubicacion">
-        <div class="input-group">
-          <label class="input-label" for="calle">Calle:</label>
-          <input
-            class="input-field"
-            [ngClass]="{
-              'input-error':
-                publicacionForm.get('ubicacion.calle')?.invalid &&
-                publicacionForm.get('ubicacion.calle')?.touched
-            }"
-            formControlName="calle"
-            type="text"
-            id="calle"
-          />
+      <!-- Ubicacion Query -->
+      <div class="input-group">
+        <label id="ubicacionQuery">
+          <ng-select
+            [items]="resultadoBusquedaUbicacion()"
+            [editableSearchTerm]
+            [searchable]
+            bindLabel="display_name"
+            labelForId="ubicacionQuery"
+            placeholder="Ubicacion"
+            formControlName="ubicacionQuery"
+            [loading]="isBuscandoUbicacion()"
+            loadingText="Buscando ubicaciones..."
+            notFoundText="No hay resultados."
+            (search)="onSearchUbicacion($event.term)"
+            [searchFn]="returnTrue"
+          >
+            >
+            <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
+              <div>
+                <p>{{ item.display_name }}</p>
+              </div>
+            </ng-template>
+          </ng-select>
+        </label>
 
-          @if (publicacionForm.get("ubicacion.calle")?.invalid &&
-          publicacionForm.get("ubicacion.calle")?.touched) {
-          <p class="input-error-text">
-            @if (publicacionForm.get("ubicacion.calle")?.errors?.['required']) { Este campo es
-            obligatorio. } @if (publicacionForm.get("ubicacion.calle")?.errors?.['minlength']){ La
-            calle debe tener más de 3 caracteres. }
-          </p>
+         @if (publicacionForm.get("ubicacionQuery")?.invalid &&
+          publicacionForm.get("ubicacionQuery")?.touched) {
+            <p class="input-error">Debes ingresar una ubicación.</p>
           }
-        </div>
-
-        <!-- Altura -->
-        <div class="input-group">
-          <label class="input-label" for="altura">Altura:</label>
-          <input
-            class="input-field"
-            [ngClass]="{
-              'input-error':
-                publicacionForm.get('ubicacion.altura')?.invalid &&
-                publicacionForm.get('ubicacion.altura')?.touched
-            }"
-            formControlName="altura"
-            type="number"
-            id="altura"
-            min="1"
-          />
-
-          @if(publicacionForm.get("ubicacion.altura")?.invalid &&
-          publicacionForm.get("ubicacion.altura")?.touched) {
-          <p class="input-error-text">
-            @if (publicacionForm.get("ubicacion.altura")?.errors?.['required']) { Este campo es
-            obligatorio. } @if (publicacionForm.get("ubicacion.altura")?.errors?.['min']) { La
-            altura debe tener más de 1 dígito. }
-          </p>
-          }
-        </div>
       </div>
     </div>
 
@@ -202,7 +181,9 @@
         {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
       </button>
 
-      <button class="btn btn-danger btn-md" [routerLink]="['/publicaciones', publicacionId()]">Cancelar</button>
+      <button class="btn btn-danger btn-md" [routerLink]="['/publicaciones', publicacionId()]">
+        Cancelar
+      </button>
     </div>
   </form>
 </div>

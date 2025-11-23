@@ -11,10 +11,16 @@ import { EstadoMascota } from '../../models/publicacion';
 import { Publicacion } from '../../models/publicacion';
 import { MiembroService } from '../../services/miembro-service';
 import { ToastService } from '../../services/toast-service';
+import { GeocodingService } from '../../services/geocoding-service';
+import { NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
+import { Subject, Observable, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { NominatimSearchResult } from '../../types/nominatim';
+import { formatUbicacion } from '../../utils';
 
 @Component({
   selector: 'app-publicacion-form-component',
-  imports: [ReactiveFormsModule, NgClass, RouterLink],
+  imports: [ReactiveFormsModule, NgClass, RouterLink, NgOptionTemplateDirective, NgSelectComponent],
   templateUrl: './publicacion-form-component.html',
 })
 export class PublicacionFormComponent implements OnInit {
@@ -23,13 +29,32 @@ export class PublicacionFormComponent implements OnInit {
   private publicacionService = inject(PublicacionService);
   private miembroService = inject(MiembroService);
   private toastService = inject(ToastService);
+  private geoService = inject(GeocodingService);
 
   route = inject(ActivatedRoute);
   router = inject(Router);
 
-  // input para saber si estamos editando CAMBIAR POR SIGNAL
+  //
   esEdicion = signal(false);
   publicacionId = signal<number | undefined>(undefined);
+
+  resultadoBusquedaUbicacion = signal<NominatimSearchResult[]>([]);
+  isBuscandoUbicacion = signal<boolean>(false);
+  private ubicacionSearchTerms = new Subject<string>();
+
+  constructor() {
+    // manejo de terminos de la busqueda del ng-select
+    this.ubicacionSearchTerms
+      .pipe(
+        debounceTime(300), // espera 300ms despues de la ultima tecla tipiada
+        distinctUntilChanged(), // solo emite si el termino cambio
+        tap(() => this.isBuscandoUbicacion.set(true)),
+        switchMap((term: string) => this.buscarUbicacion(term)) // llama al servicio
+      )
+      .subscribe((data) => {
+        this.resultadoBusquedaUbicacion.set(data); // actualiza los resultados que muestra ng-select
+      });
+  }
 
   // Arrays para las opciones
   estadosMascota: { value: EstadoMascota; label: string }[] = [
@@ -63,11 +88,18 @@ export class PublicacionFormComponent implements OnInit {
     }
   }
 
+  // metodo utilizado para cargar el formulario con los datos actuales de la publicacion a editar
   cargarFormulario(id: number) {
     this.publicacionService.getPublicacionById(id).subscribe({
       next: (publicacion) => {
+         this.publicacionForm.patchValue(this.mappearPublicacionAForm(publicacion));
         // se cargan los datos con lo retornado por el mappeo de la publicacion plana, a una estructura anidada
-        this.publicacionForm.patchValue(this.mappearPublicacionAForm(publicacion));
+        this.buscarUbicacion(formatUbicacion(publicacion.ubicacion)).subscribe({
+          next: (data) => {
+            this.resultadoBusquedaUbicacion.set(data);
+             this.publicacionForm.get('ubicacionQuery')?.setValue(this.resultadoBusquedaUbicacion()[0]);
+          },
+        });
       },
       error: (error) => {
         console.log('Error cargando el formulario.', error);
@@ -87,10 +119,6 @@ export class PublicacionFormComponent implements OnInit {
         urlFoto: publicacion.urlFoto,
       },
       descripcion: publicacion.descripcion,
-      ubicacion: {
-        calle: publicacion.calle,
-        altura: publicacion.altura,
-      },
     };
   }
 
@@ -103,12 +131,10 @@ export class PublicacionFormComponent implements OnInit {
       urlFoto: ['', [Validators.required, Validators.pattern(/^https?:\/\/.+/)]],
     }),
     descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
-    ubicacion: this.formBuilder.nonNullable.group({
-      calle: ['', [Validators.required, Validators.minLength(3)]],
-      altura: [0, [Validators.required, Validators.min(2)]],
-    }),
+    ubicacionQuery: [{} as NominatimSearchResult, Validators.required],
   });
 
+  // Submit, crea o edita la publicacion
   onSubmit() {
     if (this.publicacionForm.invalid) {
       // marcar todos los campos como touched, incluyendo los anidados
@@ -130,6 +156,8 @@ export class PublicacionFormComponent implements OnInit {
     //  toda la lógica de editar y crear esta dentro del subscribe
     miembroActual$.subscribe({
       next: (miembro) => {
+        const { display_name: ubicacion, lat: latitud, lon: longitud } = formValue.ubicacionQuery;
+
         const publicacionBase: Omit<Publicacion, 'id'> = {
           idMiembro: miembro.id,
           // mascota
@@ -139,11 +167,12 @@ export class PublicacionFormComponent implements OnInit {
           urlFoto: formValue.mascota.urlFoto,
           // descripcion
           descripcion: formValue.descripcion,
-          calle: formValue.ubicacion.calle,
-          altura: formValue.ubicacion.altura,
           // datos que no vienen del formulario
           fecha: new Date().toISOString(),
           activo: true,
+          ubicacion,
+          latitud,
+          longitud,
         };
 
         // esto se tiene que cambiar en la integracion con spring boot
@@ -155,8 +184,9 @@ export class PublicacionFormComponent implements OnInit {
             estadoMascota: publicacionBase.estadoMascota,
             urlFoto: publicacionBase.urlFoto,
             descripcion: publicacionBase.descripcion,
-            calle: publicacionBase.calle,
-            altura: publicacionBase.altura,
+            ubicacion,
+            latitud,
+            longitud,
           };
 
           // EDITAR
@@ -195,5 +225,33 @@ export class PublicacionFormComponent implements OnInit {
         this.router.navigate(['/login']);
       },
     });
+  }
+
+  // metodo que se le pasa al componente ng-select para buscar la ubicacion mientras el usuario tipea
+  onSearchUbicacion(terms: string) {
+    this.ubicacionSearchTerms.next(terms);
+  }
+
+  // deshabilita el filtro local de ng-select para que muestre los resultados que vienen de la API
+  returnTrue() {
+    return true;
+  }
+
+  // metodo que hace la peticion al servicio de geocodificacion
+  buscarUbicacion(query: string): Observable<NominatimSearchResult[]> {
+    // si esta vacio, no busca
+    if (!query.trim()) {
+      this.isBuscandoUbicacion.set(false);
+      return of([]);
+    }
+    // conexion con el servicio (nominatim)
+    return this.geoService.searchAddress(query).pipe(
+      tap(() => this.isBuscandoUbicacion.set(false)),
+      catchError((error) => {
+        this.isBuscandoUbicacion.set(false);
+        console.error(error);
+        return of([]);
+      })
+    );
   }
 }

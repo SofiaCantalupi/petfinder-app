@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @import 'swiper/swiper-bundle.css';
+@import 'leaflet/dist/leaflet.css';
+@import './css/ng-select.default.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -366,4 +368,10 @@
 
 .badge-usuario {
   @apply bg-blue-100 text-blue-800;
+}
+
+/* Leafet */
+
+.circle-image {
+  @apply size-[60px] rounded-full bg-cover bg-center border-2 border-primary;
 }

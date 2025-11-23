@@ -5,11 +5,12 @@ import { EstadoMascota, TipoMascota } from '../../models/publicacion';
 import { NgClass } from '@angular/common';
 import { Hero } from '../../components/hero/hero';
 import { CarruselPublicaciones } from '../../components/carrusel-publicaciones/carrusel-publicaciones';
+import { Map } from '../../components/map/map';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-muro-publicaciones',
-  imports: [PublicacionList, NgClass, Hero, CarruselPublicaciones, NgxPaginationModule],
+  imports: [PublicacionList, NgClass, Hero, CarruselPublicaciones, Map, NgxPaginationModule],
   templateUrl: './muro-publicaciones.html',
 })
 export class MuroPublicaciones {
@@ -20,6 +21,7 @@ export class MuroPublicaciones {
   filtroEstadoMascota = signal<EstadoMascota | null>(null);
   filtroTipoMascota = signal<TipoMascota | null>(null);
 
+  filtroTipoVista = signal<string>('grilla');
   currentPage = signal<number>(1);
   itemsPerPage = 8;
 
@@ -76,6 +78,14 @@ export class MuroPublicaciones {
     } else {
       //si no encuentra el elemento, va arriba de todo
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  toggleTipoVista(tipo: string){
+    if(this.filtroTipoVista() === tipo){
+      this.filtroTipoVista.set('');
+    } else {
+      this.filtroTipoVista.set(tipo);
     }
   }
 }

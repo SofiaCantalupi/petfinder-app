@@ -57,7 +57,7 @@
             />
             <circle cx="12" cy="10" r="3" />
           </svg>
-          <p class="text-s capitalize">{{ publicacion()?.calle }}, {{ publicacion()?.altura }}</p>
+          <p class="text-s capitalize">{{ ubicacionFormateada }}</p>
         </div>
 
         <!-- Div FECHA -->
@@ -178,6 +178,11 @@
       {{ publicacion()?.descripcion }}
     </p>
   </div>
+
+  @if(publicacion()){
+  <app-map [publicaciones]="[publicacion()!]"></app-map>
+  }
+
 </div>
 
 <!-- renderizacion de los comentarios de la publicacion -->
