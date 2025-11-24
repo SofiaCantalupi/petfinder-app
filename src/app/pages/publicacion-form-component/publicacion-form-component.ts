@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PublicacionService } from '../../services/publicacion-service';
 import { FormBuilder } from '@angular/forms';
@@ -23,7 +23,7 @@ import { formatUbicacion } from '../../utils';
   imports: [ReactiveFormsModule, NgClass, RouterLink, NgOptionTemplateDirective, NgSelectComponent],
   templateUrl: './publicacion-form-component.html',
 })
-export class PublicacionFormComponent implements OnInit {
+export class PublicacionFormComponent implements OnInit, OnDestroy {
   // Inyeccion de dependencias
   private formBuilder = inject(FormBuilder);
   private publicacionService = inject(PublicacionService);
@@ -34,12 +34,16 @@ export class PublicacionFormComponent implements OnInit {
   route = inject(ActivatedRoute);
   router = inject(Router);
 
-  //
+  // Signal para estado en edicion y id editado
   esEdicion = signal(false);
   publicacionId = signal<number | undefined>(undefined);
 
+  // Signals para resultados de busqueda y estado de busqueda
   resultadoBusquedaUbicacion = signal<NominatimSearchResult[]>([]);
   isBuscandoUbicacion = signal<boolean>(false);
+
+  // Subject para manejar las búsquedas
+  // Subject: emite valores cuando .next(valor), otros pueden suscribirse para escuchar esos valores y permanece activo hasta que se completa manualmente
   private ubicacionSearchTerms = new Subject<string>();
 
   constructor() {
@@ -56,7 +60,7 @@ export class PublicacionFormComponent implements OnInit {
       });
   }
 
-  // Arrays para las opciones
+  // Arrays para las opciones de los SELECTS
   estadosMascota: { value: EstadoMascota; label: string }[] = [
     { value: 'perdido', label: 'Perdido' },
     { value: 'encontrado', label: 'Encontrado' },
@@ -86,6 +90,11 @@ export class PublicacionFormComponent implements OnInit {
       this.publicacionId.set(Number(id));
       this.cargarFormulario(Number(id));
     }
+  }
+
+  ngOnDestroy() {
+    // completa el subject: se libera memoria, los observables conectados se desuscriben
+    this.ubicacionSearchTerms.complete();
   }
 
   // metodo utilizado para cargar el formulario con los datos actuales de la publicacion a editar
@@ -183,7 +192,6 @@ export class PublicacionFormComponent implements OnInit {
           latitud,
           longitud,
         };
-
 
         // esto se tiene que cambiar en la integracion con spring boot
         if (this.esEdicion()) {

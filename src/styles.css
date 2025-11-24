@@ -238,7 +238,7 @@
 
 /* Toast Components */
 @utility toast {
-  @apply fixed flex items-start gap-3 p-4 rounded-lg border-2 border-l-4 top-header mt-4 right-4 z-100;
+  @apply flex items-start gap-3 p-4 rounded-lg border-2 border-l-4 mt-4;
 }
 
 .toast-info {

@@ -17,7 +17,7 @@ export class ToastService {
     const messageDiv = document.createElement('p');
 
     // Clases base
-    toast.className = `toast toast-${type}`;
+    toast.className = `toast toast-${type} fixed z-100 right-4 top-header`;
     svg.setAttribute('class', 'toast-icon');
     svg.setAttribute('fill', 'currentColor');
     svg.setAttribute('viewBox', '0 0 20 20');
