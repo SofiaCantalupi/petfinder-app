@@ -4,12 +4,11 @@
   <div class="flex-1 flex flex-col">
     <div class="card">
       <div class="card-body">
-        <h3 class="card-title mb-2"></h3>
         <div class="shrink-0 flex justify-center">
           <div
             class="w-40 h-40 rounded-full bg-[#d1d5db] flex items-center justify-center text-white font-semibold uppercase text-6xl"
           >
-            {{ miembroActual.nombre.charAt(0) }}
+            {{ miembroActual.nombre.charAt(0) }}{{ miembroActual.apellido.charAt(0) }}
           </div>
         </div>
 
@@ -17,10 +16,10 @@
           @if(modoContrasenia()){
 
           <div class="input-group py-2">
-            <label class="input-helper"> Ingresa tu contraseña actual</label>
+            <label class="input-helper">Ingresa tu contraseña actual</label>
             <input
               type="password"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              class="input-field"
               formControlName="actual"
             />
             @if (perfilForm.get('actual')?.invalid && perfilForm.get('actual')?.touched) {
@@ -33,10 +32,10 @@
           </div>
 
           <div class="input-group py-2">
-            <label class="input-helper"> Ingresa la nueva contraseña</label>
+            <label class="input-helper">Ingresa la nueva contraseña</label>
             <input
               type="password"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              class="input-field"
               formControlName="nueva"
             />
             <span>La contraseña debe tener al menos: <br /></span>
@@ -54,10 +53,10 @@
           </div>
 
           <div class="input-group py-2">
-            <label class="input-helper"> Confirma tu contraseña nueva</label>
+            <label class="input-helper">Confirma tu contraseña nueva</label>
             <input
               type="password"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              class="input-field"
               formControlName="confirmar"
             />
             @if (perfilForm.get("confirmar")?.touched) {
@@ -72,41 +71,43 @@
           } @else if(modoEditar()){
 
           <div class="input-group py-2">
-            <label class="input-helper"> Ingresa el nombre nuevo</label>
+            <label class="input-helper">Nombre</label>
             <input
               type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              class="input-field capitalize"
               formControlName="nombre"
-            /><span class="input-error-text">
-              @if (perfilForm.get("nombre")?.invalid && perfilForm.get("nombre")?.touched) { @if
-              (perfilForm.get("nombre")?.errors?.["required"]) {Campo requerido.} @if
-              (perfilForm.get("nombre")?.errors?.["minlength"]) {El nombre debe tener al menos 3
-              letras.} }
-            </span>
+            />
+            @if (perfilForm.get("nombre")?.invalid && perfilForm.get("nombre")?.touched) { @if
+            (perfilForm.get("nombre")?.errors?.["required"]) {
+            <p class="input-error-text">Campo requerido.</p>
+            } @if (perfilForm.get("nombre")?.errors?.["minlength"]) {
+            <p class="input-error-text">El nombre debe tener al menos 3 letras.</p>
+            } }
           </div>
 
           <div class="input-group py-2">
-            <label class="input-helper">Ingresa el apellido nuevo </label>
+            <label class="input-helper">Apellido</label>
             <input
               type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              class="input-field capitalize"
               formControlName="apellido"
-            /><span class="input-error-text">
-              @if (perfilForm.get("apellido")?.invalid && perfilForm.get("apellido")?.touched) { @if
-              (perfilForm.get("apellido")?.errors?.["required"]) {Campo requerido.} @if
-              (perfilForm.get("apellido")?.errors?.["minlength"]) {El apellido debe tener al menos 3
-              letras.} }
-            </span>
+            />
+            @if (perfilForm.get("apellido")?.invalid && perfilForm.get("apellido")?.touched) { @if
+            (perfilForm.get("apellido")?.errors?.["required"]) {
+            <p class="input-error-text">Campo requerido.</p>
+            } @if (perfilForm.get("apellido")?.errors?.["minlength"]) {
+            <p class="input-error-text">El apellido debe tener al menos 3 letras.</p>
+            } }
           </div>
 
           <div class="input-group py-2">
-            <label class="input-helper">Gmail:</label>
+            <label class="input-helper">Email</label>
             <input
               type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              class="opacity-70 cursor-not-allowed text-gray-700 input-field"
               formControlName="email"
             />
-            <span class="text-primary">El mail no puede ser editado.</span>
+            <span class="text-primary text-sm">*El email no puede ser editado.</span>
           </div>
           } @else{
 
@@ -114,7 +115,7 @@
             <label class="input-helper">Nombre</label>
             <input
               type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              class="input-field capitalize"
               formControlName="nombre"
             />
           </div>
@@ -123,22 +124,22 @@
             <label class="input-helper">Apellido</label>
             <input
               type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              class="input-field capitalize"
               formControlName="apellido"
             />
           </div>
           <div class="input-group py-2">
-            <label class="input-helper">Gmail:</label>
+            <label class="input-helper">Email:</label>
             <input
               type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              class="input-field"
               formControlName="email"
             />
           </div>
           }
 
           <div class="flex flex-col gap-4 py-4">
-            <div class="flex flex-row gap-4">
+            <div class="flex flex-col gap-2">
               @if (!modoEditar() && !modoContrasenia()) {
               <button
                 type="button"
@@ -157,22 +158,24 @@
               }@else{
               <button
                 type="button"
-                class="btn btn-success btn-md flex-1"
+                class="btn btn-primary btn-sm flex-1"
                 (click)="guardarCambios()"
               >
-                Aceptar cambios
+                Guardar
               </button>
               <button
                 type="button"
-                class="btn btn-danger btn-md flex-1"
+                class="btn btn-outline btn-sm flex-1"
                 (click)="cancelarEdicion()"
               >
-                Cancelar cambios
+                Cancelar
               </button>
               }
             </div>
 
-            <button type="button" class="btn btn-danger btn-sm mt-5" (click)="authService.logout()">
+            <hr class="border border-border my-2" />
+
+            <button type="button" class="btn btn-danger btn-sm" (click)="authService.logout()">
               Cerrar sesión
             </button>
           </div>
