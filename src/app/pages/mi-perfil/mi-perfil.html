@@ -1,15 +1,14 @@
-<h2 class="text-3xl font-bold px-3">Mi Perfil</h2>
+<h1 class="text-3xl font-semibold px-3 pb-4">Mi Perfil</h1>
 
 <article class="flex flex-col md:flex-row w-full min-h-screen gap-10">
-  <div class="flex-1 flex flex-col mt-10">
+  <div class="flex-1 flex flex-col">
     <div class="card">
       <div class="card-body">
-        <h3 class="card-title mb-2"></h3>
         <div class="shrink-0 flex justify-center">
           <div
             class="w-40 h-40 rounded-full bg-[#d1d5db] flex items-center justify-center text-white font-semibold uppercase text-6xl"
           >
-            {{ miembroActual.nombre.charAt(0) }}
+            {{ miembroActual.nombre.charAt(0) }}{{ miembroActual.apellido.charAt(0) }}
           </div>
         </div>
 
@@ -17,12 +16,8 @@
           @if(modoContrasenia()){
 
           <div class="input-group py-2">
-            <label class="input-helper"> Ingresa tu contraseña actual</label>
-            <input
-              type="password"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
-              formControlName="actual"
-            />
+            <label class="input-helper">Ingresa tu contraseña actual</label>
+            <input type="password" class="input-field" formControlName="actual" />
             @if (perfilForm.get('actual')?.invalid && perfilForm.get('actual')?.touched) {
             <p class="input-error-text">Este campo es obligatorio.</p>
             } @if (errorPassword()) {
@@ -33,12 +28,8 @@
           </div>
 
           <div class="input-group py-2">
-            <label class="input-helper"> Ingresa la nueva contraseña</label>
-            <input
-              type="password"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
-              formControlName="nueva"
-            />
+            <label class="input-helper">Ingresa la nueva contraseña</label>
+            <input type="password" class="input-field" formControlName="nueva" />
             <span>La contraseña debe tener al menos: <br /></span>
             <span class="input-helper"
               >- Ocho caracteres.<br />- Una letra mayúscula. <br />- Una letra minúscula. <br />-
@@ -54,12 +45,8 @@
           </div>
 
           <div class="input-group py-2">
-            <label class="input-helper"> Confirma tu contraseña nueva</label>
-            <input
-              type="password"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
-              formControlName="confirmar"
-            />
+            <label class="input-helper">Confirma tu contraseña nueva</label>
+            <input type="password" class="input-field" formControlName="confirmar" />
             @if (perfilForm.get("confirmar")?.touched) {
             <p class="input-error-text">
               @if(perfilForm.get("confirmar")?.errors?.['required']){ Campo requerido. }
@@ -72,73 +59,55 @@
           } @else if(modoEditar()){
 
           <div class="input-group py-2">
-            <label class="input-helper"> Ingresa el nombre nuevo</label>
-            <input
-              type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
-              formControlName="nombre"
-            /><span class="input-error-text">
-              @if (perfilForm.get("nombre")?.invalid && perfilForm.get("nombre")?.touched) { @if
-              (perfilForm.get("nombre")?.errors?.["required"]) {Campo requerido.} @if
-              (perfilForm.get("nombre")?.errors?.["minlength"]) {El nombre debe tener al menos 3
-              letras.} }
-            </span>
+            <label class="input-helper">Nombre</label>
+            <input type="text" class="input-field capitalize" formControlName="nombre" />
+            @if (perfilForm.get("nombre")?.invalid && perfilForm.get("nombre")?.touched) { @if
+            (perfilForm.get("nombre")?.errors?.["required"]) {
+            <p class="input-error-text">Campo requerido.</p>
+            } @if (perfilForm.get("nombre")?.errors?.["minlength"]) {
+            <p class="input-error-text">El nombre debe tener al menos 3 letras.</p>
+            } }
           </div>
 
           <div class="input-group py-2">
-            <label class="input-helper">Ingresa el apellido nuevo </label>
-            <input
-              type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
-              formControlName="apellido"
-            /><span class="input-error-text">
-              @if (perfilForm.get("apellido")?.invalid && perfilForm.get("apellido")?.touched) { @if
-              (perfilForm.get("apellido")?.errors?.["required"]) {Campo requerido.} @if
-              (perfilForm.get("apellido")?.errors?.["minlength"]) {El apellido debe tener al menos 3
-              letras.} }
-            </span>
+            <label class="input-helper">Apellido</label>
+            <input type="text" class="input-field capitalize" formControlName="apellido" />
+            @if (perfilForm.get("apellido")?.invalid && perfilForm.get("apellido")?.touched) { @if
+            (perfilForm.get("apellido")?.errors?.["required"]) {
+            <p class="input-error-text">Campo requerido.</p>
+            } @if (perfilForm.get("apellido")?.errors?.["minlength"]) {
+            <p class="input-error-text">El apellido debe tener al menos 3 letras.</p>
+            } }
           </div>
 
           <div class="input-group py-2">
-            <label class="input-helper">Gmail:</label>
+            <label class="input-helper">Email</label>
             <input
               type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
+              class="opacity-70 cursor-not-allowed text-gray-700 input-field"
               formControlName="email"
             />
-            <span class="text-primary">El mail no puede ser editado.</span>
+            <span class="text-primary text-sm">*El email no puede ser editado.</span>
           </div>
           } @else{
 
           <div class="input-group py-2">
             <label class="input-helper">Nombre</label>
-            <input
-              type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
-              formControlName="nombre"
-            />
+            <input type="text" class="input-field capitalize" formControlName="nombre" />
           </div>
 
           <div class="input-group py-2">
             <label class="input-helper">Apellido</label>
-            <input
-              type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
-              formControlName="apellido"
-            />
+            <input type="text" class="input-field capitalize" formControlName="apellido" />
           </div>
           <div class="input-group py-2">
-            <label class="input-helper">Gmail:</label>
-            <input
-              type="text"
-              class="bg-stone-100 border border-stone-300 rounded-[8px] px-3 py-2 text-gray-700"
-              formControlName="email"
-            />
+            <label class="input-helper">Email:</label>
+            <input type="text" class="input-field" formControlName="email" />
           </div>
           }
 
           <div class="flex flex-col gap-4 py-4">
-            <div class="flex flex-row gap-4">
+            <div class="flex flex-col gap-2">
               @if (!modoEditar() && !modoContrasenia()) {
               <button
                 type="button"
@@ -154,25 +123,38 @@
               >
                 Cambiar Contraseña
               </button>
-              }@else{
+              }@else{ @if(modoEditar()){
               <button
                 type="button"
-                class="btn btn-success btn-md flex-1"
+                [disabled]="!puedaGuardarPerfil"
+                class="btn btn-primary btn-sm flex-1"
                 (click)="guardarCambios()"
               >
-                Aceptar cambios
-              </button>
+                Guardar</button
+              >} @else {
               <button
                 type="button"
-                class="btn btn-danger btn-md flex-1"
+                [disabled]="perfilForm.invalid"
+                class="btn btn-primary btn-sm flex-1"
+                (click)="guardarCambios()"
+              >
+                Guardar
+              </button>
+              }
+
+              <button
+                type="button"
+                class="btn btn-outline btn-sm flex-1"
                 (click)="cancelarEdicion()"
               >
-                Cancelar cambios
+                Cancelar
               </button>
               }
             </div>
 
-            <button type="button" class="btn btn-danger btn-sm mt-5" (click)="authService.logout()">
+            <hr class="border border-border my-2" />
+
+            <button type="button" class="btn btn-danger btn-sm" (click)="authService.logout()">
               Cerrar sesión
             </button>
           </div>
@@ -187,16 +169,7 @@
 
   <!-- lado derecho de "mi perfil" -->
 
-  <div class="flex-2 flex flex-col mt-6 w-full">
-    <div class="flex justify-between items-center py-3">
-      @if (!authService.isAdmin()) {
-      <a class="btn btn-sm btn-primary" routerLink="/publicaciones/crear">+ Crear Publicación</a>
-
-      <h2 class="text-2xl font-semibold">Mis publicaciones</h2>
-
-      <!-- solamente Miembros (no admin) pueden crear publicaciones -->
-      }
-    </div>
+  <div class="flex-2 flex flex-col w-full">
     <!-- el primer if es para no mostrar NADA sobre publicaciones al Admin -->
     @if (!authService.isAdmin()) { @if (cargandoPublicaciones()) {
     <div class="flex justify-center items-center py-10">
@@ -204,7 +177,24 @@
     </div>
     } @else if (misPublicaciones().length > 0) {
     <div class="card p-4 bg-primary/5">
-      <p class="text-sm text-muted-foreground mb-4">Historial completo de tus publicaciones.</p>
+      @if (!authService.isAdmin()) {
+      <div class="flex flex-col md:flex-row justify-between items-center pb-1">
+        <h2 class="text-2xl font-semibold">Mis publicaciones</h2>
+        <!-- Texto solo mobile -->
+        <p class="text-sm text-muted-foreground mb-4 md:hidden">
+          Historial completo de tus publicaciones.
+        </p>
+        <a class="btn btn-sm btn-primary mb-4 md:mb-0" routerLink="/publicaciones/crear"
+          >+ Crear Publicación</a
+        >
+
+        <!-- solamente Miembros (no admin) pueden crear publicaciones -->
+      </div>
+      <!-- Texto solo desktop -->
+      <p class="text-sm text-muted-foreground mb-4 hidden md:block">
+        Historial completo de tus publicaciones.
+      </p>
+      }
       <app-publicacion-list [publicaciones]="misPublicaciones()" />
     </div>
     }
@@ -218,6 +208,10 @@
         Crear mi primera publicación
       </a>
     </div>
-    } }
+    } } @if (authService.isAdmin()) {
+    <div class="card p-8 text-center">
+      <p class="text-gray-500 mb-4">Como administrador no podés realizar publicaciones.</p>
+    </div>
+    }
   </div>
 </article>

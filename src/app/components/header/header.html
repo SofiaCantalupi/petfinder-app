@@ -1,5 +1,5 @@
-<header class="sticky h-header top-0 z-50 p-2.5 bg-primary/85 shadow-lg">
-  <div class="wrapper flex justify-between">
+<header class="sticky flex items-center h-header top-0 z-50 p-2.5 bg-primary/85 shadow-lg">
+  <div class="wrapper flex justify-between w-full">
     <div class="flex items-center">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -8,6 +8,7 @@
         version="1.0"
         viewBox="0 0 1024 1024"
         fill="#FFF"
+        class="size-[40px] md:size-[50px]"
       >
         <path
           d="M486.5 131.1c-83.2 8-159.1 54.6-202.1 124.2-19.8 32-31.6 65-38.1 106.7-2.4 15.7-2.4 54.7 0 70.3 6.9 44.5 20.7 79.2 52.5 131.8 46.5 77.1 173.2 272.4 192.9 297.3 9.3 11.8 13.7 15.6 19 16.3 8.8 1.2 14.3-3.6 30.5-26.2 22.7-31.6 108.5-164.2 173.1-267.5 48.3-77.2 64-118.9 66.3-176 3.8-91.8-42-182.2-117.6-232.5-51.5-34.3-115-50.3-176.5-44.4zm49.5 67c81.7 10.1 150.8 70.8 171.1 150.2 17.6 68.8-1.6 139.9-51.5 191.5-29.4 30.4-69.9 51.6-111.3 58.2-93.9 15-186.9-39.8-220.6-130-26.7-71.6-9.9-152.6 43.5-208.5 32.1-33.6 72.1-54.2 118.2-61 11.2-1.6 39.2-1.9 50.6-.4z"
@@ -17,14 +18,14 @@
         />
       </svg>
 
-      <span class="font-bold"
+      <span class="font-bold hidden sm:block"
         ><a routerLink="/login" class="hover:text-amber-800 transition-colors text-white"
           >PetFinder</a
         ></span
       >
     </div>
 
-    <ul class="flex flex-row justify-between items-center gap-5 font-semibold text-white">
+    <ul class="flex flex-row justify-between items-center gap-3 md:gap-5 font-semibold text-white">
       <li>
         <a routerLink="/publicaciones" class="hover:text-amber-800 transition-colors">Home</a>
       </li>
@@ -43,7 +44,7 @@
       }
 
       <li>
-        <a routerLink="/miPerfil" class="hover:text-amber-800 transition-colors">Mi Perfil</a>
+        <a routerLink="/perfil" class="hover:text-amber-800 transition-colors">Mi Perfil</a>
       </li>
     </ul>
   </div>

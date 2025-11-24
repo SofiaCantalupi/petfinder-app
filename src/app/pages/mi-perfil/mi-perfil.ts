@@ -87,6 +87,10 @@ export class MiPerfil implements OnInit {
 
     this.perfilForm.get('nombre')?.enable();
     this.perfilForm.get('apellido')?.enable();
+
+    // sirve para deshabilitar el buton de aceptar cambios hasta que se haya cambiado un valor
+    this.perfilForm.get('nombre')?.markAsPristine();
+    this.perfilForm.get('apellido')?.markAsPristine();
   }
 
   activarEditarContrasenia(): void {
@@ -97,6 +101,11 @@ export class MiPerfil implements OnInit {
     this.perfilForm.get('actual')?.enable();
     this.perfilForm.get('nueva')?.enable();
     this.perfilForm.get('confirmar')?.enable();
+
+    // Marcar como pristine al activar edición de contraseña
+    this.perfilForm.get('actual')?.markAsPristine();
+    this.perfilForm.get('nueva')?.markAsPristine();
+    this.perfilForm.get('confirmar')?.markAsPristine();
   }
 
   cancelarEdicion() {
@@ -166,6 +175,10 @@ export class MiPerfil implements OnInit {
             this.perfilForm.get('nombre')?.disable();
             this.perfilForm.get('apellido')?.disable();
             this.toastService.showToast('¡Perfil actualizado con éxito!', 'success', 5000);
+
+            //Marcar como pristine después de guardar
+            this.perfilForm.get('nombre')?.markAsPristine();
+            this.perfilForm.get('apellido')?.markAsPristine();
           },
           error: (err) => console.error('Error al actualizar:', err),
         });
@@ -184,6 +197,7 @@ export class MiPerfil implements OnInit {
           this.perfilForm.get('actual')?.disable();
           this.perfilForm.get('nueva')?.disable();
           this.perfilForm.get('confirmar')?.disable();
+
           this.errorPassword.set(''); // Limpiamos errores
           this.toastService.showToast('¡Contraseña actualizada con éxito!', 'success', 5000);
         },
@@ -208,5 +222,12 @@ export class MiPerfil implements OnInit {
         this.cargandoPublicaciones.set(false);
       },
     });
+  }
+
+  get puedaGuardarPerfil(): boolean | undefined {
+    const nombreControl = this.perfilForm.get('nombre');
+    const apellidoControl = this.perfilForm.get('apellido');
+
+    return this.perfilForm.valid && (nombreControl?.dirty || apellidoControl?.dirty);
   }
 }

@@ -53,6 +53,15 @@
       "rol": "usuario",
       "activo": false,
       "id": 6
+    },
+    {
+      "nombre": "Pedro",
+      "apellido": "Perez",
+      "email": "pedro@gmail.com",
+      "contrasenia": "Pedro12345!",
+      "rol": "usuario",
+      "activo": true,
+      "id": 7
     }
   ],
   "publicaciones": [
@@ -187,15 +196,168 @@
       "nombreMascota": "Solcito",
       "tipoMascota": "perro",
       "estadoMascota": "encontrado",
-      "urlFoto": "https://images.unsplash.com/photo-1615751072497-5f5169febe17?q=80&w=435&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "descripcion": "La encontramos asustada entre los autos",
+      "urlFoto": "https://images.pexels.com/photos/551628/pexels-photo-551628.jpeg",
+      "descripcion": "La encontramos asustada entre los autos. Tiene un collar con su nombre. No pudimos contactarnos con el numero que aparece en el collar. Cualquier informacion se agradece.",
       "fecha": "2025-11-22T19:10:37.100Z",
       "activo": true,
       "ubicacion": "3000, Belgrano, Centro, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, B7600DRN, Argentina",
       "latitud": "-37.9991882",
       "longitud": "-57.5521290",
       "id": 10
+    },
+    {
+      "idMiembro": "2",
+      "nombreMascota": "Carlos",
+      "tipoMascota": "perro",
+      "estadoMascota": "perdido",
+      "urlFoto": "https://images.pexels.com/photos/981062/pexels-photo-981062.jpeg",
+      "descripcion": "Buscamos a Carlos. Se le escapo a mi mujer cuando salia de casa. Salio corriendo y no llegamos a agarrarlo. Lo estamos buscando desesperadamente",
+      "fecha": "2025-11-22T23:28:54.407Z",
+      "activo": true,
+      "ubicacion": "230, Olazábal, Nueva Pompeya, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, B7600DRN, Argentina",
+      "latitud": "-37.9800286",
+      "longitud": "-57.5523754",
+      "id": 11
+    },
+    {
+      "idMiembro": "2",
+      "nombreMascota": "",
+      "tipoMascota": "gato",
+      "estadoMascota": "encontrado",
+      "urlFoto": "https://images.pexels.com/photos/20787/pexels-photo.jpg",
+      "descripcion": "Se metió en casa por la ventana. Se nota que tiene familia porque esta en buen estado y esta acostumbrado a dormir en la cama. No podemos tenerlo mucho tiempo porque no se lleva bien con mis perros. Tiene el pelaje gris y ojos verdes. Buscamos su familia o adopción responsable",
+      "fecha": "2025-11-22T23:31:43.349Z",
+      "activo": true,
+      "ubicacion": "4200, Avenida Colón, Plaza Peralta Ramos, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, 7600, Argentina",
+      "latitud": "-37.9954890",
+      "longitud": "-57.5662335",
+      "id": 12
+    },
+    {
+      "idMiembro": "2",
+      "nombreMascota": "",
+      "tipoMascota": "gato",
+      "estadoMascota": "encontrado",
+      "urlFoto": "https://images.pexels.com/photos/736532/pexels-photo-736532.jpeg",
+      "descripcion": "Apareció esta gatita en el trabajo de mi pareja. Creemos que es de un vecino. Buscamos su familia. Es anaranjada y parece adulta.",
+      "fecha": "2025-11-22T23:34:55.501Z",
+      "activo": true,
+      "ubicacion": "2100, Avenida Independencia, Centro, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, 7606, Argentina",
+      "latitud": "-37.9995141",
+      "longitud": "-57.5553390",
+      "id": 13
+    },
+    {
+      "idMiembro": "2",
+      "nombreMascota": "",
+      "tipoMascota": "perro",
+      "estadoMascota": "encontrado",
+      "urlFoto": "https://plus.unsplash.com/premium_photo-1668606717900-0ecf91e55655?q=80&w=465&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "descripcion": "Encontramos esta perrita en la playa el domingo a la tarde. Unos chicos que estan ahi nos dijeron que la habian visto con alguien, pero despues quedo sola. No sabemos si la dejaron ahi o se perdio. Ayuda ! Cualquier informacion comunicarse al 2330000000",
+      "fecha": "2025-11-22T23:38:12.919Z",
+      "activo": true,
+      "ubicacion": "Playa Bristol, Lomas de Stella Maris, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, Argentina",
+      "latitud": "-38.0041528",
+      "longitud": "-57.5404422",
+      "id": 14
+    },
+    {
+      "idMiembro": 1,
+      "nombreMascota": "Mochi",
+      "tipoMascota": "perro",
+      "estadoMascota": "perdido",
+      "urlFoto": "https://images.unsplash.com/photo-1560525821-d5615ef80c69?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "descripcion": "Busco a Mochi, mi perra de 4 años. En un descuido, se escapo mientras entraba el auto al garage. No esta acostumbrada a estar en la calle. No tenia collar con identificacion. Los vecinos la vieron por Gascon y San Juan",
+      "fecha": "2025-11-22T23:43:54.054Z",
+      "activo": true,
+      "ubicacion": "3900, Gascón, Don Bosco, Plaza Peralta Ramos, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, 7600, Argentina",
+      "latitud": "-37.9994370",
+      "longitud": "-57.5651740",
+      "id": 15
+    },
+    {
+      "idMiembro": 1,
+      "nombreMascota": "",
+      "tipoMascota": "gato",
+      "estadoMascota": "encontrado",
+      "urlFoto": "https://images.unsplash.com/photo-1574158622682-e40e69881006?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "descripcion": "Encontramos este gato atigrado en la puerta de mi casa. No parece callejero. Estaba asustado. Buscamos su familia o adopcion",
+      "fecha": "2025-11-22T23:46:15.821Z",
+      "activo": true,
+      "ubicacion": "3900, Matheu, Funes y San Lorenzo, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, B7602GGC, Argentina",
+      "latitud": "-38.0097100",
+      "longitud": "-57.5735060",
+      "id": 16
+    },
+    {
+      "idMiembro": 1,
+      "nombreMascota": "Pure",
+      "tipoMascota": "gato",
+      "estadoMascota": "reencontrado",
+      "urlFoto": "https://images.unsplash.com/photo-1491485880348-85d48a9e5312?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "descripcion": "Es gris y de tamaño mediano. No tenia hambre ni estaba sucio. Creemos que tiene familia. No tenia collar",
+      "fecha": "2025-11-22T23:48:36.008Z",
+      "activo": true,
+      "ubicacion": "3700, Garay, Plaza Peralta Ramos, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, 7600, Argentina",
+      "latitud": "-38.0028060",
+      "longitud": "-57.5651110",
+      "id": 17
+    },
+    {
+      "idMiembro": 7,
+      "nombreMascota": "Chiquito",
+      "tipoMascota": "perro",
+      "estadoMascota": "perdido",
+      "urlFoto": "https://images.unsplash.com/photo-1591160690555-5debfba289f0?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "descripcion": "Chiqui se perdio el sabado por la manana cuando lo sacamos a pasear. Es cachorro y no esta acostumbrado a estar suelto en la calle. Lo estamos buscando desesperadamente. Cualquier dato sirve. Dejo mi telefono 23333333",
+      "fecha": "2025-11-24T00:52:35.969Z",
+      "activo": true,
+      "ubicacion": "4500, Garay, Don Bosco, Plaza Peralta Ramos, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, 7600, Argentina",
+      "latitud": "-37.9987030",
+      "longitud": "-57.5731850",
+      "id": 18
     }
   ],
-  "comentarios": []
+  "comentarios": [
+    {
+      "texto": "Pobre Lupe, espero puedan encontrarla pronto",
+      "fechaPublicacion": "2025-11-22T23:32:30.203Z",
+      "activo": true,
+      "publicacionId": 2,
+      "miembroId": "2",
+      "miembroNombre": "Leonel",
+      "miembroApellido": "Benavides Colmeck",
+      "id": 1
+    },
+    {
+      "texto": "Vi un perrito muy parecido corriendo por Chaco y Ayacucho, se perdio el sabado a la mañana?",
+      "fechaPublicacion": "2025-11-22T23:39:39.518Z",
+      "activo": true,
+      "publicacionId": 11,
+      "miembroId": "2",
+      "miembroNombre": "Leonel",
+      "miembroApellido": "Benavides Colmeck",
+      "id": 2
+    },
+    {
+      "texto": "Difundo !!",
+      "fechaPublicacion": "2025-11-22T23:40:07.761Z",
+      "activo": true,
+      "publicacionId": 4,
+      "miembroId": "2",
+      "miembroNombre": "Leonel",
+      "miembroApellido": "Benavides Colmeck",
+      "id": 3
+    },
+    {
+      "texto": "Actualizacion: una chica lo vio por uruguay y castelli corriendo pero no pudo agarrarlo",
+      "fechaPublicacion": "2025-11-24T00:53:58.872Z",
+      "activo": true,
+      "publicacionId": 18,
+      "miembroId": 7,
+      "miembroNombre": "Pedro",
+      "miembroApellido": "Perez",
+      "id": 4
+    }
+  ]
 }

@@ -8,7 +8,6 @@ import { MiPerfil } from './pages/mi-perfil/mi-perfil';
 import { noAuthGuard } from './guards/no-auth-guard';
 import { authGuard } from './guards/auth-guard';
 import { YaLogeado } from './components/ya-logeado/ya-logeado';
-import { GuiaEstilo } from './prueba/guia-estilo/guia-estilo';
 import { PoliticasDeUso } from './pages/politicas-de-uso/politicas-de-uso';
 import { BorrarCuenta } from './components/borrar-cuenta/borrar-cuenta';
 import { publicacionActivaGuard } from './guards/publicacion-inactiva-guard';
@@ -52,23 +51,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'miPerfil',
+    path: 'perfil',
     component: MiPerfil,
     canActivate: [authGuard],
   },
   {
     path: 'yaLogeado',
     component: YaLogeado,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'miPerfil',
-    component: MiPerfil,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'guia',
-    component: GuiaEstilo,
     canActivate: [authGuard],
   },
   {
@@ -85,7 +74,7 @@ export const routes: Routes = [
     component: BorrarCuenta,
   },
   {
-    path: '*',
+    path: '**',
     redirectTo: 'login',
     pathMatch: 'full',
   },

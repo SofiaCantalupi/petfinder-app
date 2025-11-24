@@ -18,7 +18,7 @@
       <h3 class="font-semibold">Datos de la mascota:</h3>
 
       <div formGroupName="mascota">
-        <div class="input-group">
+        <div class="input-group mb-3">
           <label class="input-label" for="nombreMascota">Nombre:</label>
           <input
             class="input-field"
@@ -30,7 +30,7 @@
         </div>
 
         <!-- Estado Mascota -->
-        <div class="input-group">
+        <div class="input-group mb-3">
           <label class="input-label" for="estadoMascota">Estado:</label>
           <!-- Se utiliza ngClass para sumar la clase de error si el campo no es valido -->
           <select
@@ -58,7 +58,7 @@
         </div>
 
         <!-- Tipo Mascota -->
-        <div class="input-group">
+        <div class="input-group mb-3">
           <label class="input-label" for="tipoMascota">Tipo:</label>
           <select
             class="input-field"
@@ -70,7 +70,7 @@
             formControlName="tipoMascota"
             id="tipoMascota"
           >
-            <option value="">Seleccione...</option>
+            <option value="" class="text-accent">Seleccione...</option>
             @for (tipo of tiposMascota; track tipo.value) {
             <option [value]="tipo.value">
               {{ tipo.label }}
@@ -85,7 +85,7 @@
         </div>
 
         <!-- Foto -->
-        <div class="input-group">
+        <div class="input-group mb-3">
           <label class="input-label" for="urlFoto">URL de la foto:</label>
           <input
             class="input-field"
@@ -112,7 +112,7 @@
       </div>
 
       <!-- Seccion Descripcion -->
-      <div class="input-group">
+      <div class="input-group mb-3">
         <label class="input-label" for="descripcion">Descripción:</label>
         <textarea
           class="input-field"
@@ -168,22 +168,26 @@
           </ng-select>
         </label>
 
-         @if (publicacionForm.get("ubicacionQuery")?.invalid &&
-          publicacionForm.get("ubicacionQuery")?.touched) {
-            <p class="input-error">Debes ingresar una ubicación.</p>
-          }
+        @if (publicacionForm.get("ubicacionQuery")?.invalid &&
+        publicacionForm.get("ubicacionQuery")?.touched) {
+        <p class="input-error">Debes ingresar una ubicación.</p>
+        }
       </div>
     </div>
 
     <!-- Botones -->
     <div class="card-footer space-x-3 flex justify-center">
-      <button class="btn btn-primary btn-md" type="submit" [disabled]="publicacionForm.invalid">
+      <button class="btn btn-primary btn-md" type="submit" [disabled]="!publicacionForm.valid || (esEdicion() && !publicacionForm.dirty)">
         {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
       </button>
 
-      <button class="btn btn-danger btn-md" [routerLink]="['/publicaciones', publicacionId()]">
+      @if(esEdicion()){
+      <button type="button" class="btn btn-danger btn-md" [routerLink]="['/publicaciones', publicacionId()]">
         Cancelar
       </button>
+      }@else {
+      <button type="button" class="btn btn-danger btn-md" [routerLink]="['/publicaciones']">Cancelar</button>
+      }
     </div>
   </form>
 </div>

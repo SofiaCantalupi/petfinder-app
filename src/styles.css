@@ -144,11 +144,11 @@
 }
 
 @utility btn-primary {
-  @apply btn bg-primary text-primary-foreground hover:opacity-70 focus-visible:ring-primary;
+  @apply btn bg-primary border-2 border-primary text-primary-foreground hover:opacity-70 focus-visible:ring-primary;
 }
 
 @utility btn-secondary {
-  @apply btn bg-secondary text-secondary-foreground hover:opacity-90 focus:ring-secondary;
+  @apply btn bg-secondary border-2 border-secondary text-secondary-foreground hover:opacity-90 focus:ring-secondary;
 }
 
 @utility btn-outline {
@@ -188,7 +188,7 @@
 }
 
 @utility input-field {
-  @apply w-full px-4 py-2 border-2 border-border rounded-lg bg-background text-foreground transition-all duration-200 focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary;
+  @apply w-full px-4 py-2 border-2 placeholder:text-gray-500 border-border rounded-lg bg-background text-foreground transition-all duration-200 focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary;
 }
 
 @utility input-error {

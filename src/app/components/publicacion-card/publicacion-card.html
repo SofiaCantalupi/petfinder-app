@@ -1,4 +1,9 @@
-<div class="card card-hover transition flex flex-col h-[462px] overflow-hidden">
+<div
+  class="card card-hover transition flex flex-col h-[462px] overflow-hidden"
+  [ngClass]="{
+    'grayscale-75 opacity-70': !publicacion().activo
+  }"
+>
   <div class="relative h-62 overflow-hidden bg-gray-50">
     <!-- tmb puede usarse object-contain para que se cvea toda la imagen, y el fondo restante del mismo color del bg -->
     <img
@@ -35,7 +40,7 @@
       <div class="flex justify-between -mb-2">
         <p class="text-sm text-gray-500 capitalize">{{ publicacion().tipoMascota }}</p>
 
-       <!--  svg gatito o perrito -->
+        <!--  svg gatito o perrito -->
         @if(publicacion().tipoMascota === 'gato'){
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +113,7 @@
         />
         <circle cx="12" cy="10" r="3" />
       </svg>
-      <p class="text-sm capitalize">{{ubicacionFormateada}}</p>
+      <p class="text-sm capitalize">{{ ubicacionFormateada }}</p>
     </div>
 
     <div class="flex items-center gap-2 text-gray-600">
