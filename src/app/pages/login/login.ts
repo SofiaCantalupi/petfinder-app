@@ -43,7 +43,7 @@ export class Login {
 
     //Uso los campos para armar el LoginRequestDTO.
     const LoginDto: LoginRequestDTO = {
-      email: email,
+      email: email.toLowerCase(),
       contrasenia: contrasenia,
     };
 
@@ -58,6 +58,4 @@ export class Login {
       },
     });
   }
-
-  olvidarContrasenia(): void {}
 }

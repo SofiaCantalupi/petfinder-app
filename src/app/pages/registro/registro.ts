@@ -84,7 +84,7 @@ export class Registro {
     const registroDto: RegistroRequestDTO = {
       nombre: nombre,
       apellido: apellido,
-      email: email,
+      email: email.toLowerCase(),
       contrasenia: contrasenia,
     };
 
