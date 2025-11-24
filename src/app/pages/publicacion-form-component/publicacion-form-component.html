@@ -142,6 +142,10 @@
       <!-- Seccion Datos Ubicacion -->
       <h3 class="font-semibold">Dirección:</h3>
 
+      <small class="text-gray-500">
+        Escribe el nombre de la calle y altura (ej: "Belgrano 1500")
+      </small>
+
       <!-- Ubicacion Query -->
       <div class="input-group">
         <label id="ubicacionQuery">
@@ -170,23 +174,33 @@
 
         @if (publicacionForm.get("ubicacionQuery")?.invalid &&
         publicacionForm.get("ubicacionQuery")?.touched) {
-        <p class="input-error">Debes ingresar una ubicación.</p>
+        <p class="input-error-text">Debes ingresar una ubicación.</p>
         }
       </div>
     </div>
 
     <!-- Botones -->
     <div class="card-footer space-x-3 flex justify-center">
-      <button class="btn btn-primary btn-md" type="submit" [disabled]="!publicacionForm.valid || (esEdicion() && !publicacionForm.dirty)">
+      <button
+        class="btn btn-primary btn-md"
+        type="submit"
+        [disabled]="!publicacionForm.valid || (esEdicion() && !publicacionForm.dirty)"
+      >
         {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
       </button>
 
       @if(esEdicion()){
-      <button type="button" class="btn btn-danger btn-md" [routerLink]="['/publicaciones', publicacionId()]">
+      <button
+        type="button"
+        class="btn btn-danger btn-md"
+        [routerLink]="['/publicaciones', publicacionId()]"
+      >
         Cancelar
       </button>
       }@else {
-      <button type="button" class="btn btn-danger btn-md" [routerLink]="['/publicaciones']">Cancelar</button>
+      <button type="button" class="btn btn-danger btn-md" [routerLink]="['/publicaciones']">
+        Cancelar
+      </button>
       }
     </div>
   </form>

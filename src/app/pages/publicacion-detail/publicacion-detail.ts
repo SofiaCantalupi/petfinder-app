@@ -10,10 +10,11 @@ import { DatePipe, NgClass } from '@angular/common';
 import { ToastService } from '../../services/toast-service';
 import { Map } from '../../components/map/map';
 import { formatUbicacion } from '../../utils';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-publicacion-detail',
-  imports: [ComentarioList, DatePipe, RouterLink, NgClass, Map],
+  imports: [ComentarioList, DatePipe, NgClass, Map],
   templateUrl: './publicacion-detail.html',
 })
 export class PublicacionDetail implements OnInit {
@@ -25,6 +26,7 @@ export class PublicacionDetail implements OnInit {
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private location = inject(Location);
 
   // signals
   publicacion = signal<Publicacion | null>(null);
@@ -86,13 +88,15 @@ export class PublicacionDetail implements OnInit {
   }
 
   navigateToUpdate() {
-    if (this.puedeEditar()) {
+    if (this.puedeEditar() && this.publicacion()?.activo) {
       const id = this.publicacion()?.id;
       this.router.navigate(['/publicaciones', id, 'editar']);
     }
   }
 
   deletePublicacion() {
+    if (!this.publicacion()?.activo) return;
+
     const publicacion = this.publicacion();
 
     if (!publicacion) {
@@ -114,6 +118,7 @@ export class PublicacionDetail implements OnInit {
   }
 
   irAComentarios() {
+    if (!this.publicacion()?.activo) return;
     // se obtiene el elemento html que representa el formulario
     const element = document.getElementById('formComentario');
     element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -122,6 +127,8 @@ export class PublicacionDetail implements OnInit {
 
   // metodo que cambiar el estadoMascota 'perdido' o 'encontrado' a 'reencontrado'
   cambiarEstadoAReencontrado() {
+    if (!this.publicacion()?.activo) return;
+
     const estado: EstadoMascota = 'reencontrado';
     const id = this.publicacion()?.id;
 
@@ -141,5 +148,9 @@ export class PublicacionDetail implements OnInit {
         },
       });
     }
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

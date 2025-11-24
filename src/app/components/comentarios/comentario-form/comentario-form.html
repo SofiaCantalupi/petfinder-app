@@ -1,4 +1,6 @@
-<div class="mt-8 border-t border-border pt-6">
+<!-- El form se muestra unicamente si la publicacion esta activa -->
+@if(publicacion()?.activo){
+  <div class="mt-8 border-t border-border pt-6">
   <h3 class="text-lg font-semibold text-text-secondary mb-4" id="formComentario">Agrega un comentario</h3>
 
   <form [formGroup]="comentarioForm" (ngSubmit)="onSubmit()">
@@ -33,3 +35,9 @@
   </form>
 </div>
 
+
+}@else{
+  <div class="mt-8 border-t border-border pt-6">
+    <p class="text-center">No se pueden realizar comentarios en esta publicación.</p>
+  </div>
+}
