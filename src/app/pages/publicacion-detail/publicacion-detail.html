@@ -213,7 +213,5 @@
 
 <!-- componente de comentarios con el form, solo se muestra si la publicacion esta activa -->
 @if (publicacion(); as pub) {
-  @if(publicacion()?.activo){
     <app-comentario-list [publicacionId]="pub.id" />
-  }
 }

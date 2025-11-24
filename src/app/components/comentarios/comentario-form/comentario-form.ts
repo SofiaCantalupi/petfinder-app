@@ -1,8 +1,10 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Comentario } from '../../../models/comentario';
 import { AuthService } from '../../../services/auth-service';
 import { NgClass } from '@angular/common';
+import { PublicacionService } from '../../../services/publicacion-service';
+import { Publicacion } from '../../../models/publicacion';
 
 @Component({
   selector: 'app-comentario-form',
@@ -10,12 +12,14 @@ import { NgClass } from '@angular/common';
   imports: [ReactiveFormsModule, NgClass],
   templateUrl: './comentario-form.html',
 })
-export class ComentarioForm {
+export class ComentarioForm implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private publicacionService = inject(PublicacionService);
 
   // Input: id de la publicacion donde se va a comentar
   publicacionId = input.required<number>();
+  publicacion = signal<Publicacion | undefined>(undefined);
 
   // Output: evento cuando se crea un comentario
   comentarioCreado = output<Omit<Comentario, 'id'>>();
@@ -24,6 +28,19 @@ export class ComentarioForm {
   comentarioForm = this.fb.nonNullable.group({
     texto: ['', [Validators.required, Validators.minLength(3)]],
   });
+
+  ngOnInit() {
+    this.publicacionService.getPublicacionById(this.publicacionId()).subscribe({
+      next: (pub) => {
+        if (pub) {
+          this.publicacion.set(pub);
+        }
+      },
+      error: (error) => {
+        console.log('Error obteniendo la publicacion', error);
+      },
+    });
+  }
 
   //si el form es invalido no hace nada
   onSubmit(): void {
