@@ -1,6 +1,6 @@
-<div class="max-w-3xl mx-auto mb-4">
+<div class="max-w-3xl mx-auto mb-4" >
   <!-- chevron svg -->
-  <a class="btn btn-sm bg-primary-foreground border-2" routerLink="/publicaciones">
+  <button type="button" class="btn btn-sm bg-primary-foreground border-2" (click)="goBack()">
     <svg
     xmlns="http://www.w3.org/2000/svg"
     width="16"
@@ -14,10 +14,13 @@
     class="lucide lucide-chevrons-left-icon lucide-chevrons-left"
   >
     <path d="m11 17-5-5 5-5" />
-  </svg>Atrás</a>
+  </svg>Atrás</button>
 </div>
 
-<div class="card max-w-3xl mx-auto relative w-full shadow-md">
+<div class="card max-w-3xl mx-auto relative w-full shadow-md"
+[ngClass]="{
+    'grayscale-75 opacity-70': !publicacion()?.activo
+  }">
   <!-- tag con estado de la mascota -->
   <span
     class="tag"
@@ -28,6 +31,16 @@
     }"
     >{{ publicacion()?.estadoMascota }}</span
   >
+
+   @if (!publicacion()?.activo) {
+    <span
+      class="absolute top-10 left-3 px-3 py-1 text-xs font-semibold bg-gray-600 text-white rounded-full uppercase"
+    >
+      Eliminada
+    </span>
+    }
+
+  
   <!-- Imagen -->
   <div class="grid grid-cols-1 md:grid-cols-2">
     <div class="h-90 w-full">
@@ -198,7 +211,9 @@
   }
 </div>
 
-<!-- renderizacion de los comentarios de la publicacion -->
+<!-- componente de comentarios con el form, solo se muestra si la publicacion esta activa -->
 @if (publicacion(); as pub) {
-<app-comentario-list [publicacionId]="pub.id" />
+  @if(publicacion()?.activo){
+    <app-comentario-list [publicacionId]="pub.id" />
+  }
 }
