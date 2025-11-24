@@ -29,7 +29,7 @@
     >{{ publicacion()?.estadoMascota }}</span
   >
   <!-- Imagen -->
-  <div class="grid grid-cols-2">
+  <div class="grid grid-cols-1 md:grid-cols-2">
     <div class="h-90 w-full">
       <img
         class="size-full object-cover"
@@ -112,7 +112,7 @@
 
       <hr class="mt-6 border-1" />
 
-      <div class="flex flex-col mb-8 items-center justify-center flex-1">
+      <div class="flex flex-col mb-8 items-center justify-center flex-1 pt-6 md:pt-0">
         <!-- Boton para cambiar a estado reencontrado, solo se muestra si la pub pertenece a la persona loggeada, y el estado es perdido o encontrado -->
         @if(authService.estaLogeado() && puedeEditar() && publicacion()?.estadoMascota !==
         'reencontrado'){
