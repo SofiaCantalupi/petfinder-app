@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { NominatimSearchResult } from '../types/nominatim';
+import { NominatimSearchResult } from '../models/nominatim';
 
 @Injectable({
   providedIn: 'root',
