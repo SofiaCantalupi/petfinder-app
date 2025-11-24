@@ -53,6 +53,15 @@
       "rol": "usuario",
       "activo": false,
       "id": 6
+    },
+    {
+      "nombre": "Pedro",
+      "apellido": "Perez",
+      "email": "pedro@gmail.com",
+      "contrasenia": "Pedro12345!",
+      "rol": "usuario",
+      "activo": true,
+      "id": 7
     }
   ],
   "publicaciones": [
@@ -293,6 +302,20 @@
       "latitud": "-38.0028060",
       "longitud": "-57.5651110",
       "id": 17
+    },
+    {
+      "idMiembro": 7,
+      "nombreMascota": "Chiquito",
+      "tipoMascota": "perro",
+      "estadoMascota": "perdido",
+      "urlFoto": "https://images.unsplash.com/photo-1591160690555-5debfba289f0?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "descripcion": "Chiqui se perdio el sabado por la manana cuando lo sacamos a pasear. Es cachorro y no esta acostumbrado a estar suelto en la calle. Lo estamos buscando desesperadamente. Cualquier dato sirve. Dejo mi telefono 23333333",
+      "fecha": "2025-11-24T00:52:35.969Z",
+      "activo": true,
+      "ubicacion": "4500, Garay, Don Bosco, Plaza Peralta Ramos, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, 7600, Argentina",
+      "latitud": "-37.9987030",
+      "longitud": "-57.5731850",
+      "id": 18
     }
   ],
   "comentarios": [
@@ -325,6 +348,16 @@
       "miembroNombre": "Leonel",
       "miembroApellido": "Benavides Colmeck",
       "id": 3
+    },
+    {
+      "texto": "Actualizacion: una chica lo vio por uruguay y castelli corriendo pero no pudo agarrarlo",
+      "fechaPublicacion": "2025-11-24T00:53:58.872Z",
+      "activo": true,
+      "publicacionId": 18,
+      "miembroId": 7,
+      "miembroNombre": "Pedro",
+      "miembroApellido": "Perez",
+      "id": 4
     }
   ]
 }

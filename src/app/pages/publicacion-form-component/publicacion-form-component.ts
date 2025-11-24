@@ -15,7 +15,7 @@ import { GeocodingService } from '../../services/geocoding-service';
 import { NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
 import { Subject, Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
-import { NominatimSearchResult } from '../../types/nominatim';
+import { NominatimSearchResult } from '../../models/nominatim';
 import { formatUbicacion } from '../../utils';
 
 @Component({
@@ -92,14 +92,18 @@ export class PublicacionFormComponent implements OnInit {
   cargarFormulario(id: number) {
     this.publicacionService.getPublicacionById(id).subscribe({
       next: (publicacion) => {
-         this.publicacionForm.patchValue(this.mappearPublicacionAForm(publicacion));
+        this.publicacionForm.patchValue(this.mappearPublicacionAForm(publicacion));
         // se cargan los datos con lo retornado por el mappeo de la publicacion plana, a una estructura anidada
         this.buscarUbicacion(formatUbicacion(publicacion.ubicacion)).subscribe({
           next: (data) => {
             this.resultadoBusquedaUbicacion.set(data);
-             this.publicacionForm.get('ubicacionQuery')?.setValue(this.resultadoBusquedaUbicacion()[0]);
+            this.publicacionForm
+              .get('ubicacionQuery')
+              ?.setValue(this.resultadoBusquedaUbicacion()[0]);
           },
         });
+
+        this.publicacionForm.markAsPristine();
       },
       error: (error) => {
         console.log('Error cargando el formulario.', error);
@@ -107,6 +111,11 @@ export class PublicacionFormComponent implements OnInit {
         this.router.navigate(['/publicaciones']);
       },
     });
+  }
+
+  // metodo usado para ver si el form es valido y si cambio algun valor en los inputs
+  get puedeGuardar(): boolean {
+    return this.publicacionForm.valid && this.publicacionForm.dirty;
   }
 
   // metodo helper para convertir la estructura plana de la interfaz, a una anidada como la que requiere el formulario
@@ -174,6 +183,7 @@ export class PublicacionFormComponent implements OnInit {
           latitud,
           longitud,
         };
+
 
         // esto se tiene que cambiar en la integracion con spring boot
         if (this.esEdicion()) {

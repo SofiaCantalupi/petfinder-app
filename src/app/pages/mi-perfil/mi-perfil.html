@@ -17,11 +17,7 @@
 
           <div class="input-group py-2">
             <label class="input-helper">Ingresa tu contraseña actual</label>
-            <input
-              type="password"
-              class="input-field"
-              formControlName="actual"
-            />
+            <input type="password" class="input-field" formControlName="actual" />
             @if (perfilForm.get('actual')?.invalid && perfilForm.get('actual')?.touched) {
             <p class="input-error-text">Este campo es obligatorio.</p>
             } @if (errorPassword()) {
@@ -33,11 +29,7 @@
 
           <div class="input-group py-2">
             <label class="input-helper">Ingresa la nueva contraseña</label>
-            <input
-              type="password"
-              class="input-field"
-              formControlName="nueva"
-            />
+            <input type="password" class="input-field" formControlName="nueva" />
             <span>La contraseña debe tener al menos: <br /></span>
             <span class="input-helper"
               >- Ocho caracteres.<br />- Una letra mayúscula. <br />- Una letra minúscula. <br />-
@@ -54,11 +46,7 @@
 
           <div class="input-group py-2">
             <label class="input-helper">Confirma tu contraseña nueva</label>
-            <input
-              type="password"
-              class="input-field"
-              formControlName="confirmar"
-            />
+            <input type="password" class="input-field" formControlName="confirmar" />
             @if (perfilForm.get("confirmar")?.touched) {
             <p class="input-error-text">
               @if(perfilForm.get("confirmar")?.errors?.['required']){ Campo requerido. }
@@ -72,11 +60,7 @@
 
           <div class="input-group py-2">
             <label class="input-helper">Nombre</label>
-            <input
-              type="text"
-              class="input-field capitalize"
-              formControlName="nombre"
-            />
+            <input type="text" class="input-field capitalize" formControlName="nombre" />
             @if (perfilForm.get("nombre")?.invalid && perfilForm.get("nombre")?.touched) { @if
             (perfilForm.get("nombre")?.errors?.["required"]) {
             <p class="input-error-text">Campo requerido.</p>
@@ -87,11 +71,7 @@
 
           <div class="input-group py-2">
             <label class="input-helper">Apellido</label>
-            <input
-              type="text"
-              class="input-field capitalize"
-              formControlName="apellido"
-            />
+            <input type="text" class="input-field capitalize" formControlName="apellido" />
             @if (perfilForm.get("apellido")?.invalid && perfilForm.get("apellido")?.touched) { @if
             (perfilForm.get("apellido")?.errors?.["required"]) {
             <p class="input-error-text">Campo requerido.</p>
@@ -113,28 +93,16 @@
 
           <div class="input-group py-2">
             <label class="input-helper">Nombre</label>
-            <input
-              type="text"
-              class="input-field capitalize"
-              formControlName="nombre"
-            />
+            <input type="text" class="input-field capitalize" formControlName="nombre" />
           </div>
 
           <div class="input-group py-2">
             <label class="input-helper">Apellido</label>
-            <input
-              type="text"
-              class="input-field capitalize"
-              formControlName="apellido"
-            />
+            <input type="text" class="input-field capitalize" formControlName="apellido" />
           </div>
           <div class="input-group py-2">
             <label class="input-helper">Email:</label>
-            <input
-              type="text"
-              class="input-field"
-              formControlName="email"
-            />
+            <input type="text" class="input-field" formControlName="email" />
           </div>
           }
 
@@ -155,14 +123,25 @@
               >
                 Cambiar Contraseña
               </button>
-              }@else{
+              }@else{ @if(modoEditar()){
               <button
                 type="button"
+                [disabled]="!puedaGuardarPerfil"
+                class="btn btn-primary btn-sm flex-1"
+                (click)="guardarCambios()"
+              >
+                Guardar</button
+              >} @else {
+              <button
+                type="button"
+                [disabled]="perfilForm.invalid"
                 class="btn btn-primary btn-sm flex-1"
                 (click)="guardarCambios()"
               >
                 Guardar
               </button>
+              }
+
               <button
                 type="button"
                 class="btn btn-outline btn-sm flex-1"

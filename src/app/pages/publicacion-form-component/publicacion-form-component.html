@@ -177,16 +177,16 @@
 
     <!-- Botones -->
     <div class="card-footer space-x-3 flex justify-center">
-      <button class="btn btn-primary btn-md" type="submit" [disabled]="publicacionForm.invalid">
+      <button class="btn btn-primary btn-md" type="submit" [disabled]="!publicacionForm.valid || (esEdicion() && !publicacionForm.dirty)">
         {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
       </button>
 
       @if(esEdicion()){
-      <button class="btn btn-danger btn-md" [routerLink]="['/publicaciones', publicacionId()]">
+      <button type="button" class="btn btn-danger btn-md" [routerLink]="['/publicaciones', publicacionId()]">
         Cancelar
       </button>
       }@else {
-      <button class="btn btn-danger btn-md" [routerLink]="['/publicaciones']">Cancelar</button>
+      <button type="button" class="btn btn-danger btn-md" [routerLink]="['/publicaciones']">Cancelar</button>
       }
     </div>
   </form>
