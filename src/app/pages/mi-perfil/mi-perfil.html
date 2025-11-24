@@ -178,13 +178,22 @@
     } @else if (misPublicaciones().length > 0) {
     <div class="card p-4 bg-primary/5">
       @if (!authService.isAdmin()) {
-      <div class="flex justify-between items-center pb-1">
+      <div class="flex flex-col md:flex-row justify-between items-center pb-1">
         <h2 class="text-2xl font-semibold">Mis publicaciones</h2>
-        <a class="btn btn-sm btn-primary" routerLink="/publicaciones/crear">+ Crear Publicación</a>
+        <!-- Texto solo mobile -->
+        <p class="text-sm text-muted-foreground mb-4 md:hidden">
+          Historial completo de tus publicaciones.
+        </p>
+        <a class="btn btn-sm btn-primary mb-4 md:mb-0" routerLink="/publicaciones/crear"
+          >+ Crear Publicación</a
+        >
 
         <!-- solamente Miembros (no admin) pueden crear publicaciones -->
       </div>
-      <p class="text-sm text-muted-foreground mb-4">Historial completo de tus publicaciones.</p>
+      <!-- Texto solo desktop -->
+      <p class="text-sm text-muted-foreground mb-4 hidden md:block">
+        Historial completo de tus publicaciones.
+      </p>
       }
       <app-publicacion-list [publicaciones]="misPublicaciones()" />
     </div>
