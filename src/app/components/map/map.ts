@@ -21,7 +21,6 @@ export class Map implements OnInit {
     // Usa effect para reaccionar cuando publicacion cambie
     effect(() => {
       this.clearMarkers();
-      console.log(this.publicaciones)
       if (this.publicaciones()?.length !== 0 && this.map) {
         this.publicaciones()?.forEach((pub, _, lista) => {
           this.addMarker(Number(pub.latitud), Number(pub.longitud), pub);
