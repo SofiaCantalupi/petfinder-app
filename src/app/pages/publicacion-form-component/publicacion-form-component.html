@@ -1,0 +1,207 @@
+<div class="card max-w-3xl mx-auto">
+  <!-- Header del formulario -->
+  <div class="card-header">
+    <h2 class="card-title">{{ esEdicion() ? 'Editar publicación' : 'Crear una publicación' }}</h2>
+  </div>
+
+  @if(esEdicion()){
+  <p class="pt-2 text-center text-pretty">
+    Revisá los datos de tu publicación y cambiá lo que necesites. <br />
+    Al finalizar, tocá “Actualizar” para guardar los cambios.
+  </p>
+  }
+
+  <!-- Formulario -->
+  <form [formGroup]="publicacionForm" (ngSubmit)="onSubmit()">
+    <div class="card-body space-y-4 pb-16">
+      <!-- Seccion Datos Mascota -->
+      <h3 class="font-semibold">Datos de la mascota:</h3>
+
+      <div formGroupName="mascota">
+        <div class="input-group mb-3">
+          <label class="input-label" for="nombreMascota">Nombre:</label>
+          <input
+            class="input-field"
+            formControlName="nombreMascota"
+            type="text"
+            id="nombreMascota"
+            placeholder="Ingrese el nombre..."
+          />
+        </div>
+
+        <!-- Estado Mascota -->
+        <div class="input-group mb-3">
+          <label class="input-label" for="estadoMascota">Estado:</label>
+          <!-- Se utiliza ngClass para sumar la clase de error si el campo no es valido -->
+          <select
+            class="input-field"
+            [ngClass]="{
+              'input-error':
+                publicacionForm.get('mascota.estadoMascota')?.invalid &&
+                publicacionForm.get('mascota.estadoMascota')?.touched
+            }"
+            formControlName="estadoMascota"
+            id="estadoMascota"
+          >
+            <option value="">Seleccione...</option>
+            @for (estado of estadosMascotaFiltrados; track estado.value) {
+            <option [value]="estado.value">
+              {{ estado.label }}
+            </option>
+            }
+          </select>
+
+          @if (publicacionForm.get("mascota.estadoMascota")?.invalid &&
+          publicacionForm.get("mascota.estadoMascota")?.touched) {
+          <p class="input-error-text">Debe seleccionar una opción.</p>
+          }
+        </div>
+
+        <!-- Tipo Mascota -->
+        <div class="input-group mb-3">
+          <label class="input-label" for="tipoMascota">Tipo:</label>
+          <select
+            class="input-field"
+            [ngClass]="{
+              'input-error':
+                publicacionForm.get('mascota.tipoMascota')?.invalid &&
+                publicacionForm.get('mascota.tipoMascota')?.touched
+            }"
+            formControlName="tipoMascota"
+            id="tipoMascota"
+          >
+            <option value="" class="text-accent">Seleccione...</option>
+            @for (tipo of tiposMascota; track tipo.value) {
+            <option [value]="tipo.value">
+              {{ tipo.label }}
+            </option>
+            }
+          </select>
+
+          @if (publicacionForm.get("mascota.tipoMascota")?.invalid &&
+          publicacionForm.get("mascota.tipoMascota")?.touched) {
+          <p class="input-error-text">Debe seleccionar una opción.</p>
+          }
+        </div>
+
+        <!-- Foto -->
+        <div class="input-group mb-3">
+          <label class="input-label" for="urlFoto">URL de la foto:</label>
+          <input
+            class="input-field"
+            [ngClass]="{
+              'input-error':
+                publicacionForm.get('mascota.urlFoto')?.invalid &&
+                publicacionForm.get('mascota.urlFoto')?.touched
+            }"
+            formControlName="urlFoto"
+            type="url"
+            id="urlFoto"
+            placeholder="https://ejemplo.com/foto.jpg"
+          />
+
+          @if (publicacionForm.get("mascota.urlFoto")?.invalid &&
+          publicacionForm.get("mascota.urlFoto")?.touched) {
+          <p class="input-error-text">
+            @if(publicacionForm.get("mascota.urlFoto")?.errors?.['required']){ Este campo es
+            obligatorio. } @if(publicacionForm.get("mascota.urlFoto")?.errors?.['pattern']){ Debe
+            ser una dirección URL. }
+          </p>
+          }
+        </div>
+      </div>
+
+      <!-- Seccion Descripcion -->
+      <div class="input-group mb-3">
+        <label class="input-label" for="descripcion">Descripción:</label>
+        <textarea
+          class="input-field"
+          [ngClass]="{
+            'input-error':
+              publicacionForm.get('descripcion')?.invalid &&
+              publicacionForm.get('descripcion')?.touched
+          }"
+          formControlName="descripcion"
+          id="descripcion"
+          rows="4"
+          placeholder="Brinde una descripción relevante..."
+        ></textarea>
+
+        @if(publicacionForm.get("descripcion")?.invalid &&
+        publicacionForm.get("descripcion")?.touched){
+        <p class="input-error-text">
+          @if(publicacionForm.get("descripcion")?.errors?.['required']){ Este campo es obligatorio.
+          } @if(publicacionForm.get("descripcion")?.errors?.['minlength']) { La descripción debe
+          tener más de 10 caracteres. }
+          @if(publicacionForm.get("descripcion")?.errors?.['maxlength']) { La descripción no debe
+          superar los 500 caracteres. }
+        </p>
+        }
+      </div>
+
+      <!-- Seccion Datos Ubicacion -->
+      <h3 class="font-semibold">Dirección:</h3>
+
+      <small class="text-gray-500">
+        Escribe el nombre de la calle y altura (ej: "Belgrano 1500")
+      </small>
+
+      <!-- Ubicacion Query -->
+      <div class="input-group">
+        <label id="ubicacionQuery">
+          <ng-select
+            [items]="resultadoBusquedaUbicacion()"
+            [editableSearchTerm]
+            [searchable]
+            bindLabel="display_name"
+            labelForId="ubicacionQuery"
+            placeholder="Ubicacion"
+            formControlName="ubicacionQuery"
+            [loading]="isBuscandoUbicacion()"
+            loadingText="Buscando ubicaciones..."
+            notFoundText="No hay resultados."
+            (search)="onSearchUbicacion($event.term)"
+            [searchFn]="returnTrue"
+          >
+            >
+            <ng-template ng-option-tmp let-item="item" let-search="searchTerm">
+              <div>
+                <p>{{ item.display_name }}</p>
+              </div>
+            </ng-template>
+          </ng-select>
+        </label>
+
+        @if (publicacionForm.get("ubicacionQuery")?.invalid &&
+        publicacionForm.get("ubicacionQuery")?.touched) {
+        <p class="input-error-text">Debes ingresar una ubicación.</p>
+        }
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="card-footer space-x-3 flex justify-center">
+      <button
+        class="btn btn-primary btn-md"
+        type="submit"
+        [disabled]="!publicacionForm.valid || (esEdicion() && !publicacionForm.dirty)"
+      >
+        {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
+      </button>
+
+      @if(esEdicion()){
+      <button
+        type="button"
+        class="btn btn-danger btn-md"
+        [routerLink]="['/publicaciones', publicacionId()]"
+      >
+        Cancelar
+      </button>
+      }@else {
+      <button type="button" class="btn btn-danger btn-md" [routerLink]="['/publicaciones']">
+        Cancelar
+      </button>
+      }
+    </div>
+  </form>
+</div>

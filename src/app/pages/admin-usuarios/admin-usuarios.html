@@ -1,0 +1,110 @@
+<div class="max-w-6xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Gestión de Usuarios</h1>
+    <a class="btn btn-outline btn-sm" routerLink="/publicaciones">Volver al Inicio</a>
+  </div>
+
+  <!-- Barra de búsqueda -->
+  <div class="card mb-6">
+    <div class="card-body">
+      <div class="input-group">
+        <label class="input-label" for="busqueda">Buscar por nombre o apellido:</label>
+        <input
+          type="text"
+          id="busqueda"
+          class="input-field"
+          placeholder="Ej: Juan Pérez"
+          [value]="busqueda()"
+          (input)="onBusquedaChange($event)"
+        />
+        <span class="input-helper"> Mostrando {{ miembrosFiltrados().length }} usuario(s) </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado de carga -->
+  @if (cargando()) {
+  <div class="flex justify-center items-center py-20">
+    <p class="text-gray-500 text-lg">Cargando usuarios...</p>
+  </div>
+  }
+
+  <!-- Lista de usuarios -->
+  @else if (miembrosFiltrados().length > 0) {
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (miembro of miembrosFiltrados(); track miembro.id) {
+    <div class="card card-hover">
+      <div class="card-body">
+        <!-- Avatar -->
+        <div class="flex items-center gap-4 mb-4">
+          <div
+            class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xl"
+          >
+            {{ miembro.nombre.charAt(0).toUpperCase()
+            }}{{ miembro.apellido.charAt(0).toUpperCase() }}
+          </div>
+          <div class="flex-1">
+            <h3 class="font-semibold text-lg capitalize">{{ miembro.nombre }} {{ miembro.apellido }}</h3>
+            <p class="text-sm text-muted-foreground">{{ miembro.email }}</p>
+          </div>
+        </div>
+
+        <!-- Badge de rol -->
+        <div class="mb-4">
+          <span
+            class="px-3 py-1 text-xs font-semibold rounded-full"
+            [ngClass]="getRolBadgeClass(miembro.rol)"
+          >
+            {{ miembro.rol === 'administrador' ? 'Administrador' : 'Usuario' }}
+          </span>
+        </div>
+
+        <!-- Botón eliminar -->
+        <button
+          class="btn btn-danger btn-sm w-full"
+          (click)="confirmarEliminacion(miembro)"
+          [disabled]="eliminando() === miembro.id"
+        >
+          @if (eliminando() === miembro.id) {
+          <span>Eliminando...</span>
+          } @else {
+          <span class="flex items-center gap-2"
+            >
+            Eliminar Usuario <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-trash2-icon lucide-trash-2"
+            >
+              <path d="M10 11v6" />
+              <path d="M14 11v6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+              <path d="M3 6h18" />
+              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg></span
+          >
+          }
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+  }
+
+  <!-- Sin resultados -->
+  @else {
+  <div class="card p-8 text-center">
+    <p class="text-gray-500 mb-2">No se encontraron usuarios</p>
+    @if (busqueda()) {
+    <p class="text-sm text-muted-foreground">Intenta con otro término de búsqueda</p>
+    <button class="btn btn-outline btn-sm mt-4" (click)="busqueda.set('')">Limpiar búsqueda</button>
+    }
+  </div>
+  }
+</div>

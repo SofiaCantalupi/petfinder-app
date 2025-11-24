@@ -1,0 +1,73 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { signal } from '@angular/core';
+import { Miembro } from '../models/miembro';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs';
+import { computed } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class MiembroService {
+  private http = inject(HttpClient);
+
+  private readonly urlApi = 'http://localhost:3000/miembros';
+
+  // Señal para muchos miembros
+  private miembrosState = signal<Miembro[]>([]);
+  public readonly miembros = this.miembrosState.asReadonly();
+
+  // Señal para un miembro individual
+  private miembroState = signal<Miembro | null>(null);
+  public readonly miembro = this.miembroState.asReadonly();
+
+  //Guarda el miembro presente en la señal MiembroState.
+  public readonly isLoaded = computed(() => this.miembro() !== null);
+  //Guarda el ID de ese miembro cargado.
+  public readonly miembroId = computed(() => this.miembro()?.id);
+
+  // obtener todos los miembros activos (para admin)
+  getAllMiembros(): Observable<Miembro[]> {
+    return this.http
+      .get<Miembro[]>(`${this.urlApi}?activo=true`)
+      .pipe(tap((miembros) => this.miembrosState.set(miembros)));
+  }
+  //Obtiene un miembro por ID y actualiza el state
+  getMiembroById(id: number): Observable<Miembro> {
+    return this.http
+      .get<Miembro>(`${this.urlApi}/${id}`)
+      .pipe(tap((miembro) => this.miembroState.set(miembro)));
+  }
+
+  //Carga el miembro desde localStorage (sesión activa)
+  cargarMiembroActual(): Observable<Miembro> | null {
+    const authData = localStorage.getItem('currentUser'); //Trae a una constante los datos que haya en el LocalStorage
+    if (!authData) return null; //Si esta vacio, retorna null.
+
+    try {
+      const { id } = JSON.parse(authData);
+      return this.getMiembroById(id); //Obtiene el miembro por su ID y lo retorna.
+    } catch (error) {
+      console.error('Error al parsear datos de auth:', error);
+      return null;
+    }
+  }
+  actualizarMiembro(id: number, cambios: Partial<Omit<Miembro, 'id'>>) {
+    return this.http.patch<Miembro>(`${this.urlApi}/${id}`, cambios).pipe(
+      tap((data) => {
+        this.miembrosState.update((miembros) => miembros.map((m) => (m.id === id ? data : m)));
+      })
+    );
+  }
+  // baja logica del miembro baneado
+  deleteMiembro(id: number): Observable<Miembro> {
+    const payload = { activo: false };
+
+    return this.http.patch<Miembro>(`${this.urlApi}/${id}`, payload).pipe(
+      tap(() => {
+        this.miembrosState.update((miembros) => miembros.filter((m) => m.id !== id));
+      })
+    );
+  }
+}

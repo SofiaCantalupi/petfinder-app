@@ -1,0 +1,25 @@
+<div
+  #swiperContainer
+  class="swiper relative w-full pb-8! [--swiper-navigation-color:var(--color-primary)]"
+>
+  <div class="swiper-wrapper">
+    @for (pub of publicaciones(); track pub.id) {
+    <div class="swiper-slide flex justify-center">
+      <div class="bg-white w-full border shadow-md border-border rounded-xl">
+        <div class="rounded-xl overflow-hidden">
+          <img [src]="pub.urlFoto" [alt]="pub.nombreMascota" class="w-full h-40 object-cover" />
+          <div class="p-3">
+            <h3 class="text-center font-semibold text-gray-800">
+              {{ pub.nombreMascota || '&nbsp;' }}
+            </h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Botones -->
+  <div class="swiper-button-next tex"></div>
+  <div class="swiper-button-prev"></div>
+</div>

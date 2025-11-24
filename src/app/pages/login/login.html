@@ -1,0 +1,123 @@
+<div class="min-h-screen flex items-center justify-center bg-paw-pattern text-foreground -mt-8">
+  <div class="flex flex-col md:flex-row w-full min-h-screen">
+    <div class=" relative flex-1 flex flex-col justify-center items-center text-foreground p-10">
+      <h1 class="text-5xl font-bold tracking-wide mb-4">PetFinder</h1>
+      <p class="max-w-md text-lg opacity-90 leading-relaxed text-center text-pretty">
+        Ayudamos a reunir mascotas perdidas con sus familias. Encontrá, reportá y compartí — todo en
+        un solo lugar.
+      </p>
+      <app-cat-astronaut-animation ngClass="w-full max-w-[300px] hidden md:block h-auto mx-auto"></app-cat-astronaut-animation>
+    </div>
+
+    <div class="flex-1 flex items-center justify-center">
+      <div class="card w-full max-w-md">
+        <div class="card-header">
+          <h2 class="card-title text-3xl">Iniciar sesión</h2>
+          <p class="text-sm text-muted-foreground text-center mt-1">
+            Accedé a tu cuenta para continuar
+          </p>
+        </div>
+
+        <div class="card-body">
+          <form class="flex flex-col gap-4" [formGroup]="logInForm" (ngSubmit)="onSubmit()">
+            <div class="input-group">
+              <label for="email" class="input-label">Correo electrónico</label>
+              <input
+                class="input-field placeholder:text-muted-foreground"
+                [ngClass]="{
+                  'input-error': logInForm.get('email')?.invalid && logInForm.get('email')?.touched
+                }"
+                formControlName="email"
+                placeholder="usuario@ejemplo.com"
+                type="email"
+                id="email"
+              />
+
+              @if (logInForm.get('email')?.invalid && logInForm.get('email')?.touched) {
+              <p class="input-error-text">
+                @if (logInForm.get('email')?.errors?.['required']) { Este campo es obligatorio. }
+                @if (logInForm.get('email')?.errors?.['email']) { El formato del correo no es
+                válido. }
+              </p>
+
+              }
+            </div>
+
+            <div class="input-group">
+              <label for="contrasenia" class="input-label">Contraseña</label>
+              <input
+                class="input-field placeholder:text-muted-foreground"
+                [ngClass]="{
+                  'input-error':
+                    logInForm.get('contrasenia')?.invalid && logInForm.get('contrasenia')?.touched
+                }"
+                formControlName="contrasenia"
+                placeholder="••••••••"
+                type="password"
+                id="contrasenia"
+              />
+              @if (logInForm.get('contrasenia')?.touched) {
+              <p class="input-error-text">
+                @if (logInForm.get('contrasenia')?.errors?.['required']) { Este campo es
+                obligatorio. }
+              </p>
+              }
+
+            </div>
+
+            <div class="relative inline-block group text-center">
+              <a class="text-sm text-primary hover:underline cursor-pointer">
+                ¿Olvidaste tu contraseña?
+              </a>
+
+              <div
+                class="absolute top-full right-0 mt-3 w-80 z-51 opacity-0 invisible translate-y-2.5 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300"
+              >
+                <div class="alert-popUp-info shadow-xl text-left">
+                  <svg class="alert-popUp-icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+
+                  <div class="alert-popUp-content">
+                    <div class="alert-popUp-title">Recuperar contraseña</div>
+                    <div class="alert-popUp-message">
+                      Contáctanos a: <b>petFinder@gmail.com</b> para recuperar tu cuenta.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              class="btn btn-primary btn-md mb-5"
+              type="submit"
+              [disabled]="logInForm.invalid"
+            >
+              Iniciar sesión
+            </button>
+          </form>
+          @if (errorMessage()) {
+          <div class="flex justify-center">
+            <span class="input-error-text text-center text-pretty"
+              >Upps...{{ errorMessage() }}</span
+            >
+          </div>
+          }
+        </div>
+
+        <div class="card-footer text-center">
+          <p class="text-sm text-muted-foreground">
+            ¿No tenés cuenta?
+            <a routerLink="/registro" class="text-primary hover:underline font-medium"
+              >Registrate</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

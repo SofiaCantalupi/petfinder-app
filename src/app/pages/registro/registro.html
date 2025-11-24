@@ -1,0 +1,164 @@
+<div class="min-h-screen flex items-center justify-center bg-paw-pattern text-foreground">
+  <div class="flex flex-col md:flex-row w-full min-h-screen">
+     <div class=" relative flex-1 flex flex-col justify-center items-center text-foreground p-10">
+      <h1 class="text-5xl font-bold tracking-wide mb-4">PetFinder</h1>
+      <p class="max-w-md text-lg opacity-90 leading-relaxed text-center text-pretty">
+        Ayudamos a reunir mascotas perdidas con sus familias. Encontrá, reportá y compartí — todo en
+        un solo lugar.
+      </p>
+      <app-cat-astronaut-animation ngClass="w-full max-w-[300px] hidden md:block h-auto mx-auto"></app-cat-astronaut-animation>
+    </div>
+
+    <div class="flex-1 flex items-center justify-center">
+      <div class="card w-full max-w-md">
+        <div class="card-header">
+          <h2 class="card-title text-3xl">Crear cuenta</h2>
+          <p class="text-sm text-muted-foreground text-center mt-1">
+            Registrate para comenzar a ayudar
+          </p>
+        </div>
+
+        <div class="card-body">
+          <form class="flex flex-col gap-4" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="input-group">
+              <label for="nombre" class="input-label">Nombre</label>
+              <input
+                class="input-field placeholder:text-muted-foreground"
+                [ngClass]="{
+                  'input-error':
+                    registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched
+                }"
+                formControlName="nombre"
+                placeholder="Ingresá tu nombre..."
+                type="text"
+                id="nombre"
+              />
+              @if (registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched) {
+              <p class="input-error-text">
+                @if (registerForm.get('nombre')?.errors?.['required']) { Este campo es obligatorio.
+                } @if (registerForm.get('nombre')?.errors?.['minlength']) { El nombre debe tener al
+                menos tres caracteres. }
+              </p>
+              }
+            </div>
+
+            <div class="input-group">
+              <label for="apellido" class="input-label">Apellido</label>
+              <input
+                class="input-field placeholder:text-muted-foreground"
+                [ngClass]="{
+                  'input-error':
+                    registerForm.get('apellido')?.invalid && registerForm.get('apellido')?.touched
+                }"
+                formControlName="apellido"
+                placeholder="Ingresá tu apellido..."
+                type="text"
+                id="apellido"
+              />
+              @if (registerForm.get('apellido')?.invalid && registerForm.get('apellido')?.touched) {
+              <p class="input-error-text">
+                @if (registerForm.get('apellido')?.errors?.['required']) { Este campo es
+                obligatorio. } @if (registerForm.get('apellido')?.errors?.['minlength']) { El
+                apellido debe tener al menos tres caracteres. }
+              </p>
+              }
+            </div>
+
+            <div class="input-group">
+              <label for="email" class="input-label">Correo electrónico</label>
+              <input
+                class="input-field placeholder:text-muted-foreground"
+                [ngClass]="{
+                  'input-error':
+                    registerForm.get('email')?.invalid && registerForm.get('email')?.touched
+                }"
+                formControlName="email"
+                placeholder="usuario@ejemplo.com"
+                type="email"
+                id="email"
+              />
+              @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+              <p class="input-error-text">
+                @if (registerForm.get('email')?.errors?.['required']) { Este campo es obligatorio. }
+                @if (registerForm.get('email')?.errors?.['email']) { El formato del correo no es
+                válido. }
+              </p>
+              }
+            </div>
+
+            <div class="input-group">
+              <label for="contrasenia" class="input-label">Contraseña</label>
+              <input
+                class="input-field placeholder:text-muted-foreground"
+                [ngClass]="{
+                  'input-error':
+                    registerForm.get('contrasenia')?.invalid &&
+                    registerForm.get('contrasenia')?.touched
+                }"
+                formControlName="contrasenia"
+                placeholder="••••••••"
+                type="password"
+                id="contrasenia"
+              />
+              @if (registerForm.get('contrasenia')?.touched) {
+              <p class="input-error-text">
+                @if (registerForm.get('contrasenia')?.errors?.['required']) { Este campo es
+                obligatorio. } @if (registerForm.get('contrasenia')?.errors?.['pattern']) { La
+                contraseña no cumple con los requisitos }
+              </p>
+              }
+              <span class="mt-4">La contraseña debe tener al menos: <br /></span>
+              <span class="input-helper"
+                >- Ocho caracteres.<br />- Una letra mayúscula. <br />- Una letra minúscula. <br />-
+                Un número.<br />- Un carácter especial (!%$&_@).</span
+              >
+            </div>
+
+            <div class="input-group">
+              <label for="confirmarContrasenia" class="input-label">Confirmar contraseña</label>
+              <input
+                class="input-field placeholder:text-muted-foreground"
+                [ngClass]="{
+                  'input-error':
+                    registerForm.get('confirmarContrasenia')?.invalid &&
+                    registerForm.get('confirmarContrasenia')?.touched
+                }"
+                formControlName="confirmarContrasenia"
+                placeholder="••••••••"
+                type="password"
+                id="confirmarContrasenia"
+              />
+              @if (registerForm.get('confirmarContrasenia')?.touched) {
+              <p class="input-error-text">
+                @if (registerForm.get('confirmarContrasenia')?.errors?.['required']) { Este campo es
+                obligatorio. } @if (registerForm.get('confirmarContrasenia')?.errors?.['mismatch'])
+                { Las contraseñas no coinciden. }
+              </p>
+              }
+            </div>
+
+            <button class="btn btn-primary btn-md" type="submit" [disabled]="registerForm.invalid">
+              Crear cuenta
+            </button>
+          </form>
+          @if (errorMessage()) {
+          <div class="flex justify-center m-3">
+            <span class="input-error-text text-center text-pretty font-extrabold"
+              >Upps...{{ errorMessage() }}</span
+            >
+          </div>
+          }
+        </div>
+
+        <div class="card-footer text-center">
+          <p class="text-sm text-muted-foreground">
+            ¿Ya tenés cuenta?
+            <a routerLink="/login" class="text-primary hover:underline font-medium"
+              >Iniciá sesión</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
