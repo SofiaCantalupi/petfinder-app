@@ -77,7 +77,6 @@ export const routes: Routes = [
   {
     path: 'guia-estilo',
     component: GuiaEstilo,
-    canActivate: [authGuard],
   },
   {
     path: '**',

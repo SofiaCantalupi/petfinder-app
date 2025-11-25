@@ -74,10 +74,16 @@ export class AdminUsuarios implements OnInit {
         `ESTA ACCIÓN NO SE PUEDE DESHACER.`
     );
 
-    if (confirmacion) {
-      this.miembroService.eliminarMiembro(miembro);
-      setTimeout(()=> this.cargarMiembros(),100);
-    }
+    this.miembroService.eliminarMiembro(miembro).subscribe({
+      next: () => {
+        // Actualiza la señal local directamente
+        this.miembros.update(lista => lista.filter(m => m.id !== miembro.id));
+        this.eliminando.set(null);
+      },
+      error: () => {
+        this.eliminando.set(null);
+      }
+    });
   }
 
   getRolBadgeClass(rol: string): string {

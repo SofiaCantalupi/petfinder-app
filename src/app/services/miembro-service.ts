@@ -2,13 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { Miembro } from '../models/miembro';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, map, Observable, throwError } from 'rxjs';
 import { tap } from 'rxjs';
 import { computed } from '@angular/core';
 import { DATABASE_BASE_URL } from '../constants';
 import { PublicacionService } from './publicacion-service';
 import { ComentarioService } from './comentario-service';
 import { ToastService } from './toast-service';
+import { switchMap } from 'rxjs';
+import { catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -79,36 +81,28 @@ export class MiembroService {
     );
   }
 
-  eliminarMiembro(miembro: Miembro): void {
-      // primero: Eliminar comentarios del miembro
-      // segundo: Eliminar publicaciones del miembro
-      // tercero: Eliminar el miembro
-      forkJoin({
-        comentarios: this.comentarioService.deleteComentariosByMiembro(miembro.id),
-        publicaciones: this.publicacionService.deletePublicacionesByMiembro(miembro.id),
-      }).subscribe({
-        next: ({ comentarios, publicaciones }) => {
-          console.log(`Eliminados ${comentarios.length} comentarios`);
-          console.log(`Eliminadas ${publicaciones.length} publicaciones`);
-  
-          // aca elimina el miembro
-          this.darDeBajaMiembro(miembro.id).subscribe({
-            next: () => {
-              this.toastService.showToast(
-                `Usuario ${miembro.nombre} ${miembro.apellido} eliminado correctamente`,
-                'success'
-              );
-            },
-            error: (error) => {
-              console.error('Error eliminando miembro:', error);
-              this.toastService.showToast('Error al eliminar usuario', 'error');
-            },
-          });
-        },
-        error: (error) => {
-          console.error('Error eliminando datos relacionados:', error);
-          this.toastService.showToast('Error al eliminar datos del usuario', 'error');
-        },
-      });
-    }
+  eliminarMiembro(miembro: Miembro): Observable<void> {
+  return forkJoin({
+    comentarios: this.comentarioService.deleteComentariosByMiembro(miembro.id),
+    publicaciones: this.publicacionService.deletePublicacionesByMiembro(miembro.id),
+  }).pipe(
+    switchMap(({ comentarios, publicaciones }) => {
+      console.log(`Eliminados ${comentarios.length} comentarios`);
+      console.log(`Eliminadas ${publicaciones.length} publicaciones`);
+      return this.darDeBajaMiembro(miembro.id);
+    }),
+    tap(() => {
+      this.toastService.showToast(
+        `Usuario ${miembro.nombre} ${miembro.apellido} eliminado correctamente`,
+        'success'
+      );
+    }),
+    catchError((error) => {
+      console.error('Error eliminando:', error);
+      this.toastService.showToast('Error al eliminar usuario', 'error');
+      return throwError(() => error);
+    }),
+    map(() => void 0) // retorna void
+  );
+}
 }

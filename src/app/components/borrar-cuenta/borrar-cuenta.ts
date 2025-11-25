@@ -34,8 +34,9 @@ export class BorrarCuenta {
       const miembro = localStorage.getItem('currentUser');
       if (miembro) {
         this.miembroActual = JSON.parse(miembro);
-        this.miembroService.eliminarMiembro(this.miembroActual);
-        this.authService.logout();
+        this.miembroService.eliminarMiembro(this.miembroActual).subscribe({
+          next: () => this.authService.logout(),
+        });
       } else {
         this.toastService.showToast('No se pudo identificar al usuario.', 'error', 5000);
         this.router.navigate(['/login']);
@@ -46,5 +47,4 @@ export class BorrarCuenta {
       this.confirmarError.set(true);
     }
   }
-
 }
