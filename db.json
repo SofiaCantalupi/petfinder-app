@@ -62,6 +62,33 @@
       "rol": "usuario",
       "activo": true,
       "id": 7
+    },
+    {
+      "nombre": "Juana",
+      "apellido": "Juarez",
+      "email": "juana@gmail.com",
+      "contrasenia": "Juana12345!",
+      "rol": "usuario",
+      "activo": true,
+      "id": 8
+    },
+    {
+      "nombre": "Ruben",
+      "apellido": "Rubens",
+      "email": "ruben@gmail.com",
+      "contrasenia": "Ruben12345!",
+      "rol": "usuario",
+      "activo": true,
+      "id": 9
+    },
+    {
+      "nombre": "Ana Maria",
+      "apellido": "Martinez",
+      "email": "maria@gmail.com",
+      "contrasenia": "Maria12345!",
+      "rol": "usuario",
+      "activo": true,
+      "id": 10
     }
   ],
   "publicaciones": [
@@ -358,6 +385,48 @@
       "latitud": "-38.0344360",
       "longitud": "-57.5591980",
       "id": 21
+    },
+    {
+      "idMiembro": 8,
+      "nombreMascota": "Lola",
+      "tipoMascota": "perro",
+      "estadoMascota": "perdido",
+      "urlFoto": "https://plus.unsplash.com/premium_photo-1694819671756-01de7273a3fd?q=80&w=2024&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "descripcion": "Lola se escapo hoy a la tarde casa cuando sacabamos el auto del garage. Se asusto y salio corriendo. No pudimos alcanzarla. Es cachorra y tenia el collar de la foto. Estamos muy tristes. Cualquier informacion es de ayuda.",
+      "fecha": "2025-11-25T02:31:59.042Z",
+      "activo": true,
+      "ubicacion": "4300, Castelli, Don Bosco, Plaza Peralta Ramos, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, B7602GGC, Argentina",
+      "latitud": "-38.0005330",
+      "longitud": "-57.5717610",
+      "id": 22
+    },
+    {
+      "idMiembro": 9,
+      "nombreMascota": "",
+      "tipoMascota": "perro",
+      "estadoMascota": "encontrado",
+      "urlFoto": "https://plus.unsplash.com/premium_photo-1694819488591-a43907d1c5cc?q=80&w=414&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "descripcion": "Aparecio esta perrita en mi local, muy agitada. Tiene collar naranja. Buscamos su familia!!",
+      "fecha": "2025-11-25T02:35:30.953Z",
+      "activo": true,
+      "ubicacion": "4400, Belgrano, Don Bosco, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, 7600, Argentina",
+      "latitud": "-37.9920220",
+      "longitud": "-57.5661810",
+      "id": 23
+    },
+    {
+      "idMiembro": 10,
+      "nombreMascota": "Mickey",
+      "tipoMascota": "perro",
+      "estadoMascota": "perdido",
+      "urlFoto": "https://cdn.pixabay.com/photo/2020/05/24/17/29/dog-5215263_1280.jpg",
+      "descripcion": "Es el perro de mi mama. Se saco la correa hoy cuando lo paseaba. No esta acostumbrado a andar solo por la calle. Dejo mi celular por si tienen informacion: 22300000",
+      "fecha": "2025-11-25T02:41:14.338Z",
+      "activo": true,
+      "ubicacion": "3200, Vértiz, Colinas de Peralta Ramos, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, B7603AKW, Argentina",
+      "latitud": "-38.0497817",
+      "longitud": "-57.5512155",
+      "id": 24
     }
   ],
   "comentarios": [
@@ -420,6 +489,26 @@
       "miembroNombre": "Pedro",
       "miembroApellido": "Perez",
       "id": 6
+    },
+    {
+      "texto": "Lola esta conmigo! Aparecio hace unas horas en mi negocio, a unas cuadras de donde se perdio",
+      "fechaPublicacion": "2025-11-25T02:36:43.915Z",
+      "activo": true,
+      "publicacionId": 22,
+      "miembroId": 9,
+      "miembroNombre": "Ruben",
+      "miembroApellido": "Rubens",
+      "id": 7
+    },
+    {
+      "texto": "Que linda gatita... Esta en adopcion?",
+      "fechaPublicacion": "2025-11-25T03:09:57.291Z",
+      "activo": true,
+      "publicacionId": 5,
+      "miembroId": 10,
+      "miembroNombre": "Ana Maria",
+      "miembroApellido": "Martinez",
+      "id": 8
     }
   ]
 }

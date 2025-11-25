@@ -1,15 +1,12 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { inject } from '@angular/core';
 import { MiembroService } from '../../services/miembro-service';
-import { PublicacionService } from '../../services/publicacion-service';
-import { ComentarioService } from '../../services/comentario-service';
 import { AuthService } from '../../services/auth-service';
 import { ToastService } from '../../services/toast-service';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Miembro } from '../../models/miembro';
-import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-admin-usuarios',
@@ -19,8 +16,6 @@ import { forkJoin } from 'rxjs';
 })
 export class AdminUsuarios implements OnInit {
   private miembroService = inject(MiembroService);
-  private publicacionService = inject(PublicacionService);
-  private comentarioService = inject(ComentarioService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
 
@@ -80,47 +75,9 @@ export class AdminUsuarios implements OnInit {
     );
 
     if (confirmacion) {
-      this.eliminarMiembro(miembro);
+      this.miembroService.eliminarMiembro(miembro);
+      setTimeout(()=> this.cargarMiembros(),100);
     }
-  }
-
-  eliminarMiembro(miembro: Miembro): void {
-    this.eliminando.set(miembro.id);
-
-    // primero: Eliminar comentarios del miembro
-    // segundo: Eliminar publicaciones del miembro
-    // tercero: Eliminar el miembro
-    forkJoin({
-      comentarios: this.comentarioService.deleteComentariosByMiembro(miembro.id),
-      publicaciones: this.publicacionService.deletePublicacionesByMiembro(miembro.id),
-    }).subscribe({
-      next: ({ comentarios, publicaciones }) => {
-        console.log(`Eliminados ${comentarios.length} comentarios`);
-        console.log(`Eliminadas ${publicaciones.length} publicaciones`);
-
-        // aca elimina el miembro
-        this.miembroService.deleteMiembro(miembro.id).subscribe({
-          next: () => {
-            this.toastService.showToast(
-              `Usuario ${miembro.nombre} ${miembro.apellido} eliminado correctamente`,
-              'success'
-            );
-            this.eliminando.set(null);
-            this.cargarMiembros(); // Recargar lista
-          },
-          error: (error) => {
-            console.error('Error eliminando miembro:', error);
-            this.toastService.showToast('Error al eliminar usuario', 'error');
-            this.eliminando.set(null);
-          },
-        });
-      },
-      error: (error) => {
-        console.error('Error eliminando datos relacionados:', error);
-        this.toastService.showToast('Error al eliminar datos del usuario', 'error');
-        this.eliminando.set(null);
-      },
-    });
   }
 
   getRolBadgeClass(rol: string): string {
