@@ -316,6 +316,48 @@
       "latitud": "-37.9987030",
       "longitud": "-57.5731850",
       "id": 18
+    },
+    {
+      "idMiembro": 7,
+      "nombreMascota": "Tomi",
+      "tipoMascota": "gato",
+      "estadoMascota": "perdido",
+      "urlFoto": "https://images.unsplash.com/photo-1543852786-1cf6624b9987?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "descripcion": "Estamos buscando a Tomi, suele irse y volver en el día, pero desde ayer a la noche no aparece. Tenia el pañuelo de la foto. Es muy cariñoso y se deja acariciar. Mi celular es 223-10000",
+      "fecha": "2025-11-24T23:46:49.749Z",
+      "activo": true,
+      "ubicacion": "4100, 12 de Octubre, Villa Lourdes, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, B7600, Argentina",
+      "latitud": "-38.0378120",
+      "longitud": "-57.5534415",
+      "id": 19
+    },
+    {
+      "idMiembro": 7,
+      "nombreMascota": "Canela",
+      "tipoMascota": "gato",
+      "estadoMascota": "reencontrado",
+      "urlFoto": "https://images.unsplash.com/photo-1626602411112-10742f9a3ab8?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "descripcion": "Mi hijo encontró este gato en la puerta de casa, estaba asustado y se le subió a los brazos. Tiene familia ! Parece cachorro y esta recién castrado. Tenia el moño que se ve en la foto, pero sin numero ni nombre. Lo retenemos en casa hasta encontrarse los dueños. Ayuda",
+      "fecha": "2025-11-24T23:56:31.452Z",
+      "activo": true,
+      "ubicacion": "4100, 12 de Octubre, Villa Lourdes, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, B7600, Argentina",
+      "latitud": "-38.0378120",
+      "longitud": "-57.5534415",
+      "id": 20
+    },
+    {
+      "idMiembro": 7,
+      "nombreMascota": "Bruce",
+      "tipoMascota": "perro",
+      "estadoMascota": "encontrado",
+      "urlFoto": "https://images.unsplash.com/photo-1475954704693-ac6850a71ee0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTQzfHxwZXJyb3xlbnwwfHwwfHx8MA%3D%3D",
+      "descripcion": "Encontramos este perro en la plaza del barrio, tenia correa y collar. Llamamos al numero de la chapita pero no nos atienden. Los dueños tienen que estar buscándolo",
+      "fecha": "2025-11-25T00:01:22.534Z",
+      "activo": false,
+      "ubicacion": "500, Cerrito, Villa Lourdes, Mar del Plata, Partido de General Pueyrredón, Buenos Aires, B7600, Argentina",
+      "latitud": "-38.0344360",
+      "longitud": "-57.5591980",
+      "id": 21
     }
   ],
   "comentarios": [
@@ -358,6 +400,26 @@
       "miembroNombre": "Pedro",
       "miembroApellido": "Perez",
       "id": 4
+    },
+    {
+      "texto": "Vi una publicación de una perrita similar que encontraron cerca de esa zona",
+      "fechaPublicacion": "2025-11-24T23:52:26.505Z",
+      "activo": true,
+      "publicacionId": 2,
+      "miembroId": 7,
+      "miembroNombre": "Pedro",
+      "miembroApellido": "Perez",
+      "id": 5
+    },
+    {
+      "texto": "Era de un vecino ! esta en casa. Borro la publicacion",
+      "fechaPublicacion": "2025-11-25T00:02:13.937Z",
+      "activo": true,
+      "publicacionId": 21,
+      "miembroId": 7,
+      "miembroNombre": "Pedro",
+      "miembroApellido": "Perez",
+      "id": 6
     }
   ]
 }

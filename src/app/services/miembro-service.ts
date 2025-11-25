@@ -5,6 +5,7 @@ import { Miembro } from '../models/miembro';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs';
 import { computed } from '@angular/core';
+import { DATABASE_BASE_URL } from '../constants';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ import { computed } from '@angular/core';
 export class MiembroService {
   private http = inject(HttpClient);
 
-  private readonly urlApi = 'http://localhost:3000/miembros';
+  private readonly urlApi = `${DATABASE_BASE_URL}/miembros`;
 
   // Señal para muchos miembros
   private miembrosState = signal<Miembro[]>([]);
