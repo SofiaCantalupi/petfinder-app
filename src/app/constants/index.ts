@@ -1,4 +1,3 @@
-const IS_LOCAL = 'http://localhost:3000';
-const IS_REMOTE = 'https://json-server-pet-finder-app.vercel.app';
+import { environment } from '../../environments/environment';
 
-export const DATABASE_BASE_URL = IS_LOCAL;
+export const DATABASE_BASE_URL = environment.backendApiUrl;
