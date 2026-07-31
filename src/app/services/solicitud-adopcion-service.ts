@@ -7,8 +7,9 @@ import {
 } from '../models/solicitud-adopcion';
 import { HttpClient } from '@angular/common/http';
 import { PublicacionService } from './publicacion-service';
+import { MiembroService } from './miembro-service';
 import { AuthService } from './auth-service';
-import { tap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class SolicitudAdopcionService {
@@ -16,6 +17,7 @@ export class SolicitudAdopcionService {
   private readonly apiUrl = 'http://localhost:3000/solicitudes';
 
   private publicacionService = inject(PublicacionService);
+  private miembroService = inject(MiembroService);
   private authService = inject(AuthService);
 
   // Simula el GET
@@ -91,27 +93,32 @@ export class SolicitudAdopcionService {
       throw new Error('No se encontró la publicación con el id proporcionado.');
     }
 
-    const datosMock = {
-      estado: 'pendiente' as EstadoSolicitud,
-      fecha: new Date().toISOString(),
-      idMiembroSolicitante: miembro.id,
-      nombreCompletoSolicitante: `${miembro.nombre} ${miembro.apellido}`,
-      fechaResolucion: null,
-      comentarioResolucion: null,
-      motivoRechazo: null,
-      nombreMascota: publicacion.nombreMascota,
-      estadoMascota: publicacion.estadoMascota,
-      tipoMascota: publicacion.tipoMascota,
-      celular: dto.celular,
-    };
-
-    const payload = { ...dto, ...datosMock };
-
     // --- FIN BLOQUE MOCK ---
 
     // CAMBIAR Backend real: return this.http.post<SolicitudAdopcion>(this.apiUrl, dto)
 
-    return this.http.post<SolicitudAdopcion>(this.apiUrl, payload).pipe(
+    // se busca el miembro dueño de la publicacion para completar 'nombreCompletoMiembroPublicacion' (BLOQUE MOCK)
+    return this.miembroService.getMiembroById(publicacion.idMiembro).pipe(
+      switchMap((miembroPublicacion) => {
+        const datosMock = {
+          estado: 'pendiente' as EstadoSolicitud,
+          fecha: new Date().toISOString(),
+          idMiembroSolicitante: miembro.id,
+          nombreCompletoSolicitante: `${miembro.nombre} ${miembro.apellido}`,
+          nombreCompletoMiembroPublicacion: `${miembroPublicacion.nombre} ${miembroPublicacion.apellido}`,
+          fechaResolucion: null,
+          comentarioResolucion: null,
+          motivoRechazo: null,
+          nombreMascota: publicacion.nombreMascota,
+          estadoMascota: publicacion.estadoMascota,
+          tipoMascota: publicacion.tipoMascota,
+          celular: dto.celular,
+        };
+
+        const payload = { ...dto, ...datosMock };
+
+        return this.http.post<SolicitudAdopcion>(this.apiUrl, payload);
+      }),
       tap((data) => {
         this.solicitudesState.update((solicitudes) => [...solicitudes, data]);
       }),
