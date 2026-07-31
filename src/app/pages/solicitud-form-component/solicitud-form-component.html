@@ -146,8 +146,8 @@
       </div>
 
       <!-- Error del servidor -->
-      @if (errorMensaje) {
-      <p class="input-error-text text-center text-pretty">Upps...{{ errorMensaje }}</p>
+      @if (errorMensaje()) {
+      <p class="input-error-text text-center text-pretty">Upps...{{ errorMensaje() }}</p>
       }
     </div>
 
@@ -156,18 +156,12 @@
       <button
         class="btn btn-primary btn-md"
         type="submit"
-        [disabled]="solicitudForm.invalid || enviando"
+        [disabled]="solicitudForm.invalid || enviando()"
       >
-        {{ enviando ? 'Enviando...' : 'Enviar solicitud' }}
+        {{ enviando() ? 'Enviando...' : 'Enviar solicitud' }}
       </button>
 
-      <button
-        type="button"
-        class="btn btn-danger btn-md"
-        [routerLink]="['/publicaciones', idPublicacion]"
-      >
-        Cancelar
-      </button>
+      <button type="button" class="btn btn-danger btn-md" (click)="goBack()">Cancelar</button>
     </div>
   </form>
 </div>

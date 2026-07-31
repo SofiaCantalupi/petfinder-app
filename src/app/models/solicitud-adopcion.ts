@@ -17,6 +17,7 @@ export interface SolicitudAdopcion {
   celular: string;
   idMiembroSolicitante: number;
   nombreCompletoSolicitante: string;
+  nombreCompletoMiembroPublicacion: string;
 
   tipoHogar: TipoHogar;
   hayMascotaEnHogar: boolean;
