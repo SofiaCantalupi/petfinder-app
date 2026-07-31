@@ -3,6 +3,7 @@ import { MuroPublicaciones } from './pages/muro-publicaciones/muro-publicaciones
 import { PublicacionFormComponent } from './pages/publicacion-form-component/publicacion-form-component';
 import { PublicacionDetail } from './pages/publicacion-detail/publicacion-detail';
 import { SolicitudFormComponent } from './pages/solicitud-form-component/solicitud-form-component';
+import { ListadoSolicitudesAdopcion } from './pages/listado-solicitudes-adopcion/listado-solicitudes-adopcion';
 import { Login } from './pages/login/login';
 import { Registro } from './pages/registro/registro';
 import { MiPerfil } from './pages/mi-perfil/mi-perfil';
@@ -55,6 +56,11 @@ export const routes: Routes = [
   {
     path: 'publicaciones/:idPublicacion/solicitud-adopcion',
     component: SolicitudFormComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'solicitudes-adopcion',
+    component: ListadoSolicitudesAdopcion,
     canActivate: [authGuard],
   },
   {
