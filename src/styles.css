@@ -310,6 +310,10 @@
   @apply bg-chart-1;
 }
 
+@utility tag-en_adopcion {
+  @apply bg-[#F4E04D] text-gray-900;
+}
+
 /* Botones de filtros */
 
 @utility filter {
