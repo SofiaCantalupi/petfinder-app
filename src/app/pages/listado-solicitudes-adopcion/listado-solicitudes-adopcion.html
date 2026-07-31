@@ -28,7 +28,7 @@
               <td class="px-4 py-3 whitespace-nowrap">{{ solicitud.fecha | date : 'd MMM y' }}</td>
               <td class="px-4 py-3">{{ solicitud.nombreMascota || 'Sin nombre' }}</td>
               <td class="px-4 py-3 capitalize">{{ solicitud.estado }}</td>
-              <td class="px-4 py-3">{{ solicitud.nombreCompletoMiembroPublicacion }}</td>
+              <td class="px-4 py-3 capitalize">{{ solicitud.nombreCompletoMiembroPublicacion }}</td>
               <td class="px-4 py-3">
                 <div class="flex justify-center items-center gap-1.5">
                   <button
@@ -118,7 +118,7 @@
               <td class="px-4 py-3 whitespace-nowrap">{{ solicitud.fecha | date : 'd MMM y' }}</td>
               <td class="px-4 py-3">{{ solicitud.nombreMascota || 'Sin nombre' }}</td>
               <td class="px-4 py-3 capitalize">{{ solicitud.estado }}</td>
-              <td class="px-4 py-3">{{ solicitud.nombreCompletoSolicitante }}</td>
+              <td class="px-4 py-3 capitalize">{{ solicitud.nombreCompletoSolicitante }}</td>
               <td class="px-4 py-3">
                 <div class="flex justify-center items-center">
                   <button
