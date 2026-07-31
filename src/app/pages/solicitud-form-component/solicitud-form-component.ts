@@ -1,15 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { SolicitudAdopcionService} from '../../services/solicitud-adopcion-service';
 import { ToastService} from '../../services/toast-service';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { NgClass } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { Location, NgClass } from '@angular/common';
 import { TipoHogar } from '../../models/solicitud-adopcion';
 import { CrearSolicitudDto } from '../../models/solicitud-adopcion';
 
 @Component({
   selector: 'app-solicitud-form-component',
-  imports: [ReactiveFormsModule, NgClass, RouterLink],
+  imports: [ReactiveFormsModule, NgClass],
   templateUrl: './solicitud-form-component.html',
 })
 export class SolicitudFormComponent {
@@ -18,11 +18,11 @@ export class SolicitudFormComponent {
   private toastService = inject(ToastService);
 
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  private location = inject(Location);
 
   idPublicacion!: number;
-  enviando: boolean = false;
-  errorMensaje: string | null = null;
+  enviando = signal(false);
+  errorMensaje = signal<string | null>(null);
 
 
   solicitudForm: FormGroup = this.formBuilder.group({
@@ -63,8 +63,8 @@ export class SolicitudFormComponent {
       return;
     }
 
-    this.enviando = true;
-    this.errorMensaje = null;
+    this.enviando.set(true);
+    this.errorMensaje.set(null);
 
     const dto: CrearSolicitudDto = {
       idPublicacion: this.idPublicacion,
@@ -73,15 +73,20 @@ export class SolicitudFormComponent {
 
     this.solicitudService.crear(dto).subscribe({
       next: () => {
-        this.enviando = false;
-        this.router.navigate(['/solicitudes/enviadas']); 
+        this.enviando.set(false);
+        this.toastService.showToast('Solicitud de adopción enviada', 'success');
+        this.goBack();
       },
       error: (err) => {
-        this.enviando = false;
-        this.errorMensaje = 'No se pudo enviar la solicitud. Intentalo de nuevo.';
+        this.enviando.set(false);
+        this.errorMensaje.set('No se pudo enviar la solicitud. Intentalo de nuevo.');
         console.error('Error al crear solicitud:', err);
       },
     });
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 
 }
