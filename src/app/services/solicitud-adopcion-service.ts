@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { PublicacionService } from './publicacion-service';
 import { MiembroService } from './miembro-service';
 import { AuthService } from './auth-service';
-import { switchMap, tap } from 'rxjs';
+import { map, of, switchMap, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class SolicitudAdopcionService {
@@ -61,6 +61,10 @@ export class SolicitudAdopcionService {
         console.log('Error al obtener solicitudes de adopcion', error);
       },
     });
+  }
+
+  getSolicitudById(id: number) {
+    return this.http.get<SolicitudAdopcion>(`${this.apiUrl}/${id}`);
   }
 
   // Backend real: GET /solicitudes/recibidas?estado=...
@@ -135,6 +139,15 @@ export class SolicitudAdopcionService {
 
     // CAMBIAR return this.http.put<SolicitudAdopcion>(`${this.apiUrl}/estado/${id}`, resolucion).pipe(...)
     return this.http.patch<SolicitudAdopcion>(`${this.apiUrl}/${id}`, payload).pipe(
+      // si se aprueba la solicitud, la mascota de la publicacion pasa a estado "adoptado" (BLOQUE MOCK)
+      switchMap((data) => {
+        if (data.estado === 'aprobada') {
+          return this.publicacionService
+            .updateEstadoMascota(data.idPublicacion, 'adoptado')
+            .pipe(map(() => data));
+        }
+        return of(data);
+      }),
       tap((data) => {
         this.solicitudesState.update((solicitudes) =>
           solicitudes.map((s) => (s.id === id ? data : s))
