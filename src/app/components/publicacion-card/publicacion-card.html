@@ -20,6 +20,7 @@
         'tag-reencontrado': publicacion().estadoMascota === 'reencontrado',
         'tag-encontrado': publicacion().estadoMascota === 'encontrado',
         'tag-en_adopcion': publicacion().estadoMascota === 'en_adopcion',
+        'tag-adoptado': publicacion().estadoMascota === 'adoptado',
       }"
     >
       {{ publicacion().estadoMascota === 'en_adopcion' ? 'en adopción' : publicacion().estadoMascota }}

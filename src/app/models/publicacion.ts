@@ -1,5 +1,5 @@
 //Union type
-export type EstadoMascota = 'perdido' | 'encontrado' | 'reencontrado' | 'en_adopcion';
+export type EstadoMascota = 'perdido' | 'encontrado' | 'reencontrado' | 'en_adopcion' | 'adoptado';
 export type TipoMascota = 'perro' | 'gato';
 
 export interface Publicacion {
