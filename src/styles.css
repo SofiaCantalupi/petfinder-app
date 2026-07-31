@@ -314,6 +314,10 @@
   @apply bg-[#F4E04D] text-gray-900;
 }
 
+@utility tag-adoptado {
+  @apply bg-[#918EF4];
+}
+
 /* Botones de filtros */
 
 @utility filter {
