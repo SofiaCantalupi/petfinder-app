@@ -27,9 +27,11 @@
     [ngClass]="{
       'tag-perdido': publicacion()?.estadoMascota === 'perdido',
       'tag-encontrado': publicacion()?.estadoMascota === 'encontrado',
-      'tag-reencontrado': publicacion()?.estadoMascota === 'reencontrado'
+      'tag-reencontrado': publicacion()?.estadoMascota === 'reencontrado',
+      'tag-en_adopcion': publicacion()?.estadoMascota === 'en_adopcion'
     }"
-    >{{ publicacion()?.estadoMascota }}</span
+    >{{ publicacion()?.estadoMascota === 'en_adopcion' ? 'en adopción' : publicacion()?.estadoMascota
+    }}</span
   >
 
    @if (!publicacion()?.activo) {
@@ -137,6 +139,16 @@
         </button>
         }
 
+        <!-- boton para poner la mascota en adopcion, solo si el estado es encontrado y la publicacion pertenece a la persona loggeada -->
+        @if(puedePonerEnAdopcion()){
+        <button class="btn btn-md btn-primary w-fit" (click)="ponerEnAdopcion()">
+          Poner la mascota en adopción
+        </button>
+        <p class="input-helper text-center mt-1">
+          Esto habilitará a otros miembros interesados a enviar solicitudes de adopción.
+        </p>
+        }
+
         <!-- solo a los usuarios no propietarios de la publicacion -->
         @if(!puedeEliminar() && !puedeEditar()){
         <p class="text-sm mb-2 text-center font-semibold leading-[1.3]">
@@ -145,6 +157,16 @@
         <div class="flex justify-center items-center gap-1.5">
           <button class="btn btn-md btn-outline" (click)="irAComentarios()">Comentar</button>
         </div>
+        }
+
+        <!-- boton para solicitar adopcion, solo si la mascota esta en adopcion y el usuario no es el duenio -->
+        @if(puedeSolicitarAdopcion()){
+        <p class="text-sm mb-2 text-center font-semibold leading-[1.3]">
+          ¿Te gustaría darle un hogar a esta mascota?
+        </p>
+        <button class="btn btn-md btn-primary w-fit" (click)="irASolicitudAdopcion()">
+          Enviar solicitud de adopción
+        </button>
         }
       </div>
 
