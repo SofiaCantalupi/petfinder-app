@@ -1,0 +1,164 @@
+<div class="card max-w-3xl mx-auto">
+  <div class="card-header">
+    <h2 class="card-title">Detalle de la solicitud</h2>
+  </div>
+
+  @if (cargando()) {
+    <div class="card-body text-center py-12">
+      <p class="text-gray-500">Cargando solicitud...</p>
+    </div>
+  } @else if (solicitud(); as s) {
+    <div class="card-body space-y-4">
+      <!-- Datos de la publicacion -->
+      <h3 class="font-semibold">Publicación</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">Mascota:</span>
+          <p class="-mt-0.5">{{ s.nombreMascota || 'Sin nombre' }}</p>
+        </div>
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">Tipo de mascota:</span>
+          <p class="capitalize -mt-0.5">{{ s.tipoMascota }}</p>
+        </div>
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">Estado de la mascota:</span>
+          <p class="capitalize -mt-0.5">
+            {{ s.estadoMascota === 'en_adopcion' ? 'en adopción' : s.estadoMascota }}
+          </p>
+        </div>
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">Publicado por:</span>
+          <p class="capitalize -mt-0.5">{{ s.nombreCompletoMiembroPublicacion }}</p>
+        </div>
+      </div>
+
+      <a
+        [routerLink]="['/publicaciones', s.idPublicacion]"
+        class="text-primary hover:underline text-sm"
+        >Ver publicación completa</a
+      >
+
+      <hr class="border-border mt-4" />
+
+      <!-- Datos de la solicitud -->
+      <h3 class="font-semibold">Datos de la solicitud</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">Fecha de la solicitud:</span>
+          <p>{{ s.fecha | date: 'd MMM y, HH:mm' }}</p>
+        </div>
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">Estado:</span>
+          <p class="capitalize -mt-0.5">{{ s.estado }}</p>
+        </div>
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">Solicitante:</span>
+          <p class="capitalize -mt-0.5">{{ s.nombreCompletoSolicitante }}</p>
+        </div>
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">Celular de contacto:</span>
+          <p class="-mt-0.5">{{ s.celular }}</p>
+        </div>
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">Tipo de hogar:</span>
+          <p class="capitalize -mt-0.5">{{ s.tipoHogar }}</p>
+        </div>
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">¿Hay otra mascota en el hogar?:</span>
+          <p class="-mt-0.5">{{ s.hayMascotaEnHogar ? 'Sí' : 'No' }}</p>
+        </div>
+        @if (s.hayMascotaEnHogar) {
+          <div class="flex gap-1">
+            <span class="input-label shrink-0 text-gray-700">Tipo de mascota en el hogar:</span>
+            <p class="capitalize -mt-0.5">{{ s.tipoMascotasEnHogar }}</p>
+          </div>
+        }
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">¿Tiene patio?:</span>
+          <p class="-mt-0.5">{{ s.tienePatio ? 'Sí' : 'No' }}</p>
+        </div>
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700"
+            >Acepta las condiciones de adopción:</span
+          >
+          <p class="-mt-0.5">{{ s.aceptaCondiciones ? 'Sí' : 'No' }}</p>
+        </div>
+      </div>
+
+      @if (s.motivoAdopcion) {
+        <div class="flex gap-1">
+          <span class="input-label shrink-0 text-gray-700">Motivo de adopción:</span>
+          <p class="text-pretty -mt-0.5">{{ s.motivoAdopcion }}</p>
+        </div>
+      }
+
+      <!-- Resolucion, si ya fue resuelta -->
+      @if (s.estado !== 'pendiente') {
+        <hr class="border-border" />
+        <h3 class="font-semibold">Resolución</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          @if (s.fechaResolucion) {
+            <div class="flex gap-1">
+              <span class="input-label shrink-0 text-gray-700">Fecha de resolución:</span>
+              <p class="-mt-0.5">{{ s.fechaResolucion | date: 'd MMM y, HH:mm' }}</p>
+            </div>
+          }
+          @if (s.motivoRechazo) {
+            <div class="flex gap-1">
+              <span class="input-label shrink-0 text-gray-700">Motivo de rechazo:</span>
+              <p class="capitalize -mt-0.5">{{ s.motivoRechazo }}</p>
+            </div>
+          }
+        </div>
+        @if (s.comentarioResolucion) {
+          <div class="flex gap-1">
+            <span class="input-label shrink-0 text-gray-700">Comentario de resolución:</span>
+            <p class="text-pretty -mt-0.5">{{ s.comentarioResolucion }}</p>
+          </div>
+        }
+      }
+
+      <!-- Resolver la solicitud, solo si el usuario loggeado es el dueño de la publicacion -->
+      @if (puedeResolver()) {
+        <hr class="border-border" />
+        <h3 class="font-semibold">Resolver solicitud</h3>
+
+        <div class="flex gap-6">
+          <label class="flex items-center gap-2 input-label">
+            <input type="radio" name="resolucionEstado" #aceptarRadio checked />
+            Aceptar
+          </label>
+          <label class="flex items-center gap-2 input-label">
+            <input type="radio" name="resolucionEstado" #rechazarRadio />
+            Rechazar
+          </label>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="comentarioResolucion">Comentario (opcional):</label>
+          <textarea
+            #comentarioInput
+            class="input-field"
+            id="comentarioResolucion"
+            rows="3"
+            placeholder="Agregá un comentario para el solicitante..."
+          ></textarea>
+        </div>
+
+        <div class="flex justify-center">
+          <button
+            class="btn btn-primary btn-md"
+            [disabled]="resolviendo()"
+            (click)="resolver(aceptarRadio.checked ? 'aprobada' : 'rechazada', comentarioInput.value)"
+          >
+            {{ resolviendo() ? 'Procesando...' : 'Enviar resolucion' }}
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <div class="card-footer flex justify-center">
+    <button type="button" class="btn btn-outline btn-md" (click)="goBack()">Volver</button>
+  </div>
+</div>
