@@ -28,7 +28,8 @@
       'tag-perdido': publicacion()?.estadoMascota === 'perdido',
       'tag-encontrado': publicacion()?.estadoMascota === 'encontrado',
       'tag-reencontrado': publicacion()?.estadoMascota === 'reencontrado',
-      'tag-en_adopcion': publicacion()?.estadoMascota === 'en_adopcion'
+      'tag-en_adopcion': publicacion()?.estadoMascota === 'en_adopcion',
+      'tag-adoptado': publicacion()?.estadoMascota === 'adoptado'
     }"
     >{{ publicacion()?.estadoMascota === 'en_adopcion' ? 'en adopción' : publicacion()?.estadoMascota
     }}</span
