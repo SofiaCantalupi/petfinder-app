@@ -41,6 +41,12 @@
           >Gestión Usuarios</a
         >
       </li>
+      } @if(authService.estaLogeado()){
+      <li>
+        <a routerLink="/solicitudes-adopcion" class="hover:text-amber-800 transition-colors"
+          >Solicitudes de Adopción</a
+        >
+      </li>
       }
 
       <li>
