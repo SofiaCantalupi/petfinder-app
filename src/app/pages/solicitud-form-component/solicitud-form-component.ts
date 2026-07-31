@@ -11,7 +11,6 @@ import { CrearSolicitudDto } from '../../models/solicitud-adopcion';
   selector: 'app-solicitud-form-component',
   imports: [ReactiveFormsModule, NgClass, RouterLink],
   templateUrl: './solicitud-form-component.html',
-  styleUrl: './solicitud-form-component.css',
 })
 export class SolicitudFormComponent {
   private formBuilder = inject(FormBuilder);
