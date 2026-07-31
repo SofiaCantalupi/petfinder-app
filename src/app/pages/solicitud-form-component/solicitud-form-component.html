@@ -1,0 +1,173 @@
+<div class="card max-w-3xl mx-auto">
+  <!-- Header del formulario -->
+  <div class="card-header">
+    <h2 class="card-title">Solicitud de adopción</h2>
+  </div>
+
+  <!-- Formulario -->
+  <form [formGroup]="solicitudForm" (ngSubmit)="onSubmit()">
+    <div class="card-body space-y-4 pb-16">
+      <!-- Celular -->
+      <div class="input-group mb-3">
+        <label class="input-label" for="celular">Celular:</label>
+        <input
+          class="input-field"
+          [ngClass]="{
+            'input-error':
+              solicitudForm.get('celular')?.invalid && solicitudForm.get('celular')?.touched
+          }"
+          formControlName="celular"
+          type="text"
+          id="celular"
+          placeholder="Ingrese su número de celular..."
+        />
+
+        @if (solicitudForm.get('celular')?.invalid && solicitudForm.get('celular')?.touched) {
+        <p class="input-error-text">Este campo es obligatorio.</p>
+        }
+      </div>
+
+      <!-- Tipo de hogar -->
+      <div class="input-group mb-3">
+        <label class="input-label" for="tipoHogar">Tipo de hogar:</label>
+        <select
+          class="input-field"
+          [ngClass]="{
+            'input-error':
+              solicitudForm.get('tipoHogar')?.invalid && solicitudForm.get('tipoHogar')?.touched
+          }"
+          formControlName="tipoHogar"
+          id="tipoHogar"
+        >
+          <option value="">Seleccione...</option>
+          <option value="casa">Casa</option>
+          <option value="departamento">Departamento</option>
+        </select>
+
+        @if (solicitudForm.get('tipoHogar')?.invalid && solicitudForm.get('tipoHogar')?.touched) {
+        <p class="input-error-text">Debe seleccionar una opción.</p>
+        }
+      </div>
+
+      <!-- Hay mascota en el hogar -->
+      <div class="input-group mb-3">
+        <span class="input-label">¿Hay otra mascota en el hogar?</span>
+        <div class="flex gap-6">
+          <label class="flex items-center gap-2">
+            <input type="radio" formControlName="hayMascotaEnHogar" [value]="true" />
+            Sí
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="radio" formControlName="hayMascotaEnHogar" [value]="false" />
+            No
+          </label>
+        </div>
+
+        @if (solicitudForm.get('hayMascotaEnHogar')?.invalid &&
+        solicitudForm.get('hayMascotaEnHogar')?.touched) {
+        <p class="input-error-text">Debe seleccionar una opción.</p>
+        }
+      </div>
+
+      <!-- Tipo de mascota en el hogar: solo si hay otra mascota en el hogar -->
+      @if (solicitudForm.get('hayMascotaEnHogar')?.value) {
+      <div class="input-group mb-3">
+        <label class="input-label" for="tipoMascotaEnHogar">Tipo de mascota en el hogar:</label>
+        <select
+          class="input-field"
+          [ngClass]="{
+            'input-error':
+              solicitudForm.get('tipoMascotaEnHogar')?.invalid &&
+              solicitudForm.get('tipoMascotaEnHogar')?.touched
+          }"
+          formControlName="tipoMascotaEnHogar"
+          id="tipoMascotaEnHogar"
+        >
+          <option value="">Seleccione...</option>
+          <option value="perro">Perro</option>
+          <option value="gato">Gato</option>
+          <option value="perro_y_gato">Perro y gato</option>
+        </select>
+
+        @if (solicitudForm.get('tipoMascotaEnHogar')?.invalid &&
+        solicitudForm.get('tipoMascotaEnHogar')?.touched) {
+        <p class="input-error-text">Debe seleccionar una opción.</p>
+        }
+      </div>
+      }
+
+      <!-- Tiene patio -->
+      <div class="input-group mb-3">
+        <span class="input-label">¿Tiene patio?</span>
+        <div class="flex gap-6">
+          <label class="flex items-center gap-2">
+            <input type="radio" formControlName="tienePatio" [value]="true" />
+            Sí
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="radio" formControlName="tienePatio" [value]="false" />
+            No
+          </label>
+        </div>
+
+        @if (solicitudForm.get('tienePatio')?.invalid && solicitudForm.get('tienePatio')?.touched) {
+        <p class="input-error-text">Debe seleccionar una opción.</p>
+        }
+      </div>
+
+      <!-- Motivo de adopcion -->
+      <div class="input-group mb-3">
+        <label class="input-label" for="motivoAdopcion">Motivo de adopción (opcional):</label>
+        <textarea
+          class="input-field"
+          formControlName="motivoAdopcion"
+          id="motivoAdopcion"
+          rows="4"
+          placeholder="Contanos por qué querés adoptar..."
+        ></textarea>
+      </div>
+
+      <!-- Acepta condiciones -->
+      <div class="input-group mb-3">
+        <p class="input-helper">
+          Me comprometo a castrar al perro/gato de ser necesario, a completar su plan de
+          vacunación y permitir a quien lo da en adopción a realizar seguimiento de la mascota.
+        </p>
+
+        <label class="input-label flex items-center gap-2">
+          <input type="checkbox" formControlName="aceptaCondiciones" />
+          Acepto las condiciones de adopción.
+        </label>
+
+        @if (solicitudForm.get('aceptaCondiciones')?.invalid &&
+        solicitudForm.get('aceptaCondiciones')?.touched) {
+        <p class="input-error-text">Debes aceptar las condiciones para continuar.</p>
+        }
+      </div>
+
+      <!-- Error del servidor -->
+      @if (errorMensaje) {
+      <p class="input-error-text text-center text-pretty">Upps...{{ errorMensaje }}</p>
+      }
+    </div>
+
+    <!-- Botones -->
+    <div class="card-footer space-x-3 flex justify-center">
+      <button
+        class="btn btn-primary btn-md"
+        type="submit"
+        [disabled]="solicitudForm.invalid || enviando"
+      >
+        {{ enviando ? 'Enviando...' : 'Enviar solicitud' }}
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-danger btn-md"
+        [routerLink]="['/publicaciones', idPublicacion]"
+      >
+        Cancelar
+      </button>
+    </div>
+  </form>
+</div>
