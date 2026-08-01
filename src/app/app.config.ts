@@ -7,9 +7,11 @@ import {
 import { provideRouter } from '@angular/router';
 import { withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { authInterceptor } from './interceptors/auth-interceptor';
+import { errorInterceptor } from './interceptors/error-interceptor';
 
 // se regista el locale es espaniol
 registerLocaleData(localeEs);
@@ -27,6 +29,6 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     { provide: LOCALE_ID, useValue: 'es' },
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
   ],
 };

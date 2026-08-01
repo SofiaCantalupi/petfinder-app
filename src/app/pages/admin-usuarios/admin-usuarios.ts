@@ -87,6 +87,6 @@ export class AdminUsuarios implements OnInit {
   }
 
   getRolBadgeClass(rol: string): string {
-    return rol === 'administrador' ? 'badge-admin' : 'badge-usuario';
+    return rol === 'ADMINISTRADOR' ? 'badge-admin' : 'badge-usuario';
   }
 }

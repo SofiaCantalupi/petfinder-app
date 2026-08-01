@@ -21,7 +21,7 @@ export class ComentarioItem {
     if (!miembroActual) return false;
 
     return (
-      miembroActual.id === this.comentario().miembroId || miembroActual.rol === 'administrador'
+      miembroActual.id === this.comentario().miembroId || miembroActual.rol === 'ADMINISTRADOR'
     );
   }
 
