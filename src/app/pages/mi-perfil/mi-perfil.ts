@@ -37,7 +37,6 @@ export class MiPerfil implements OnInit {
 
   ngOnInit(): void {
     this.inicializarForm();
-    const miembro$ = this.miembroService.cargarMiembroActual();
 
     // Cargar miembro desde localStorage
     const miembro = localStorage.getItem('currentUser');
@@ -52,7 +51,7 @@ export class MiPerfil implements OnInit {
       this.perfilForm.get('nombre')?.disable();
       this.perfilForm.get('apellido')?.disable();
 
-      this.cargarPublicacionesDelMiembro(this.miembroActual.id);
+      this.cargarPublicacionesDelMiembro();
     }
 
     this.perfilForm.get('nombre')?.disable();
@@ -72,7 +71,7 @@ export class MiPerfil implements OnInit {
         [
           Validators.required,
           Validators.pattern(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+={}[\]|\\:;"'<>,.?/~`]).{8,}$/
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_\-+={}[\]|\\:;"'<>,.?/~`]).{8,}$/,
           ),
         ],
       ],
@@ -162,7 +161,7 @@ export class MiPerfil implements OnInit {
       const { nombre, apellido } = this.perfilForm.getRawValue();
 
       this.miembroService
-        .actualizarMiembro(this.miembroActual.id, {
+        .actualizarMiembro({
           nombre,
           apellido,
         })
@@ -208,10 +207,10 @@ export class MiPerfil implements OnInit {
     }
   }
 
-  private cargarPublicacionesDelMiembro(idMiembro: number): void {
+  private cargarPublicacionesDelMiembro(): void {
     this.cargandoPublicaciones.set(true);
 
-    this.publicacionService.getPublicacionesByMiembro(idMiembro).subscribe({
+    this.publicacionService.getPublicacionesByMiembro().subscribe({
       next: (publicaciones) => {
         // muestra todas las publicaciones (activas e inactivas)
         this.misPublicaciones.set(publicaciones);

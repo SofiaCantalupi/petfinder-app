@@ -1,7 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { Comentario } from '../models/comentario';
+import { ComentarioRequestDTO } from '../models/comentario-request-dto';
 import { HttpClient } from '@angular/common/http';
-import { forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { map, tap } from 'rxjs';
 import { Observable } from 'rxjs';
 import { DATABASE_BASE_URL } from '../constants';
 
@@ -9,61 +10,35 @@ import { DATABASE_BASE_URL } from '../constants';
   providedIn: 'root',
 })
 export class ComentarioService {
-  //readonly: no se puede cambiar despues de definirlo
   private readonly apiUrl = `${DATABASE_BASE_URL}/comentarios`;
   private comentariosState = signal<Comentario[]>([]);
-  //asReadonly(): los componentes no pueden modificarlo directamente, solo leerlo.
   public comentarios = this.comentariosState.asReadonly();
 
   constructor(private http: HttpClient) {}
 
-  //solo muestra los comentarios activos
-  getComentariosByPublicacion(publicacionId: number): Observable<Comentario[]> {
-    return this.http.get<Comentario[]>(`${this.apiUrl}?publicacionId=${publicacionId}`).pipe(
-      map((comentarios) => comentarios.filter((c) => c.activo === true)),
-      tap((dataFiltrada) => {
-        this.comentariosState.set(dataFiltrada);
-      })
+  // el backend ya devuelve solo los comentarios activos de la publicación
+  getComentariosByPublicacion(idPublicacion: number): Observable<Comentario[]> {
+    return this.http.get<Comentario[]>(`${this.apiUrl}/publicacion/${idPublicacion}`).pipe(
+      tap((data) => {
+        this.comentariosState.set(data);
+      }),
     );
   }
 
-  //Omit<Comentario, 'id'>: recibe un comentario sin el id (porque JSON server lo genera automaticamente) y luego devuelve un observable con el comentario ya creado y ya con el id
-  postComentario(nuevoComentario: Omit<Comentario, 'id'>): Observable<Comentario> {
+  postComentario(nuevoComentario: ComentarioRequestDTO): Observable<Comentario> {
     return this.http.post<Comentario>(this.apiUrl, nuevoComentario).pipe(
       tap((data) => {
-        this.comentariosState.update((comentarios) => [...comentarios, data]); //[...comentarios, data]: crea un nuevo array con todos los anteriores comentarios más el nuevo
-      })
+        this.comentariosState.update((comentarios) => [...comentarios, data]);
+      }),
     );
   }
 
   deleteComentario(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete(`${this.apiUrl}/propio/${id}`, { responseType: 'text' }).pipe(
       tap(() => {
         this.comentariosState.update((comentarios) => comentarios.filter((com) => com.id !== id));
-      }) //Aca tambien con filter se crea un nuevo array y con "com.id !== id" le dice que le de todos los comentarios excepto el que acaba de ser eliminado
-    );
-  }
-
-  //elimina todos los comentarios asociados a un Miembro en particular
-  deleteComentariosByMiembro(idMiembro: number): Observable<Comentario[]> {
-    return this.http.get<Comentario[]>(`${this.apiUrl}?miembroId=${idMiembro}`).pipe(
-      switchMap((comentarios) => {
-        if (comentarios.length === 0) {
-          return of([]);
-        }
-
-        // baja logica en cada comentario
-        const updateObservables = comentarios.map((com) =>
-          this.http.patch<Comentario>(`${this.apiUrl}/${com.id}`, { activo: false })
-        );
-
-        return forkJoin(updateObservables).pipe(
-          tap(() => {
-            this.comentariosState.update((coms) => coms.filter((c) => c.miembroId !== idMiembro));
-          }),
-          map(() => comentarios)
-        );
-      })
+      }),
+      map(() => undefined),
     );
   }
 }

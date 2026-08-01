@@ -2,8 +2,6 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PublicacionService } from '../../services/publicacion-service';
 import { EstadoMascota, Publicacion } from '../../models/publicacion';
-import { MiembroService } from '../../services/miembro-service';
-import { Miembro } from '../../models/miembro';
 import { ComentarioList } from '../../components/comentarios/comentario-list/comentario-list';
 import { AuthService } from '../../services/auth-service';
 import { DatePipe, NgClass } from '@angular/common';
@@ -20,7 +18,6 @@ import { Location } from '@angular/common';
 export class PublicacionDetail implements OnInit {
   // injeccion de dependencias
   private publicacionService = inject(PublicacionService);
-  private miembroService = inject(MiembroService);
   authService = inject(AuthService);
   private toastService = inject(ToastService);
 
@@ -30,15 +27,14 @@ export class PublicacionDetail implements OnInit {
 
   // signals
   publicacion = signal<Publicacion | null>(null);
-  miembroCreador = signal<Miembro | null>(null);
   cargando = signal<boolean>(true);
 
   ubicacionFormateada: string = '';
 
-  // nombre completo del miembro creador
+  // nombre completo del autor: ya viene armado en la propia publicacion (evita pegarle a
+  // GET /miembros/{id}, que en el backend real es solo para ADMINISTRADOR)
   nombreCreador = computed(() => {
-    const miembro = this.miembroCreador();
-    return miembro ? `${miembro.nombre} ${miembro.apellido}` : `Cargando...`;
+    return this.publicacion()?.nombreCompleto ?? 'Cargando...';
   });
 
   // verificar si el usuario loggeado puede editar o eliminar la publicacion
@@ -60,29 +56,16 @@ export class PublicacionDetail implements OnInit {
   ngOnInit(): void {
     const idPublicacion = this.route.snapshot.params['id'];
 
-    // cargar publicacion
     this.publicacionService.getPublicacionById(idPublicacion).subscribe({
       next: (pub) => {
         this.publicacion.set(pub);
         this.ubicacionFormateada = formatUbicacion(pub.ubicacion);
-        this.cargarMiembroCreador(pub.idMiembro);
         this.cargando.set(false);
       },
       error: (error) => {
         console.log('Error al obtener la publicacion por ID', error);
         this.cargando.set(false);
         this.router.navigate(['/publicaciones']);
-      },
-    });
-  }
-
-  cargarMiembroCreador(idMiembro: number) {
-    this.miembroService.getMiembroById(idMiembro).subscribe({
-      next: (miembro) => {
-        this.miembroCreador.set(miembro);
-      },
-      error: (error) => {
-        console.log('Error cargando el miembro que creó la publicación.', error);
       },
     });
   }
@@ -108,7 +91,7 @@ export class PublicacionDetail implements OnInit {
         next: () => {
           console.log('Publicación eliminada.');
           this.toastService.showToast('Publicación eliminada', 'success');
-          this.router.navigate(['/publicaciones']); // volver al muro de publicaciones
+          this.router.navigate(['/publicaciones']);
         },
         error: (error) => {
           console.log('Error al eliminar la publicación.', error);
@@ -119,13 +102,11 @@ export class PublicacionDetail implements OnInit {
 
   irAComentarios() {
     if (!this.publicacion()?.activo) return;
-    // se obtiene el elemento html que representa el formulario
     const element = document.getElementById('formComentario');
     element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     element?.focus({ preventScroll: true });
   }
 
-  // metodo que cambiar el estadoMascota 'perdido' o 'encontrado' a 'reencontrado'
   cambiarEstadoAReencontrado() {
     if (!this.publicacion()?.activo) return;
 
@@ -139,7 +120,6 @@ export class PublicacionDetail implements OnInit {
         next: (pub) => {
           console.log('Estado Actualizado');
           this.toastService.showToast('Estado de la mascota ctualizado', 'success');
-          // se actualiza el objeto local completo con la ultima version, es decir, el estado actualizado
           this.publicacion.set(pub);
         },
         error: (error) => {

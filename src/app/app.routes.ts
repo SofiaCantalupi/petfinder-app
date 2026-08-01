@@ -73,6 +73,7 @@ export const routes: Routes = [
   {
     path: 'borrarCuenta',
     component: BorrarCuenta,
+    canActivate: [authGuard],
   },
   {
     path: 'guia-estilo',

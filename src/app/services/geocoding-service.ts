@@ -15,6 +15,7 @@ export class GeocodingService {
     const params = new HttpParams()
       .set('q', `${query}, Mar del Plata, Buenos Aires, Argentina`)
       .set('format', 'json')
+      .set('addressdetails', '1')
       .set('limit', '10');
 
     return this.http.get<any[]>(this.baseUrl, { params }).pipe(
@@ -23,7 +24,7 @@ export class GeocodingService {
           return [];
         }
         return results;
-      })
+      }),
     );
   }
 }

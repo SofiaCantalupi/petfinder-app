@@ -71,21 +71,28 @@ export class AdminUsuarios implements OnInit {
         `• El usuario\n` +
         `• Todas sus publicaciones\n` +
         `• Todos sus comentarios\n\n` +
-        `ESTA ACCIÓN NO SE PUEDE DESHACER.`
+        `ESTA ACCIÓN NO SE PUEDE DESHACER.`,
     );
 
-    this.miembroService.eliminarMiembro(miembro).subscribe({
+    if (!confirmacion) return;
+
+    this.eliminando.set(miembro.id);
+
+    this.miembroService.eliminarMiembroPorId(miembro.id).subscribe({
       next: () => {
-        // Actualiza la señal local directamente
-        this.miembros.update(lista => lista.filter(m => m.id !== miembro.id));
+        this.miembros.update((lista) => lista.filter((m) => m.id !== miembro.id));
         this.eliminando.set(null);
+        this.toastService.showToast(
+          `Usuario ${miembro.nombre} ${miembro.apellido} eliminado correctamente`,
+          'success',
+        );
       },
       error: () => {
         this.eliminando.set(null);
-      }
+        this.toastService.showToast('Error al eliminar usuario', 'error');
+      },
     });
   }
-
   getRolBadgeClass(rol: string): string {
     return rol === 'ADMINISTRADOR' ? 'badge-admin' : 'badge-usuario';
   }

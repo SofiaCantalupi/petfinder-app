@@ -1,11 +1,8 @@
-import { Component } from '@angular/core';
-import { inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MiembroService } from '../../services/miembro-service';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Miembro } from '../../models/miembro';
 import { ToastService } from '../../services/toast-service';
-import { signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth-service';
 
@@ -21,7 +18,6 @@ export class BorrarCuenta {
   authService = inject(AuthService);
   formBuilder = inject(FormBuilder);
   toastService = inject(ToastService);
-  miembroActual!: Miembro;
   confirmarError = signal<true | false>(false);
 
   borrarGroup = this.formBuilder.nonNullable.group({
@@ -29,22 +25,21 @@ export class BorrarCuenta {
   });
 
   eliminarCuenta(confirm: string | undefined): void {
-    if (confirm?.toLowerCase() === 'confirmar') {
-      // Cargar miembro desde localStorage
-      const miembro = localStorage.getItem('currentUser');
-      if (miembro) {
-        this.miembroActual = JSON.parse(miembro);
-        this.miembroService.eliminarMiembro(this.miembroActual).subscribe({
-          next: () => this.authService.logout(),
-        });
-      } else {
-        this.toastService.showToast('No se pudo identificar al usuario.', 'error', 5000);
-        this.router.navigate(['/login']);
-        return;
-      }
-    } else {
+    if (confirm?.toLowerCase() !== 'confirmar') {
       this.toastService.showToast('Debes escribir "confirmar" exactamente.', 'error', 5000);
       this.confirmarError.set(true);
+      return;
     }
+
+    this.miembroService.eliminarCuentaPropia().subscribe({
+      next: () => {
+        this.toastService.showToast('Tu cuenta fue eliminada correctamente.', 'success', 5000);
+        this.authService.logout();
+      },
+      error: (error) => {
+        console.error('Error al eliminar la cuenta:', error);
+        this.toastService.showToast('Error al eliminar la cuenta.', 'error', 5000);
+      },
+    });
   }
 }
