@@ -3,8 +3,8 @@ export interface Comentario {
   texto: string;
   fechaPublicacion: string; // ISO string format: "2024-11-13"
   activo: boolean;
-  publicacionId: number;
-  miembroId: number;
-  miembroNombre: string;
-  miembroApellido: string;
+  idPublicacion: number;
+  idMiembro: number;
+  nombreUsuario: string;
+  apellidoUsuario: string;
 }

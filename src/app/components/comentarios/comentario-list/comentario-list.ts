@@ -2,7 +2,7 @@ import { Component, inject, input, OnInit } from '@angular/core';
 import { ComentarioService } from '../../../services/comentario-service';
 import { ComentarioItem } from '../comentario-item/comentario-item';
 import { ComentarioForm } from '../comentario-form/comentario-form';
-import { Comentario } from '../../../models/comentario';
+import { ComentarioRequestDTO } from '../../../models/comentario-request-dto';
 import { ToastService } from '../../../services/toast-service';
 
 @Component({
@@ -34,7 +34,7 @@ export class ComentarioList implements OnInit {
     });
   }
 
-  guardarComentario(comentario: Omit<Comentario, 'id'>): void {
+  guardarComentario(comentario: ComentarioRequestDTO): void {
     this.comentarioService.postComentario(comentario).subscribe({
       next: () => {
         console.log('Comentario creado exitosamente');

@@ -1,11 +1,11 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { EstadoMascota, Publicacion } from '../models/publicacion';
+import { PublicacionRequestDTO } from '../models/publicacion-request-dto';
+import { PublicacionRequestUpdateDTO } from '../models/publicacion-request-update-dto';
 import { HttpClient } from '@angular/common/http';
-import { forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
+import { map, tap } from 'rxjs';
 import { DATABASE_BASE_URL } from '../constants';
-
-// permite cualquier objeto que tenga campos de la publicacion, menos el ID. Usado para el update (patch)
-type UpdatePayload = Partial<Omit<Publicacion, 'id'>>;
+import { estadoMascotaAConstante } from '../utils';
 
 @Injectable({
   providedIn: 'root',
@@ -20,13 +20,13 @@ export class PublicacionService {
 
   // computed usado para filtrar publicaciones activas, filtra solo cuando hay cambios
   public publicacionesActivas = computed(() =>
-    this.publicacionesState().filter((publicacion) => publicacion.activo === true)
+    this.publicacionesState().filter((publicacion) => publicacion.activo === true),
   );
 
   public publicacionesReencontrados = computed(() =>
     this.publicacionesState().filter(
-      (publicacion) => publicacion.activo === true && publicacion.estadoMascota === 'reencontrado'
-    )
+      (publicacion) => publicacion.activo === true && publicacion.estadoMascota === 'reencontrado',
+    ),
   );
 
   constructor(private http: HttpClient) {
@@ -44,70 +44,38 @@ export class PublicacionService {
     });
   }
 
-  //obtiene publicaciones de un miembro específico
-  getPublicacionesByMiembro(idMiembro: number) {
-    return this.http.get<Publicacion[]>(`${this.apiUrl}?idMiembro=${idMiembro}`);
+  // publicaciones del usuario logueado (incluye inactivas). El id sale del JWT, no se manda por parametro.
+  getPublicacionesByMiembro() {
+    return this.http.get<Publicacion[]>(`${this.apiUrl}/propias`);
   }
 
-  postPublicacion(nuevaPublicacion: Omit<Publicacion, 'id'>) {
+  postPublicacion(nuevaPublicacion: PublicacionRequestDTO) {
     return this.http.post<Publicacion>(this.apiUrl, nuevaPublicacion).pipe(
       tap((data) => {
         this.publicacionesState.update((publicaciones) => [...publicaciones, data]);
-      })
+      }),
     );
   }
 
-  updatePublicacion(id: number, cambios: UpdatePayload) {
-    // se envia solo los campos que cambiaron
-    return this.http.patch<Publicacion>(`${this.apiUrl}/${id}`, cambios).pipe(
+  updatePublicacion(id: number, cambios: PublicacionRequestUpdateDTO) {
+    return this.http.put<Publicacion>(`${this.apiUrl}/${id}`, cambios).pipe(
       tap((data) => {
-        // actualización del state
         this.publicacionesState.update((publicaciones) =>
-          publicaciones.map((pub) => (pub.id === id ? data : pub))
+          publicaciones.map((pub) => (pub.id === id ? data : pub)),
         );
-      })
+      }),
     );
   }
 
-  // Metodo que realiza baja pasiva a una publicacion
+  // Baja logica de una publicacion propia (el backend cascadea mascota, ubicacion y comentarios)
   deletePublicacion(id: number) {
-    // 'payload' con solo el campo a cambiar
-    const payload = {
-      activo: false,
-    };
-
-    // solo actualiza el campo 'activo' en el servidor
-    return this.http.patch<Publicacion>(`${this.apiUrl}/${id}`, payload).pipe(
-      //'tap' para actualizar el signal local despues del exito
+    return this.http.delete(`${this.apiUrl}/propia/${id}`, { responseType: 'text' }).pipe(
       tap(() => {
-        // actualizar el state removiendo la publicacion
         this.publicacionesState.update((publicaciones) =>
-          publicaciones.filter((pub) => pub.id !== id)
+          publicaciones.filter((pub) => pub.id !== id),
         );
-      })
-    );
-  }
-
-  //elimina todas las publicaciones asociadas a un Miembro en particular
-  deletePublicacionesByMiembro(idMiembro: number): Observable<Publicacion[]> {
-    return this.getPublicacionesByMiembro(idMiembro).pipe(
-      switchMap((publicaciones) => {
-        if (publicaciones.length === 0) {
-          return of([]);
-        }
-
-        // baja logica en cada publicación de un Miembro (sirve para eliminar todo lo asociado a un Miembro)
-        const updateObservables = publicaciones.map((pub) =>
-          this.http.patch<Publicacion>(`${this.apiUrl}/${pub.id}`, { activo: false })
-        );
-
-        return forkJoin(updateObservables).pipe(
-          tap(() => {
-            this.publicacionesState.update((pubs) => pubs.filter((p) => p.idMiembro !== idMiembro));
-          }),
-          map(() => publicaciones)
-        );
-      })
+      }),
+      map(() => undefined),
     );
   }
 
@@ -115,26 +83,17 @@ export class PublicacionService {
     return this.http.get<Publicacion>(`${this.apiUrl}/${id}`);
   }
 
-  // Actualiza el estado de la mascota en el backend y luego actualiza el estado local (signal).
+  // Actualiza el estado de la mascota. El estado va en la URL como constante del backend
+  // (PERDIDA/ENCONTRADA/REENCONTRADA), sin body.
   updateEstadoMascota(id: number, estadoNuevo: EstadoMascota) {
-    // constante con solo que se modifica
-    const payload = { estadoMascota: estadoNuevo };
+    const estadoConstante = estadoMascotaAConstante(estadoNuevo);
 
-    return this.http.patch<Publicacion>(`${this.apiUrl}/${id}`, payload).pipe(
-      // se actualiza el signal (estado local)
+    return this.http.put<Publicacion>(`${this.apiUrl}/${id}/estado/${estadoConstante}`, null).pipe(
       tap((publicacionActualizada) => {
-        // la API devuelve la publicacion completa actualizada
-        this.publicacionesState.update((publicacionesActuales) => {
-          return publicacionesActuales.map((p) => {
-            // si el ID coincide, reemplazamos el objeto con la version recibida del servidor
-            if (p.id === id) {
-              return publicacionActualizada;
-            }
-            // sino se devuelve la publicacion origianl
-            return p;
-          });
-        });
-      })
+        this.publicacionesState.update((publicacionesActuales) =>
+          publicacionesActuales.map((p) => (p.id === id ? publicacionActualizada : p)),
+        );
+      }),
     );
   }
 }

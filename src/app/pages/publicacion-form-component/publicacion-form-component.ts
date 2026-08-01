@@ -1,6 +1,7 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PublicacionService } from '../../services/publicacion-service';
+import { MascotaService } from '../../services/mascota-service';
 import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -9,14 +10,17 @@ import { NgClass } from '@angular/common';
 import { TipoMascota } from '../../models/publicacion';
 import { EstadoMascota } from '../../models/publicacion';
 import { Publicacion } from '../../models/publicacion';
-import { MiembroService } from '../../services/miembro-service';
+import { PublicacionRequestDTO } from '../../models/publicacion-request-dto';
+import { PublicacionRequestUpdateDTO } from '../../models/publicacion-request-update-dto';
+import { UbicacionRequestDTO } from '../../models/ubicacion-request-dto';
+import { MascotaRequestDTO } from '../../models/mascota-request-dto';
 import { ToastService } from '../../services/toast-service';
 import { GeocodingService } from '../../services/geocoding-service';
 import { NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
-import { Subject, Observable, of } from 'rxjs';
+import { Subject, Observable, of, forkJoin } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { NominatimSearchResult } from '../../models/nominatim';
-import { formatUbicacion } from '../../utils';
+import { formatUbicacion, estadoMascotaAConstante, tipoMascotaAConstante } from '../../utils';
 
 @Component({
   selector: 'app-publicacion-form-component',
@@ -27,7 +31,7 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
   // Inyeccion de dependencias
   private formBuilder = inject(FormBuilder);
   private publicacionService = inject(PublicacionService);
-  private miembroService = inject(MiembroService);
+  private mascotaService = inject(MascotaService);
   private toastService = inject(ToastService);
   private geoService = inject(GeocodingService);
 
@@ -37,30 +41,28 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
   // Signal para estado en edicion y id editado
   esEdicion = signal(false);
   publicacionId = signal<number | undefined>(undefined);
+  mascotaId = signal<number | undefined>(undefined);
 
   // Signals para resultados de busqueda y estado de busqueda
   resultadoBusquedaUbicacion = signal<NominatimSearchResult[]>([]);
   isBuscandoUbicacion = signal<boolean>(false);
 
   // Subject para manejar las búsquedas
-  // Subject: emite valores cuando .next(valor), otros pueden suscribirse para escuchar esos valores y permanece activo hasta que se completa manualmente
   private ubicacionSearchTerms = new Subject<string>();
 
   constructor() {
-    // manejo de terminos de la busqueda del ng-select
     this.ubicacionSearchTerms
       .pipe(
-        debounceTime(300), // espera 300ms despues de la ultima tecla tipiada
-        distinctUntilChanged(), // solo emite si el termino cambio
+        debounceTime(300),
+        distinctUntilChanged(),
         tap(() => this.isBuscandoUbicacion.set(true)),
-        switchMap((term: string) => this.buscarUbicacion(term)) // llama al servicio
+        switchMap((term: string) => this.buscarUbicacion(term)),
       )
       .subscribe((data) => {
-        this.resultadoBusquedaUbicacion.set(data); // actualiza los resultados que muestra ng-select
+        this.resultadoBusquedaUbicacion.set(data);
       });
   }
 
-  // Arrays para las opciones de los SELECTS
   estadosMascota: { value: EstadoMascota; label: string }[] = [
     { value: 'perdido', label: 'Perdido' },
     { value: 'encontrado', label: 'Encontrado' },
@@ -72,7 +74,6 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
     { value: 'gato', label: 'Gato' },
   ];
 
-  // filtra el estado "reencontrado" si estamos creando una publicacion
   get estadosMascotaFiltrados() {
     if (this.esEdicion()) {
       return this.estadosMascota;
@@ -81,11 +82,9 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // se fija si en la URL existe un id
     const id = this.route.snapshot.params['id'];
 
     if (id) {
-      // si existe significa que se esta editando una publicacion
       this.esEdicion.set(true);
       this.publicacionId.set(Number(id));
       this.cargarFormulario(Number(id));
@@ -93,16 +92,14 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // completa el subject: se libera memoria, los observables conectados se desuscriben
     this.ubicacionSearchTerms.complete();
   }
 
-  // metodo utilizado para cargar el formulario con los datos actuales de la publicacion a editar
   cargarFormulario(id: number) {
     this.publicacionService.getPublicacionById(id).subscribe({
       next: (publicacion) => {
+        this.mascotaId.set(publicacion.idMascota);
         this.publicacionForm.patchValue(this.mappearPublicacionAForm(publicacion));
-        // se cargan los datos con lo retornado por el mappeo de la publicacion plana, a una estructura anidada
         this.buscarUbicacion(formatUbicacion(publicacion.ubicacion)).subscribe({
           next: (data) => {
             this.resultadoBusquedaUbicacion.set(data);
@@ -116,18 +113,15 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.log('Error cargando el formulario.', error);
-        // si no existe la publicacion redirigir
         this.router.navigate(['/publicaciones']);
       },
     });
   }
 
-  // metodo usado para ver si el form es valido y si cambio algun valor en los inputs
   get puedeGuardar(): boolean {
     return this.publicacionForm.valid && this.publicacionForm.dirty;
   }
 
-  // metodo helper para convertir la estructura plana de la interfaz, a una anidada como la que requiere el formulario
   mappearPublicacionAForm(publicacion: Publicacion) {
     return {
       mascota: {
@@ -140,7 +134,6 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
     };
   }
 
-  // Creacion del formulario
   publicacionForm = this.formBuilder.nonNullable.group({
     mascota: this.formBuilder.nonNullable.group({
       nombreMascota: '',
@@ -152,124 +145,116 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
     ubicacionQuery: [{} as NominatimSearchResult, Validators.required],
   });
 
-  // Submit, crea o edita la publicacion
+  // arma el objeto de ubicacion que espera el backend a partir del resultado de Nominatim
+  private mapearUbicacion(resultado: NominatimSearchResult): UbicacionRequestDTO {
+    const altura = resultado.address?.house_number
+      ? Number(resultado.address.house_number)
+      : undefined;
+
+    return {
+      direccion: resultado.address?.road ?? resultado.display_name,
+      altura,
+      latitud: Number(resultado.lat),
+      longitud: Number(resultado.lon),
+    };
+  }
+
+  private mapearMascota(mascotaForm: {
+    nombreMascota: string;
+    tipoMascota: TipoMascota;
+    estadoMascota: EstadoMascota;
+    urlFoto: string;
+  }): MascotaRequestDTO {
+    return {
+      nombre: mascotaForm.nombreMascota,
+      tipoMascota: tipoMascotaAConstante(mascotaForm.tipoMascota),
+      estadoMascota: estadoMascotaAConstante(mascotaForm.estadoMascota),
+      urlFoto: mascotaForm.urlFoto,
+    };
+  }
+
   onSubmit() {
     if (this.publicacionForm.invalid) {
-      // marcar todos los campos como touched, incluyendo los anidados
       this.publicacionForm.markAllAsTouched();
       return;
     }
 
-    // obtener el miembro loggeado
-    const miembroActual$ = this.miembroService.cargarMiembroActual();
-    if (!miembroActual$) {
-      alert('Debes iniciar sesión para publicar');
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    // se obtienen los datos cargados en el formulario
     const formValue = this.publicacionForm.getRawValue();
+    const ubicacion = this.mapearUbicacion(formValue.ubicacionQuery);
+    const mascotaDto = this.mapearMascota(formValue.mascota);
 
-    //  toda la lógica de editar y crear esta dentro del subscribe
-    miembroActual$.subscribe({
-      next: (miembro) => {
-        const { display_name: ubicacion, lat: latitud, lon: longitud } = formValue.ubicacionQuery;
+    if (this.esEdicion()) {
+      const cambiosPublicacion: PublicacionRequestUpdateDTO = {
+        descripcion: formValue.descripcion,
+        ubicacion,
+      };
 
-        const publicacionBase: Omit<Publicacion, 'id'> = {
-          idMiembro: miembro.id,
-          // mascota
-          nombreMascota: formValue.mascota.nombreMascota,
-          tipoMascota: formValue.mascota.tipoMascota,
-          estadoMascota: formValue.mascota.estadoMascota,
-          urlFoto: formValue.mascota.urlFoto,
-          // descripcion
-          descripcion: formValue.descripcion,
-          // datos que no vienen del formulario
-          fecha: new Date().toISOString(),
-          activo: true,
-          ubicacion,
-          latitud,
-          longitud,
-        };
-
-        // esto se tiene que cambiar en la integracion con spring boot
-        if (this.esEdicion()) {
-          // se extraen solo los campos que pueden llegar a cambiar, no se incluye fecha, estado ni idMiembro
-          const cambios = {
-            nombreMascota: publicacionBase.nombreMascota,
-            tipoMascota: publicacionBase.tipoMascota,
-            estadoMascota: publicacionBase.estadoMascota,
-            urlFoto: publicacionBase.urlFoto,
-            descripcion: publicacionBase.descripcion,
+      forkJoin({
+        publicacion: this.publicacionService.updatePublicacion(
+          this.publicacionId()!,
+          cambiosPublicacion,
+        ),
+        mascota: this.mascotaService.updateMascota(this.mascotaId()!, mascotaDto),
+      }).subscribe({
+        next: () => {
+          this.toastService.showToast('¡Publicación actualizada!', 'success', 5000);
+          this.publicacionForm.reset();
+          this.router.navigate(['/publicaciones', this.publicacionId()]);
+        },
+        error: (error) => {
+          console.error('Error actualizando:', error);
+          alert('Error al actualizar la publicación');
+        },
+      });
+    } else {
+      this.mascotaService.postMascota(mascotaDto).subscribe({
+        next: (mascotaCreada) => {
+          const nuevaPublicacion: PublicacionRequestDTO = {
+            descripcion: formValue.descripcion,
+            mascotaId: mascotaCreada.id,
             ubicacion,
-            latitud,
-            longitud,
           };
 
-          // EDITAR
-          this.publicacionService.updatePublicacion(this.publicacionId()!, cambios).subscribe({
-            next: () => {
-              console.log('Publicación actualizada');
-              this.toastService.showToast('¡Publicación actualizada!', 'success', 5000);
-              this.publicacionForm.reset();
-              this.router.navigate(['/publicaciones', this.publicacionId()]);
-            },
-            error: (error) => {
-              console.error('Error actualizando:', error);
-              alert('Error al actualizar la publicación');
-            },
-          });
-        } else {
-          // CREAR
-          this.publicacionService.postPublicacion(publicacionBase).subscribe({
+          this.publicacionService.postPublicacion(nuevaPublicacion).subscribe({
             next: (pub) => {
-              console.log('Publicación creada', pub);
               this.toastService.showToast('¡Publicación creada!', 'success', 5000);
               this.publicacionForm.reset();
               this.router.navigate(['/publicaciones', pub.id]);
             },
             error: (error) => {
-              console.error('Error creando:', error);
+              console.error('Error creando la publicación:', error);
               alert('Error al crear la publicación');
             },
           });
-        }
-      },
-      // este error correspone el subscribe de cargarmiembrologeado
-      error: (error) => {
-        console.error('Error al cargar miembro:', error);
-        alert('Error al obtener datos del usuario');
-        this.router.navigate(['/login']);
-      },
-    });
+        },
+        error: (error) => {
+          console.error('Error creando la mascota:', error);
+          alert('Error al crear la mascota');
+        },
+      });
+    }
   }
 
-  // metodo que se le pasa al componente ng-select para buscar la ubicacion mientras el usuario tipea
   onSearchUbicacion(terms: string) {
     this.ubicacionSearchTerms.next(terms);
   }
 
-  // deshabilita el filtro local de ng-select para que muestre los resultados que vienen de la API
   returnTrue() {
     return true;
   }
 
-  // metodo que hace la peticion al servicio de geocodificacion
   buscarUbicacion(query: string): Observable<NominatimSearchResult[]> {
-    // si esta vacio, no busca
     if (!query.trim()) {
       this.isBuscandoUbicacion.set(false);
       return of([]);
     }
-    // conexion con el servicio (nominatim)
     return this.geoService.searchAddress(query).pipe(
       tap(() => this.isBuscandoUbicacion.set(false)),
       catchError((error) => {
         this.isBuscandoUbicacion.set(false);
         console.error(error);
         return of([]);
-      })
+      }),
     );
   }
 }

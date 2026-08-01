@@ -1,6 +1,6 @@
 import { Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Comentario } from '../../../models/comentario';
+import { ComentarioRequestDTO } from '../../../models/comentario-request-dto';
 import { AuthService } from '../../../services/auth-service';
 import { NgClass } from '@angular/common';
 import { PublicacionService } from '../../../services/publicacion-service';
@@ -22,7 +22,7 @@ export class ComentarioForm implements OnInit {
   publicacion = signal<Publicacion | undefined>(undefined);
 
   // Output: evento cuando se crea un comentario
-  comentarioCreado = output<Omit<Comentario, 'id'>>();
+  comentarioCreado = output<ComentarioRequestDTO>();
 
   // Formulario reactivo
   comentarioForm = this.fb.nonNullable.group({
@@ -46,22 +46,15 @@ export class ComentarioForm implements OnInit {
   onSubmit(): void {
     if (this.comentarioForm.invalid) return;
 
-    //Obtiene el usuario logueado del localStorage, si no hay usuario, muestra alerta y sale
-    const miembroActual = this.authService.getCurrentUser();
-
-    if (!miembroActual) {
+    //Chequeo de UX: si no hay sesión, avisamos antes de mandar el request (el backend igual lo rechazaría con 401)
+    if (!this.authService.getCurrentUser()) {
       alert('Debes iniciar sesión para comentar');
       return;
     }
 
-    const nuevoComentario: Omit<Comentario, 'id'> = {
+    const nuevoComentario: ComentarioRequestDTO = {
       texto: this.comentarioForm.getRawValue().texto,
-      fechaPublicacion: new Date().toISOString(),
-      activo: true,
-      publicacionId: this.publicacionId(),
-      miembroId: miembroActual.id,
-      miembroNombre: miembroActual.nombre,
-      miembroApellido: miembroActual.apellido,
+      idPublicacion: this.publicacionId(),
     };
 
     //emit(): envia el comentario al componente padre
