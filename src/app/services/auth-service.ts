@@ -12,7 +12,7 @@ import { map, catchError, switchMap } from 'rxjs/operators';
 import { computed } from '@angular/core';
 import { signal } from '@angular/core';
 import { CambiarContraseniaDTO } from '../models/auth/cambiar-contrasenia-dto';
-import { ToastService } from './toast-service';
+import { DATABASE_BASE_URL } from '../constants';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  private apiUrl = 'http://localhost:3000/miembros';
+  private apiUrl = `${DATABASE_BASE_URL}/miembros`;
 
   private currentUserSignal = signal<Miembro | null>(null);
 

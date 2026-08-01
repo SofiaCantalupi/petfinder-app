@@ -2,17 +2,26 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { Miembro } from '../models/miembro';
-import { Observable } from 'rxjs';
+import { forkJoin, map, Observable, throwError } from 'rxjs';
 import { tap } from 'rxjs';
 import { computed } from '@angular/core';
+import { DATABASE_BASE_URL } from '../constants';
+import { PublicacionService } from './publicacion-service';
+import { ComentarioService } from './comentario-service';
+import { ToastService } from './toast-service';
+import { switchMap } from 'rxjs';
+import { catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MiembroService {
   private http = inject(HttpClient);
+  private publicacionService = inject(PublicacionService);
+  private comentarioService = inject(ComentarioService);
+  private toastService = inject(ToastService);
 
-  private readonly urlApi = 'http://localhost:3000/miembros';
+  private readonly urlApi = `${DATABASE_BASE_URL}/miembros`;
 
   // Señal para muchos miembros
   private miembrosState = signal<Miembro[]>([]);
@@ -60,8 +69,9 @@ export class MiembroService {
       })
     );
   }
-  // baja logica del miembro baneado
-  deleteMiembro(id: number): Observable<Miembro> {
+
+  // baja logica del miembro 
+  darDeBajaMiembro(id: number): Observable<Miembro> {
     const payload = { activo: false };
 
     return this.http.patch<Miembro>(`${this.urlApi}/${id}`, payload).pipe(
@@ -70,4 +80,29 @@ export class MiembroService {
       })
     );
   }
+
+  eliminarMiembro(miembro: Miembro): Observable<void> {
+  return forkJoin({
+    comentarios: this.comentarioService.deleteComentariosByMiembro(miembro.id),
+    publicaciones: this.publicacionService.deletePublicacionesByMiembro(miembro.id),
+  }).pipe(
+    switchMap(({ comentarios, publicaciones }) => {
+      console.log(`Eliminados ${comentarios.length} comentarios`);
+      console.log(`Eliminadas ${publicaciones.length} publicaciones`);
+      return this.darDeBajaMiembro(miembro.id);
+    }),
+    tap(() => {
+      this.toastService.showToast(
+        `Usuario ${miembro.nombre} ${miembro.apellido} eliminado correctamente`,
+        'success'
+      );
+    }),
+    catchError((error) => {
+      console.error('Error eliminando:', error);
+      this.toastService.showToast('Error al eliminar usuario', 'error');
+      return throwError(() => error);
+    }),
+    map(() => void 0) // retorna void
+  );
+}
 }

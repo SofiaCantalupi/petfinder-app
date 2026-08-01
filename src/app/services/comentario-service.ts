@@ -3,13 +3,14 @@ import { Comentario } from '../models/comentario';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { Observable } from 'rxjs';
+import { DATABASE_BASE_URL } from '../constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ComentarioService {
   //readonly: no se puede cambiar despues de definirlo
-  private readonly apiUrl = 'http://localhost:3000/comentarios';
+  private readonly apiUrl = `${DATABASE_BASE_URL}/comentarios`;
   private comentariosState = signal<Comentario[]>([]);
   //asReadonly(): los componentes no pueden modificarlo directamente, solo leerlo.
   public comentarios = this.comentariosState.asReadonly();
