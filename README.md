@@ -2,12 +2,26 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.5.
 
+## Configuración de entorno
+
+Antes de levantar el proyecto, crear el archivo `src/.env` (ignorado por git) con la URL del backend:
+
+```
+BACKEND_API_URL=http://localhost:8080
+```
+
+Este archivo lo usa `mynode.js` para generar `src/environments/environment.development.ts` en cada `npm start`.
+Sin `src/.env`, `BACKEND_API_URL` queda `undefined` y los requests al backend fallan.
+
+El backend (Spring Boot) sólo permite CORS desde `http://localhost:4200`, `http://localhost:5500` y
+`http://127.0.0.1:5500` — hay que servir el frontend en el puerto 4200 (el default de `ng serve`).
+
 ## Development server
 
 To start a local development server, run:
 
 ```bash
-ng serve
+npm start
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
