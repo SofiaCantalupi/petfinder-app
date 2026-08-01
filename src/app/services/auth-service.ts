@@ -46,16 +46,23 @@ export class AuthService {
 
   private loadUserFromStorage(): void {
     const userJson = localStorage.getItem('currentUser');
+    if (!userJson) return;
 
-    if (userJson) {
-      try {
-        const user: Miembro = JSON.parse(userJson);
-        this.currentUserSubject.next(user);
-        this.currentUserSignal.set(user);
-      } catch (error) {
-        console.error('Error al parsear usuario del localStorage', error);
-        localStorage.removeItem('currentUser');
-      }
+    // Sin esto, header.html (isUsuario()/isAdmin()) mostraría al usuario como logueado
+    // con un token ya vencido hasta el próximo request fallido.
+    if (this.tokenService.isExpired()) {
+      localStorage.removeItem('currentUser');
+      this.tokenService.clear();
+      return;
+    }
+
+    try {
+      const user: Miembro = JSON.parse(userJson);
+      this.currentUserSubject.next(user);
+      this.currentUserSignal.set(user);
+    } catch (error) {
+      console.error('Error al parsear usuario del localStorage', error);
+      localStorage.removeItem('currentUser');
     }
   }
 

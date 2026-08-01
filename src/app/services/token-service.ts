@@ -38,8 +38,9 @@ export class TokenService {
     const partes = token.split('.');
     if (partes.length !== 3) return null;
 
-    // base64url -> base64
-    const base64 = partes[1].replace(/-/g, '+').replace(/_/g, '/');
+    // base64url -> base64, con padding (atob no lo tolera en todos los entornos)
+    const base64url = partes[1].replace(/-/g, '+').replace(/_/g, '/');
+    const base64 = base64url.padEnd(base64url.length + ((4 - (base64url.length % 4)) % 4), '=');
     const json = decodeURIComponent(
       atob(base64)
         .split('')

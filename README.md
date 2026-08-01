@@ -11,7 +11,8 @@ BACKEND_API_URL=http://localhost:8080
 ```
 
 Este archivo lo usa `mynode.js` para generar `src/environments/environment.development.ts` en cada `npm start`.
-Sin `src/.env`, `BACKEND_API_URL` queda `undefined` y los requests al backend fallan.
+Sin `src/.env`, `BACKEND_API_URL` queda como el string literal `"undefined"` (no como `undefined`) y los
+requests al backend fallan contra una URL rota (`undefined/auth`, etc.).
 
 El backend (Spring Boot) sólo permite CORS desde `http://localhost:4200`, `http://localhost:5500` y
 `http://127.0.0.1:5500` — hay que servir el frontend en el puerto 4200 (el default de `ng serve`).
