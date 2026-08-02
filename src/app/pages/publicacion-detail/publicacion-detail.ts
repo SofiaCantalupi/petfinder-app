@@ -52,6 +52,18 @@ export class PublicacionDetail implements OnInit {
     return pub ? this.authService.isAdmin() : false;
   });
 
+  // visible solo si la mascota esta en adopcion y el usuario loggeado no es el duenio de la publicacion
+  puedeSolicitarAdopcion = computed(() => {
+    const pub = this.publicacion();
+    return pub ? pub.estadoMascota === 'en_adopcion' && !this.puedeEditar() : false;
+  });
+
+  // visible solo si la mascota fue encontrada y el usuario loggeado es el duenio de la publicacion
+  puedePonerEnAdopcion = computed(() => {
+    const pub = this.publicacion();
+    return pub ? pub.estadoMascota === 'encontrado' && this.puedeEditar() : false;
+  });
+
   ngOnInit(): void {
     const idPublicacion = this.route.snapshot.params['id'];
 
@@ -74,6 +86,12 @@ export class PublicacionDetail implements OnInit {
       const id = this.publicacion()?.id;
       this.router.navigate(['/publicaciones', id, 'editar']);
     }
+  }
+
+  irASolicitudAdopcion() {
+    if (!this.puedeSolicitarAdopcion()) return;
+    const id = this.publicacion()?.id;
+    this.router.navigate(['/publicaciones', id, 'solicitud-adopcion']);
   }
 
   deletePublicacion() {
@@ -119,6 +137,30 @@ export class PublicacionDetail implements OnInit {
         next: (pub) => {
           console.log('Estado Actualizado');
           this.toastService.showToast('Estado de la mascota ctualizado', 'success');
+          this.publicacion.set(pub);
+        },
+        error: (error) => {
+          console.log('No se ha podido actualizar el estado', error);
+          this.toastService.showToast('Error al actualizar el estado', 'error');
+        },
+      });
+    }
+  }
+
+  // metodo que cambia el estadoMascota de 'encontrado' a 'en_adopcion'
+  ponerEnAdopcion() {
+    if (!this.puedePonerEnAdopcion() || !this.publicacion()?.activo) return;
+
+    const estado: EstadoMascota = 'en_adopcion';
+    const id = this.publicacion()?.id;
+
+    if (!id) return;
+
+    if (confirm('¿Estás seguro de querer poner en adopción a esta mascota?')) {
+      this.publicacionService.updateEstadoMascota(id, estado).subscribe({
+        next: (pub) => {
+          console.log('Estado Actualizado');
+          this.toastService.showToast('Estado de la mascota actualizado', 'success');
           this.publicacion.set(pub);
         },
         error: (error) => {
