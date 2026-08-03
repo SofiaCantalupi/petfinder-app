@@ -70,13 +70,14 @@ export function estadoSolicitudAConstante(estado: EstadoSolicitud): EstadoSolici
   return ESTADO_SOLICITUD_A_CONSTANTE[estado];
 }
 
-const MOTIVO_RECHAZO_A_TEXTO: Record<MotivoRechazo, string> = {
-  manual: 'Rechazada por el publicador',
-  auto_otra_aprobada: 'Se aprobó otra solicitud para esta mascota',
-  auto_publicacion_eliminada: 'La publicación fue eliminada',
-  auto_cambio_estado_mascota: 'El estado de la mascota cambió',
+// MANUAL no tiene texto: ese rechazo ya lo explica comentarioResolucion, no hace falta mostrarlo.
+const MOTIVO_RECHAZO_A_TEXTO: Record<MotivoRechazo, string | null> = {
+  MANUAL: null,
+  AUTO_POR_OTRA_APROBADA: 'La mascota fue adoptada por otro miembro.',
+  AUTO_POR_PUBLICACION_ELIMINADA: 'La publicación ha sido eliminada.',
+  AUTO_CAMBIO_ESTADO_MASCOTA: 'La mascota ha dejado de estar en adopción.',
 };
 
-export function motivoRechazoATexto(motivo: MotivoRechazo): string {
+export function motivoRechazoATexto(motivo: MotivoRechazo): string | null {
   return MOTIVO_RECHAZO_A_TEXTO[motivo];
 }
