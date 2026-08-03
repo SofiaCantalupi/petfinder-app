@@ -103,10 +103,10 @@
               <p class="-mt-0.5">{{ s.fechaResolucion | date: 'd MMM y, HH:mm' }}</p>
             </div>
           }
-          @if (s.motivoRechazo) {
+          @if (s.estado === 'rechazada' && motivoRechazoTexto(); as motivo) {
             <div class="flex gap-1">
               <span class="input-label shrink-0 text-gray-700">Motivo de rechazo:</span>
-              <p class="capitalize -mt-0.5">{{ s.motivoRechazo }}</p>
+              <p class="-mt-0.5">{{ motivo }}</p>
             </div>
           }
         </div>

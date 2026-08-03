@@ -46,6 +46,15 @@
       >
         Encontrado
       </button>
+      <button
+        class="filter"
+        [ngClass]="{
+          'filter-active': filtroEstadoMascota() === 'en_adopcion'
+        }"
+        (click)="toggleEstadoMascota('en_adopcion')"
+      >
+        En adopción
+      </button>
     </div>
   </div>
 

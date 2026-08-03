@@ -4,6 +4,7 @@ import { DatePipe, Location } from '@angular/common';
 import { SolicitudAdopcionService } from '../../services/solicitud-adopcion-service';
 import { ToastService } from '../../services/toast-service';
 import { SolicitudAdopcion, ResolverSolicitudDto } from '../../models/solicitud-adopcion';
+import { motivoRechazoATexto } from '../../utils';
 
 @Component({
   selector: 'app-solicitud-adopcion-detail',
@@ -20,6 +21,13 @@ export class SolicitudAdopcionDetail implements OnInit {
   solicitud = signal<SolicitudAdopcion | null>(null);
   cargando = signal(true);
   resolviendo = signal(false);
+
+  // Texto legible del motivo de rechazo (el DTO solo trae el enum crudo).
+  motivoRechazoTexto = computed(() => {
+    const s = this.solicitud();
+    if (!s || !s.motivoRechazo) return null;
+    return motivoRechazoATexto(s.motivoRechazo);
+  });
 
   // el usuario loggeado puede resolver la solicitud si es el dueño de la publicacion asociada
   // (es decir, si esta solicitud aparece en sus "recibidas") y todavia esta pendiente
