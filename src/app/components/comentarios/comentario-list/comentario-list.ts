@@ -41,7 +41,7 @@ export class ComentarioList implements OnInit {
       },
       error: (err) => {
         console.error('Error al crear comentario:', err);
-        alert('Error al publicar el comentario');
+        this.toastService.showToast('Error al publicar el comentario', 'error');
       },
     });
   }
@@ -54,7 +54,7 @@ export class ComentarioList implements OnInit {
       },
       error: (err) => {
         console.error('Error al eliminar comentario:', err);
-        alert('Error al eliminar el comentario');
+        this.toastService.showToast('Error al eliminar el comentario', 'error');
       },
     });
   }
