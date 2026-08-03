@@ -16,6 +16,7 @@ import { BorrarCuenta } from './components/borrar-cuenta/borrar-cuenta';
 import { publicacionActivaGuard } from './guards/publicacion-inactiva-guard';
 import { AdminUsuarios } from './pages/admin-usuarios/admin-usuarios';
 import { adminGuard } from './guards/admin-guard';
+import { noAdminGuard } from './guards/no-admin-guard';
 import { GuiaEstilo } from './components/guia-estilo/guia-estilo';
 
 export const routes: Routes = [
@@ -57,7 +58,7 @@ export const routes: Routes = [
   {
     path: 'publicaciones/:idPublicacion/solicitud-adopcion',
     component: SolicitudFormComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, noAdminGuard],
   },
   {
     path: 'solicitudes-adopcion',
