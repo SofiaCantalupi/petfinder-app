@@ -5,10 +5,10 @@ export type EstadoSolicitud = 'pendiente' | 'aprobada' | 'rechazada' | 'cancelad
 export type TipoHogar = 'casa' | 'departamento';
 export type TipoMascotasEnHogar = 'perro' | 'gato' | 'perro_y_gato';
 export type MotivoRechazo =
-  | 'MANUAL'
-  | 'AUTO_POR_OTRA_APROBADA'
-  | 'AUTO_POR_PUBLICACION_ELIMINADA'
-  | 'AUTO_CAMBIO_ESTADO_MASCOTA';
+  | 'manual'
+  | 'auto_por_otra_aprobada'
+  | 'auto_por_publicacion_eliminada'
+  | 'auto_cambio_estado_mascota';
 
 // Nombres de las constantes del enum Java, tal como los espera SolicitudAdopcionRequestDTO
 // — distinto del "valorFront" de las respuestas. Jackson deserializa los enums tipados por
