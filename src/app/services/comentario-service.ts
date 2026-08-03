@@ -1,10 +1,11 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Comentario } from '../models/comentario';
 import { ComentarioRequestDTO } from '../models/comentario-request-dto';
 import { HttpClient } from '@angular/common/http';
 import { map, tap } from 'rxjs';
 import { Observable } from 'rxjs';
 import { DATABASE_BASE_URL } from '../constants';
+import { AuthService } from './auth-service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,8 @@ export class ComentarioService {
   private readonly apiUrl = `${DATABASE_BASE_URL}/comentarios`;
   private comentariosState = signal<Comentario[]>([]);
   public comentarios = this.comentariosState.asReadonly();
+
+  private authService = inject(AuthService);
 
   constructor(private http: HttpClient) {}
 
@@ -33,8 +36,12 @@ export class ComentarioService {
     );
   }
 
+  // El backend separa la baja por rol: /id/{id} es solo ADMINISTRADOR (borra cualquier comentario)
+  // y /propio/{id} es solo MIEMBRO sobre comentarios de los que es autor.
   deleteComentario(id: number): Observable<void> {
-    return this.http.delete(`${this.apiUrl}/propio/${id}`, { responseType: 'text' }).pipe(
+    const ruta = this.authService.isAdmin() ? 'id' : 'propio';
+
+    return this.http.delete(`${this.apiUrl}/${ruta}/${id}`, { responseType: 'text' }).pipe(
       tap(() => {
         this.comentariosState.update((comentarios) => comentarios.filter((com) => com.id !== id));
       }),
