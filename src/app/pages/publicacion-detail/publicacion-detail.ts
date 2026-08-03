@@ -52,10 +52,12 @@ export class PublicacionDetail implements OnInit {
     return pub ? this.authService.isAdmin() : false;
   });
 
-  // visible solo si la mascota esta en adopcion y el usuario loggeado no es el duenio de la publicacion
+  // visible solo si la mascota esta en adopcion y el usuario loggeado no es el duenio de la publicacion y no es admin.
   puedeSolicitarAdopcion = computed(() => {
     const pub = this.publicacion();
-    return pub ? pub.estadoMascota === 'en_adopcion' && !this.puedeEditar() : false;
+    return pub
+      ? pub.estadoMascota === 'en_adopcion' && !this.puedeEditar() && !this.authService.isAdmin()
+      : false;
   });
 
   // visible solo si la mascota fue encontrada y el usuario loggeado es el duenio de la publicacion
