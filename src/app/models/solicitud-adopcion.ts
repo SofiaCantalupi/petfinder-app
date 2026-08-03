@@ -8,7 +8,8 @@ export type MotivoRechazo =
   | 'manual'
   | 'auto_otra_aprobada'
   | 'auto_publicacion_eliminada'
-  | 'auto_cambio_estado_mascota';
+  | 'auto_cambio_estado_mascota'
+  | 'auto_baja_cuenta';
 
 // Nombres de las constantes del enum Java, tal como los espera SolicitudAdopcionRequestDTO
 // — distinto del "valorFront" de las respuestas. Jackson deserializa los enums tipados por
