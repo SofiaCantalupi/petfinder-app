@@ -17,6 +17,7 @@ export class MuroPublicaciones {
   private publicacionService = inject(PublicacionService);
 
   publicacionesReencontrados = this.publicacionService.publicacionesReencontrados;
+  publicacionesAdoptados = this.publicacionService.publicacionesAdoptados;
 
   filtroEstadoMascota = signal<EstadoMascota | null>(null);
   filtroTipoMascota = signal<TipoMascota | null>(null);

@@ -1,13 +1,15 @@
 <app-hero></app-hero>
 <!-- Barra de Filtrado -->
-<div class="card flex flex-col md:flex-row py-3 px-6 mb-8 justify-around items-center gap-2 max-w-4xl mx-auto">
+<div
+  class="card flex flex-col md:flex-row py-3 px-6 mb-8 justify-around items-center gap-2 max-w-4xl mx-auto"
+>
   <div class="flex gap-2 align-center">
     <p class="pt-1.5 text-sm font-semibold">Tipo de Mascota:</p>
     <div class="buttons flex justify-between align-center gap-1">
       <button
         class="filter"
         [ngClass]="{
-          'filter-active': filtroTipoMascota() === 'gato'
+          'filter-active': filtroTipoMascota() === 'gato',
         }"
         (click)="toggleTipoMascota('gato')"
       >
@@ -16,7 +18,7 @@
       <button
         class="filter"
         [ngClass]="{
-          'filter-active': filtroTipoMascota() === 'perro'
+          'filter-active': filtroTipoMascota() === 'perro',
         }"
         (click)="toggleTipoMascota('perro')"
       >
@@ -31,7 +33,7 @@
       <button
         class="filter"
         [ngClass]="{
-          'filter-active': filtroEstadoMascota() === 'perdido'
+          'filter-active': filtroEstadoMascota() === 'perdido',
         }"
         (click)="toggleEstadoMascota('perdido')"
       >
@@ -40,7 +42,7 @@
       <button
         class="filter"
         [ngClass]="{
-          'filter-active': filtroEstadoMascota() === 'encontrado'
+          'filter-active': filtroEstadoMascota() === 'encontrado',
         }"
         (click)="toggleEstadoMascota('encontrado')"
       >
@@ -49,7 +51,7 @@
       <button
         class="filter"
         [ngClass]="{
-          'filter-active': filtroEstadoMascota() === 'en_adopcion'
+          'filter-active': filtroEstadoMascota() === 'en_adopcion',
         }"
         (click)="toggleEstadoMascota('en_adopcion')"
       >
@@ -66,7 +68,7 @@
       <button
         class="filter"
         [ngClass]="{
-          'filter-active': filtroTipoVista() === 'grilla'
+          'filter-active': filtroTipoVista() === 'grilla',
         }"
         (click)="toggleTipoVista('grilla')"
       >
@@ -90,7 +92,7 @@
       <button
         class="filter"
         [ngClass]="{
-          'filter-active': filtroTipoVista() === 'mapa'
+          'filter-active': filtroTipoVista() === 'mapa',
         }"
         (click)="toggleTipoVista('mapa')"
       >
@@ -119,51 +121,63 @@
   </div>
 </div>
 
-@if(filtroTipoVista() === 'mapa'){
-<div class="max-w-4xl mx-auto">
-  <app-map [publicaciones]="publicacionesFiltradas()"></app-map>
-</div>
-}@else(){
-<!-- El signo | es un pipe para transformar como se muestran los datos de la izquierda, en este caso para paginarlos. -->
-<!-- De todas las publicaciones, lo pagino pasandole los valores que yo quiero al paginate (Paginate = transformador especifico de ngxPagination) y le pongo un id- -->
+@if (filtroTipoVista() === 'mapa') {
+  <div class="max-w-4xl mx-auto">
+    <app-map [publicaciones]="publicacionesFiltradas()"></app-map>
+  </div>
+} @else {
+  <!-- El signo | es un pipe para transformar como se muestran los datos de la izquierda, en este caso para paginarlos. -->
+  <!-- De todas las publicaciones, lo pagino pasandole los valores que yo quiero al paginate (Paginate = transformador especifico de ngxPagination) y le pongo un id- -->
 
-<app-publicacion-list
-  [publicaciones]="
-    publicacionesFiltradas()
-      | paginate
-        : {
-            itemsPerPage: itemsPerPage,
-            currentPage: currentPage(),
-            id: 'publicaciones-main'
-          }
-  "
->
-</app-publicacion-list>
-
-<!-- Paginador -->
-<div class="mt-8 flex justify-center">
-  <pagination-controls
-    id="publicaciones-main"
-    (pageChange)="cambioDePagina($event)"
-    previousLabel="Anterior"
-    nextLabel="Siguiente"
-    [maxSize]="7"
-    [autoHide]="true"
-    [responsive]="true"
-    [directionLinks]="true"
+  <app-publicacion-list
+    [publicaciones]="
+      publicacionesFiltradas()
+        | paginate
+          : {
+              itemsPerPage: itemsPerPage,
+              currentPage: currentPage(),
+              id: 'publicaciones-main',
+            }
+    "
   >
-  </pagination-controls>
-</div>
+  </app-publicacion-list>
+
+  <!-- Paginador -->
+  <div class="mt-8 flex justify-center">
+    <pagination-controls
+      id="publicaciones-main"
+      (pageChange)="cambioDePagina($event)"
+      previousLabel="Anterior"
+      nextLabel="Siguiente"
+      [maxSize]="7"
+      [autoHide]="true"
+      [responsive]="true"
+      [directionLinks]="true"
+    >
+    </pagination-controls>
+  </div>
+}
+<!-- Intro de los carruseles: solo si hay algo para mostrar en alguno de los dos -->
+@if (publicacionesAdoptados().length > 0 || publicacionesReencontrados().length > 0) {
+  <h2 class="text-center text-5xl font-semibold text-gray-700 mt-24">Finales Felices</h2>
 }
 
-<!-- Carrusel section -->
-<section class="max-w-4xl mx-auto my-10">
-  <h2 class="text-center text-4xl font-semibold text-gray-700">Finales Felices</h2>
-  <p class="text-center text-xl py-6">
-    Donde todo cobra sentido... <br />Estas mascotas lograron reencontrarse con sus familias gracias
-    a Pet Finder.
-  </p>
-  <app-carrusel-publicaciones
-    [publicaciones]="publicacionesReencontrados()"
-  ></app-carrusel-publicaciones>
-</section>
+<!-- Carrusel de mascotas adoptadas: se oculta la seccion entera si todavia no hay adopciones -->
+@if (publicacionesAdoptados().length > 0) {
+  <section class="max-w-4xl mx-auto my-10">
+    <p class="text-2xl text-gray-600 font-semibold mb-2.5">Adoptados</p>
+    <app-carrusel-publicaciones
+      [publicaciones]="publicacionesAdoptados()"
+    ></app-carrusel-publicaciones>
+  </section>
+}
+
+<!-- Carrusel de mascotas reencontradas -->
+@if (publicacionesReencontrados().length > 0) {
+  <section class="max-w-4xl mx-auto mb-10">
+    <p class="text-2xl text-gray-600 font-semibold mb-2.5">Reencontrados</p>
+    <app-carrusel-publicaciones
+      [publicaciones]="publicacionesReencontrados()"
+    ></app-carrusel-publicaciones>
+  </section>
+}
