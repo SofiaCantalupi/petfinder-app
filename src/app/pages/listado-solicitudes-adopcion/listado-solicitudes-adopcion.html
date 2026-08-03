@@ -1,15 +1,19 @@
 <div class="wrapper space-y-8 py-6">
   <h2 class="card-title text-3xl">Solicitudes de Adopción</h2>
 
+  @if (errorMensaje()) {
+  <p class="input-error-text text-center text-pretty">{{ errorMensaje() }}</p>
+  }
+
   <!-- Solicitudes enviadas -->
   <section>
     <h3 class="font-semibold text-xl mb-3">Enviadas</h3>
 
-    @if (solicitudService.enviadas().length === 0) {
+    @if (enviadas().length === 0) { @if (!cargando()) {
     <div class="card p-8 text-center">
       <p class="text-gray-500">No hay solicitudes para visualizar aún</p>
     </div>
-    } @else {
+    } } @else {
     <div class="card overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-left">
@@ -23,7 +27,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (solicitud of solicitudService.enviadas(); track solicitud.id) {
+            @for (solicitud of enviadas(); track solicitud.id) {
             <tr class="border-b border-border last:border-b-0">
               <td class="px-4 py-3 whitespace-nowrap">{{ solicitud.fecha | date : 'd MMM y' }}</td>
               <td class="px-4 py-3">{{ solicitud.nombreMascota || 'Sin nombre' }}</td>
@@ -95,11 +99,11 @@
   <section>
     <h3 class="font-semibold text-xl mb-3">Recibidas</h3>
 
-    @if (solicitudService.recibidas().length === 0) {
+    @if (solicitudService.recibidas().length === 0) { @if (!cargando()) {
     <div class="card p-8 text-center">
       <p class="text-gray-500">No hay solicitudes para visualizar aún</p>
     </div>
-    } @else {
+    } } @else {
     <div class="card overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-left">

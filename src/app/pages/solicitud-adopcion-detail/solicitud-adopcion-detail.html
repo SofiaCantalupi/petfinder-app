@@ -9,6 +9,9 @@
     </div>
   } @else if (solicitud(); as s) {
     <div class="card-body space-y-4">
+      @if (errorMensaje()) {
+        <p class="input-error-text text-pretty">{{ errorMensaje() }}</p>
+      }
       <!-- Datos de la publicacion -->
       <h3 class="font-semibold">Publicación</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -28,7 +31,7 @@
         </div>
         <div class="flex gap-1">
           <span class="input-label shrink-0 text-gray-700">Publicado por:</span>
-          <p class="capitalize -mt-0.5">{{ s.nombreCompletoMiembroPublicacion }}</p>
+          <p class="capitalize -mt-0.5">{{ nombrePublicador() }}</p>
         </div>
       </div>
 
@@ -155,6 +158,12 @@
           </button>
         </div>
       }
+    </div>
+  } @else {
+    <div class="card-body text-center py-12">
+      <p class="input-error-text text-pretty">
+        {{ errorMensaje() || 'No se encontró la solicitud.' }}
+      </p>
     </div>
   }
 
