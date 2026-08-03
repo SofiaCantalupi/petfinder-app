@@ -1,174 +1,81 @@
-import { signal, Injectable, inject, computed } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { forkJoin, map, Observable, switchMap, tap } from 'rxjs';
 import {
-  SolicitudAdopcion,
-  CrearSolicitudDto,
-  ResolverSolicitudDto,
   EstadoSolicitud,
+  ResolucionSolicitudRequestDTO,
+  SolicitudAdopcion,
+  SolicitudAdopcionRequestDTO,
 } from '../models/solicitud-adopcion';
-import { HttpClient } from '@angular/common/http';
-import { PublicacionService } from './publicacion-service';
-import { MiembroService } from './miembro-service';
-import { AuthService } from './auth-service';
-import { map, of, switchMap, tap } from 'rxjs';
+import { DATABASE_BASE_URL } from '../constants';
+import { estadoSolicitudAConstante } from '../utils';
 
 @Injectable({ providedIn: 'root' })
 export class SolicitudAdopcionService {
-  //CAMBIAR por la URL real del backend (http://localhost:8080/solicitudes)
-  private readonly apiUrl = 'http://localhost:3000/solicitudes';
+  private readonly apiUrl = `${DATABASE_BASE_URL}/solicitudes`;
 
-  private publicacionService = inject(PublicacionService);
-  private miembroService = inject(MiembroService);
-  private authService = inject(AuthService);
+  private http = inject(HttpClient);
 
-  // Simula el GET
-  private solicitudesState = signal<SolicitudAdopcion[]>([]);
-  public solicitudes = this.solicitudesState.asReadonly();
+  // No hay GET /solicitudes: el backend ya particiona las solicitudes en /enviadas y
+  // /recibidas segun el miembro del JWT, asi que el estado local espeja esas dos listas
+  // en vez de derivarlas de una sola.
+  private enviadasState = signal<SolicitudAdopcion[]>([]);
+  private recibidasState = signal<SolicitudAdopcion[]>([]);
 
-  // Enviadas: solicitudes que fueron enviadas por el miembro loggeado.
-  public enviadas = computed(() => {
-    const idMiembro = this.authService.usuarioId();
-    if (idMiembro === null) return [];
+  public enviadas = this.enviadasState.asReadonly();
+  public recibidas = this.recibidasState.asReadonly();
 
-    return this.solicitudesState().filter((s) => s.idMiembroSolicitante === idMiembro);
-  });
+  // Union sin duplicados (no se puede solicitar la adopcion de la propia publicacion),
+  // usada por el detalle para ubicar una solicitud por id sin GET /solicitudes/{id}.
+  public solicitudes = computed(() => [...this.enviadasState(), ...this.recibidasState()]);
 
-  // Recibidas: solicitudes que corresponden al miembro loggeado.
-  public recibidas = computed(() => {
-    const idMiembro = this.authService.usuarioId();
-    if (idMiembro === null) return [];
-
-    const idsPublicacionesPropias = new Set(
-      this.publicacionService
-        .publicaciones()
-        .filter((p) => p.idMiembro === idMiembro)
-        .map((p) => p.id),
-    );
-
-    return this.solicitudesState().filter((s) => idsPublicacionesPropias.has(s.idPublicacion));
-  });
-
-  constructor(private http: HttpClient) {
-    this.getSolicitudes();
+  getEnviadas(estado?: EstadoSolicitud): Observable<SolicitudAdopcion[]> {
+    return this.http
+      .get<SolicitudAdopcion[]>(`${this.apiUrl}/enviadas`, { params: this.paramsEstado(estado) })
+      .pipe(tap((data) => this.enviadasState.set(data ?? [])));
   }
 
-  // BORRAR - no existe un GET publicaciones, el backend real obtiene por listarenviadas y listarrecibidas
-  getSolicitudes() {
-    this.http.get<SolicitudAdopcion[]>(this.apiUrl).subscribe({
-      next: (data) => {
-        this.solicitudesState.set(data);
-      },
-      error: (error) => {
-        console.log('Error al obtener solicitudes de adopcion', error);
-      },
-    });
+  getRecibidas(estado?: EstadoSolicitud): Observable<SolicitudAdopcion[]> {
+    return this.http
+      .get<SolicitudAdopcion[]>(`${this.apiUrl}/recibidas`, { params: this.paramsEstado(estado) })
+      .pipe(tap((data) => this.recibidasState.set(data ?? [])));
   }
 
-  getSolicitudById(id: number) {
-    return this.http.get<SolicitudAdopcion>(`${this.apiUrl}/${id}`);
+  // El listado y el detalle necesitan las dos listas: se piden juntas para que el estado
+  // quede consistente y un solo subscribe cubra el cargando/error.
+  refrescar() {
+    return forkJoin({ enviadas: this.getEnviadas(), recibidas: this.getRecibidas() });
   }
 
-  // Backend real: GET /solicitudes/recibidas?estado=...
-  listarRecibidas(estado?: EstadoSolicitud) {
-    const url = estado ? `${this.apiUrl}/recibidas?estado=${estado}` : `${this.apiUrl}/recibidas`;
-
-    return this.http.get<SolicitudAdopcion[]>(url);
+  // La solicitud creada siempre es propia, asi que va a "enviadas".
+  crear(dto: SolicitudAdopcionRequestDTO): Observable<SolicitudAdopcion> {
+    return this.http
+      .post<SolicitudAdopcion>(this.apiUrl, dto)
+      .pipe(tap((data) => this.enviadasState.update((actuales) => [...actuales, data])));
   }
 
-  // Backend real: GET /solicitudes/enviadas?estado
-  listarEnviadas(estado?: EstadoSolicitud) {
-    const url = estado ? `${this.apiUrl}/enviadas?estado=${estado}` : `${this.apiUrl}/enviadas`;
-    return this.http.get<SolicitudAdopcion[]>(url);
+  // Aprobar tiene efectos de lado en el servidor que NO vienen en la respuesta: la mascota
+  // pasa a ADOPTADA y el resto de las solicitudes pendientes de esa publicacion se rechazan
+  // en cascada. Por eso se releen las dos listas en vez de parchear el estado local con la
+  // unica solicitud que devuelve el endpoint.
+  resolver(id: number, resolucion: ResolucionSolicitudRequestDTO): Observable<SolicitudAdopcion> {
+    return this.http
+      .put<SolicitudAdopcion>(`${this.apiUrl}/estado/${id}`, resolucion)
+      .pipe(switchMap((resuelta) => this.refrescar().pipe(map(() => resuelta))));
   }
 
-  // BORRAR BLOQUE MOCK ->  se borra al integrar con el backend real.
-  // El backend real recibe solo el CrearSolicitudDto y calcula estos campos  POST /solicitudes, body = SolicitudAdopcionRequestDTO
-  // a partir de la Publicacion y el Miembro que ya tiene en la base de datos.
-  crear(dto: CrearSolicitudDto) {
-    const miembro = this.authService.getCurrentUser();
-    if (!miembro) {
-      throw new Error('No hay un miembro logueado.');
-    }
-
-    // --- INICIO BLOQUE MOCK ---
-    const publicacion = this.publicacionService
-      .publicaciones()
-      .find((p) => p.id === dto.idPublicacion);
-    if (!publicacion) {
-      throw new Error('No se encontró la publicación con el id proporcionado.');
-    }
-
-    // --- FIN BLOQUE MOCK ---
-
-    // CAMBIAR Backend real: return this.http.post<SolicitudAdopcion>(this.apiUrl, dto)
-
-    // se busca el miembro dueño de la publicacion para completar 'nombreCompletoMiembroPublicacion' (BLOQUE MOCK)
-    return this.miembroService.getMiembroById(publicacion.idMiembro).pipe(
-      switchMap((miembroPublicacion) => {
-        const datosMock = {
-          estado: 'pendiente' as EstadoSolicitud,
-          fecha: new Date().toISOString(),
-          idMiembroSolicitante: miembro.id,
-          nombreCompletoSolicitante: `${miembro.nombre} ${miembro.apellido}`,
-          nombreCompletoMiembroPublicacion: `${miembroPublicacion.nombre} ${miembroPublicacion.apellido}`,
-          fechaResolucion: null,
-          comentarioResolucion: null,
-          motivoRechazo: null,
-          nombreMascota: publicacion.nombreMascota,
-          estadoMascota: publicacion.estadoMascota,
-          tipoMascota: publicacion.tipoMascota,
-          celular: dto.celular,
-        };
-
-        const payload = { ...dto, ...datosMock };
-
-        return this.http.post<SolicitudAdopcion>(this.apiUrl, payload);
-      }),
+  // Sin body y sin cascada: solo afecta a la propia solicitud, alcanza con parchear enviadas.
+  cancelar(id: number): Observable<SolicitudAdopcion> {
+    return this.http.put<SolicitudAdopcion>(`${this.apiUrl}/cancelar/${id}`, null).pipe(
       tap((data) => {
-        this.solicitudesState.update((solicitudes) => [...solicitudes, data]);
+        this.enviadasState.update((actuales) => actuales.map((s) => (s.id === id ? data : s)));
       }),
     );
   }
 
-  // Backend real: PUT /solicitudes/estado/{id}, body = ResolucionSolicitudRequestDTO
-  resolver(id: number, resolucion: ResolverSolicitudDto) {
-    // CAMBIAR se usa PATCH con json-server para no pisar el resto de campos del recurso.
-    const payload = {
-      ...resolucion,
-      fechaResolucion: new Date().toISOString(), // MOCK: el backend real la calcula solo
-    };
-
-    // CAMBIAR return this.http.put<SolicitudAdopcion>(`${this.apiUrl}/estado/${id}`, resolucion).pipe(...)
-    return this.http.patch<SolicitudAdopcion>(`${this.apiUrl}/${id}`, payload).pipe(
-      // si se aprueba la solicitud, la mascota de la publicacion pasa a estado "adoptado" (BLOQUE MOCK)
-      switchMap((data) => {
-        if (data.estado === 'aprobada') {
-          return this.publicacionService
-            .updateEstadoMascota(data.idPublicacion, 'adoptado')
-            .pipe(map(() => data));
-        }
-        return of(data);
-      }),
-      tap((data) => {
-        this.solicitudesState.update((solicitudes) =>
-          solicitudes.map((s) => (s.id === id ? data : s))
-        );
-      })
-    );
-  }
-
-  // Backend real: PUT /solicitudes/cancelar/{id}, sin body
-  cancelar(id: number) {
-    // CAMBIAR: se manda el campo a cambiar porque json-server no tiene lógica propia,
-    // solo persiste lo que le llega.
-    const payload = { estado: 'cancelada' as EstadoSolicitud };
-
-    // CAMBIAR return this.http.put<SolicitudAdopcion>(`${this.apiUrl}/cancelar/${id}`, {}).pipe(...)
-    return this.http.patch<SolicitudAdopcion>(`${this.apiUrl}/${id}`, payload).pipe(
-      tap((data) => {
-        this.solicitudesState.update((solicitudes) =>
-          solicitudes.map((s) => (s.id === id ? data : s))
-        );
-      })
-    );
+  // El backend convierte con EstadoSolicitud.valueOf(estado.toUpperCase()): espera el nombre
+  // de la constante, no el valorFront.
+  private paramsEstado(estado?: EstadoSolicitud) {
+    return estado ? new HttpParams().set('estado', estadoSolicitudAConstante(estado)) : undefined;
   }
 }
