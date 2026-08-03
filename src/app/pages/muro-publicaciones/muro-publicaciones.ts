@@ -31,8 +31,11 @@ export class MuroPublicaciones {
 
   // si existe un cambio en los signlas de filtros, se ejecuta computed, que va a filtrar las publicaciones
   publicacionesFiltradas = computed(() => {
-    // primero se filtran las publicaciones que tiene estado como reencontrado
-    let pubs = this.publicacionesActivas().filter((pub) => pub.estadoMascota !== 'reencontrado');
+    // primero se filtran las publicaciones con estado reencontrado o adoptado: no deben
+    // aparecer en el muro haya o no filtros activos
+    let pubs = this.publicacionesActivas().filter(
+      (pub) => pub.estadoMascota !== 'reencontrado' && pub.estadoMascota !== 'adoptado',
+    );
 
     if (this.filtroEstadoMascota() !== null) {
       pubs = pubs.filter((pub) => pub.estadoMascota === this.filtroEstadoMascota());

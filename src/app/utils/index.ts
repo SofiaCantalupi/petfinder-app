@@ -73,8 +73,8 @@ export function estadoSolicitudAConstante(estado: EstadoSolicitud): EstadoSolici
 // MANUAL no tiene texto: ese rechazo ya lo explica comentarioResolucion, no hace falta mostrarlo.
 const MOTIVO_RECHAZO_A_TEXTO: Record<MotivoRechazo, string | null> = {
   manual: null,
-  auto_por_otra_aprobada: 'La mascota fue adoptada por otro miembro.',
-  auto_por_publicacion_eliminada: 'La publicación ha sido eliminada.',
+  auto_otra_aprobada: 'La mascota fue adoptada por otro miembro.',
+  auto_publicacion_eliminada: 'La publicación ha sido eliminada.',
   auto_cambio_estado_mascota: 'La mascota ha dejado de estar en adopción.',
 };
 

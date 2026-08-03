@@ -6,8 +6,8 @@ export type TipoHogar = 'casa' | 'departamento';
 export type TipoMascotasEnHogar = 'perro' | 'gato' | 'perro_y_gato';
 export type MotivoRechazo =
   | 'manual'
-  | 'auto_por_otra_aprobada'
-  | 'auto_por_publicacion_eliminada'
+  | 'auto_otra_aprobada'
+  | 'auto_publicacion_eliminada'
   | 'auto_cambio_estado_mascota';
 
 // Nombres de las constantes del enum Java, tal como los espera SolicitudAdopcionRequestDTO
