@@ -41,7 +41,7 @@
           >Gestión Usuarios</a
         >
       </li>
-      } @if(authService.estaLogeado()){
+      } @if(authService.isUsuario()){
       <li>
         <a routerLink="/solicitudes-adopcion" class="hover:text-amber-800 transition-colors"
           >Solicitudes de Adopción</a

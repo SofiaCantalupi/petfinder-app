@@ -72,16 +72,16 @@
       <!-- Tipo de mascota en el hogar: solo si hay otra mascota en el hogar -->
       @if (solicitudForm.get('hayMascotaEnHogar')?.value) {
       <div class="input-group mb-3">
-        <label class="input-label" for="tipoMascotaEnHogar">Tipo de mascota en el hogar:</label>
+        <label class="input-label" for="tipoMascotasEnHogar">Tipo de mascota en el hogar:</label>
         <select
           class="input-field"
           [ngClass]="{
             'input-error':
-              solicitudForm.get('tipoMascotaEnHogar')?.invalid &&
-              solicitudForm.get('tipoMascotaEnHogar')?.touched
+              solicitudForm.get('tipoMascotasEnHogar')?.invalid &&
+              solicitudForm.get('tipoMascotasEnHogar')?.touched
           }"
-          formControlName="tipoMascotaEnHogar"
-          id="tipoMascotaEnHogar"
+          formControlName="tipoMascotasEnHogar"
+          id="tipoMascotasEnHogar"
         >
           <option value="">Seleccione...</option>
           <option value="perro">Perro</option>
@@ -89,8 +89,8 @@
           <option value="perro_y_gato">Perro y gato</option>
         </select>
 
-        @if (solicitudForm.get('tipoMascotaEnHogar')?.invalid &&
-        solicitudForm.get('tipoMascotaEnHogar')?.touched) {
+        @if (solicitudForm.get('tipoMascotasEnHogar')?.invalid &&
+        solicitudForm.get('tipoMascotasEnHogar')?.touched) {
         <p class="input-error-text">Debe seleccionar una opción.</p>
         }
       </div>

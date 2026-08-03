@@ -1,7 +1,6 @@
 import { Component, OnInit, input, effect, inject } from '@angular/core';
 import * as L from 'leaflet';
 import { Publicacion } from '../../models/publicacion';
-import { formatUbicacion } from '../../utils';
 import { Router } from '@angular/router';
 
 @Component({
@@ -60,9 +59,9 @@ export class Map implements OnInit {
     const marker = L.marker([lat, lng], { icon })
       .addTo(this.layerGroup)
       .bindPopup(
-        `<strong>${publicacion.nombreMascota || 'Sin nombre'}</strong><br>${formatUbicacion(
+        `<strong>${publicacion.nombreMascota || 'Sin nombre'}</strong><br>${
           publicacion.ubicacion || ''
-        )}<br>${publicacion.tipoMascota}<br><em>Estado: ${publicacion.estadoMascota}</em>`
+        }<br>${publicacion.tipoMascota}<br><em>Estado: ${publicacion.estadoMascota}</em>`,
       );
     marker.on('mouseover', () => marker.openPopup());
     marker.on('mouseout', () => marker.closePopup());

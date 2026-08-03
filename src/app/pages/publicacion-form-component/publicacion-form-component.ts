@@ -20,7 +20,7 @@ import { NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-sele
 import { Subject, Observable, of, forkJoin } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { NominatimSearchResult } from '../../models/nominatim';
-import { formatUbicacion, estadoMascotaAConstante, tipoMascotaAConstante } from '../../utils';
+import { estadoMascotaAConstante, tipoMascotaAConstante } from '../../utils';
 
 @Component({
   selector: 'app-publicacion-form-component',
@@ -100,7 +100,7 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
       next: (publicacion) => {
         this.mascotaId.set(publicacion.idMascota);
         this.publicacionForm.patchValue(this.mappearPublicacionAForm(publicacion));
-        this.buscarUbicacion(formatUbicacion(publicacion.ubicacion)).subscribe({
+        this.buscarUbicacion(publicacion.ubicacion).subscribe({
           next: (data) => {
             this.resultadoBusquedaUbicacion.set(data);
             this.publicacionForm
