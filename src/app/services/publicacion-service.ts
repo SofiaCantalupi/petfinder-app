@@ -3,7 +3,7 @@ import { EstadoMascota, Publicacion } from '../models/publicacion';
 import { PublicacionRequestDTO } from '../models/publicacion-request-dto';
 import { PublicacionRequestUpdateDTO } from '../models/publicacion-request-update-dto';
 import { HttpClient } from '@angular/common/http';
-import { map, tap } from 'rxjs';
+import { finalize, map, tap } from 'rxjs';
 import { DATABASE_BASE_URL } from '../constants';
 import { estadoMascotaAConstante } from '../utils';
 
@@ -17,6 +17,11 @@ export class PublicacionService {
   private publicacionesState = signal<Publicacion[]>([]);
 
   public publicaciones = this.publicacionesState.asReadonly();
+
+  // true mientras se resuelve el GET inicial de publicaciones (util para mostrar loading/skeletons)
+  private loadingState = signal<boolean>(true);
+
+  public isLoading = this.loadingState.asReadonly();
 
   // computed usado para filtrar publicaciones activas, filtra solo cuando hay cambios
   public publicacionesActivas = computed(() =>
@@ -40,14 +45,18 @@ export class PublicacionService {
   }
 
   getPublicaciones() {
-    this.http.get<Publicacion[]>(this.apiUrl).subscribe({
-      next: (data) => {
-        this.publicacionesState.set(data);
-      },
-      error: (error) => {
-        console.log('Error al obtener publicaciones', error);
-      },
-    });
+    this.loadingState.set(true);
+    this.http
+      .get<Publicacion[]>(this.apiUrl)
+      .pipe(finalize(() => this.loadingState.set(false)))
+      .subscribe({
+        next: (data) => {
+          this.publicacionesState.set(data);
+        },
+        error: (error) => {
+          console.log('Error al obtener publicaciones', error);
+        },
+      });
   }
 
   // publicaciones del usuario logueado (incluye inactivas). El id sale del JWT, no se manda por parametro.

@@ -137,8 +137,17 @@
               }
             </div>
 
-            <button class="btn btn-primary btn-md" type="submit" [disabled]="registerForm.invalid">
-              Crear cuenta
+            <button
+              class="btn btn-primary btn-md"
+              type="submit"
+              [disabled]="registerForm.invalid || isSubmitting()"
+            >
+              @if (isSubmitting()) {
+                <app-spinner class="mr-2" />
+                Creando cuenta...
+              } @else {
+                Crear cuenta
+              }
             </button>
           </form>
           @if (errorMessage()) {

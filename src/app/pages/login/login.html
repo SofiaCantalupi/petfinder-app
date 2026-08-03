@@ -72,9 +72,14 @@
             <button
               class="btn btn-primary btn-md mt-2"
               type="submit"
-              [disabled]="logInForm.invalid"
+              [disabled]="logInForm.invalid || isSubmitting()"
             >
-              Iniciar sesión
+              @if (isSubmitting()) {
+                <app-spinner class="mr-2" />
+                Iniciando sesión...
+              } @else {
+                Iniciar sesión
+              }
             </button>
 
             <div class="relative inline-block group text-center mb-2">
