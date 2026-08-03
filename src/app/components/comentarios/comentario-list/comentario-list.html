@@ -17,9 +17,11 @@
     } }
   </div>
 
-  <!-- Formulario para agregar comentario (abajo de todo) -->
-  <app-comentario-form
-    [publicacionId]="publicacionId()"
-    (comentarioCreado)="guardarComentario($event)"
-  />
+  <!-- Formulario para agregar comentario (abajo de todo), oculto para el admin: no puede comentar -->
+  @if (!esAdmin()) {
+    <app-comentario-form
+      [publicacionId]="publicacionId()"
+      (comentarioCreado)="guardarComentario($event)"
+    />
+  }
 </section>

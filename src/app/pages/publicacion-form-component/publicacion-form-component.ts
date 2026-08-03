@@ -203,7 +203,7 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error actualizando:', error);
-          alert('Error al actualizar la publicación');
+          this.toastService.showToast('Error al actualizar la publicación', 'error');
         },
       });
     } else {
@@ -223,13 +223,13 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
             },
             error: (error) => {
               console.error('Error creando la publicación:', error);
-              alert('Error al crear la publicación');
+              this.toastService.showToast('Error al crear la publicación', 'error');
             },
           });
         },
         error: (error) => {
           console.error('Error creando la mascota:', error);
-          alert('Error al crear la mascota');
+          this.toastService.showToast('Error al crear la mascota', 'error');
         },
       });
     }

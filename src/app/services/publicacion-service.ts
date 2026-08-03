@@ -29,6 +29,12 @@ export class PublicacionService {
     ),
   );
 
+  public publicacionesAdoptados = computed(() =>
+    this.publicacionesState().filter(
+      (publicacion) => publicacion.activo === true && publicacion.estadoMascota === 'adoptado',
+    ),
+  );
+
   constructor(private http: HttpClient) {
     this.getPublicaciones();
   }

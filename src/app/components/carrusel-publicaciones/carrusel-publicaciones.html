@@ -4,22 +4,26 @@
 >
   <div class="swiper-wrapper">
     @for (pub of publicaciones(); track pub.id) {
-    <div class="swiper-slide flex justify-center">
-      <div class="bg-white w-full border shadow-md border-border rounded-xl">
-        <div class="rounded-xl overflow-hidden">
-          <img [src]="pub.urlFoto" [alt]="pub.nombreMascota" class="w-full h-40 object-cover" />
-          <div class="p-3">
-            <h3 class="text-center font-semibold text-gray-800">
-              {{ pub.nombreMascota || '&nbsp;' }}
-            </h3>
+      <div class="swiper-slide flex justify-center">
+        <div class="bg-white w-full border shadow-md border-border rounded-xl">
+          <div
+            class="relative rounded-xl overflow-hidden aspect-4/3 after:absolute after:inset-0 after:bg-linear-to-t after:from-gray-700/50 after:to-transparent after:z-1"
+          >
+            <img [src]="pub.urlFoto" [alt]="pub.nombreMascota" class="size-full object-cover" />
+            <div class="absolute bottom-0 left-0 w-full p-3 z-2">
+              <p class="text-center font-semibold text-white">
+                {{ pub.nombreMascota || '&nbsp;' }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     }
   </div>
 
-  <!-- Botones -->
-  <div class="swiper-button-next tex"></div>
-  <div class="swiper-button-prev"></div>
+  <!-- Botones: sin slides swiper no se inicializa, asi que no quedan flechas muertas -->
+  @if (publicaciones().length > 0) {
+    <div class="swiper-button-next tex"></div>
+    <div class="swiper-button-prev"></div>
+  }
 </div>

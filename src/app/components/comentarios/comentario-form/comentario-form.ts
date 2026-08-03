@@ -5,6 +5,7 @@ import { AuthService } from '../../../services/auth-service';
 import { NgClass } from '@angular/common';
 import { PublicacionService } from '../../../services/publicacion-service';
 import { Publicacion } from '../../../models/publicacion';
+import { ToastService } from '../../../services/toast-service';
 
 @Component({
   selector: 'app-comentario-form',
@@ -16,6 +17,7 @@ export class ComentarioForm implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private publicacionService = inject(PublicacionService);
+  private toastService = inject(ToastService);
 
   // Input: id de la publicacion donde se va a comentar
   publicacionId = input.required<number>();
@@ -48,7 +50,7 @@ export class ComentarioForm implements OnInit {
 
     //Chequeo de UX: si no hay sesión, avisamos antes de mandar el request (el backend igual lo rechazaría con 401)
     if (!this.authService.getCurrentUser()) {
-      alert('Debes iniciar sesión para comentar');
+      this.toastService.showToast('Debes iniciar sesión para comentar', 'warning');
       return;
     }
 

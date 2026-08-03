@@ -4,6 +4,7 @@ import { ComentarioItem } from '../comentario-item/comentario-item';
 import { ComentarioForm } from '../comentario-form/comentario-form';
 import { ComentarioRequestDTO } from '../../../models/comentario-request-dto';
 import { ToastService } from '../../../services/toast-service';
+import { AuthService } from '../../../services/auth-service';
 
 @Component({
   selector: 'app-comentario-list',
@@ -14,10 +15,14 @@ import { ToastService } from '../../../services/toast-service';
 export class ComentarioList implements OnInit {
   private comentarioService = inject(ComentarioService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
 
   publicacionId = input.required<number>();
 
   comentarios = this.comentarioService.comentarios;
+
+  // El backend solo deja crear comentarios al rol MIEMBRO. el admin modera, asi que no se le muestra el formulario.
+  esAdmin = this.authService.isAdmin;
 
   ngOnInit(): void {
     this.cargarComentarios();
@@ -41,7 +46,7 @@ export class ComentarioList implements OnInit {
       },
       error: (err) => {
         console.error('Error al crear comentario:', err);
-        alert('Error al publicar el comentario');
+        this.toastService.showToast('Error al publicar el comentario', 'error');
       },
     });
   }
@@ -54,7 +59,7 @@ export class ComentarioList implements OnInit {
       },
       error: (err) => {
         console.error('Error al eliminar comentario:', err);
-        alert('Error al eliminar el comentario');
+        this.toastService.showToast('Error al eliminar el comentario', 'error');
       },
     });
   }
