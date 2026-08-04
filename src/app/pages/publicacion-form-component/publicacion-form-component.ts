@@ -18,13 +18,21 @@ import { ToastService } from '../../services/toast-service';
 import { GeocodingService } from '../../services/geocoding-service';
 import { NgOptionTemplateDirective, NgSelectComponent } from '@ng-select/ng-select';
 import { Subject, Observable, of, forkJoin } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, finalize, switchMap, tap } from 'rxjs/operators';
 import { NominatimSearchResult } from '../../models/nominatim';
 import { estadoMascotaAConstante, tipoMascotaAConstante } from '../../utils';
+import { Spinner } from '../../components/spinner/spinner';
 
 @Component({
   selector: 'app-publicacion-form-component',
-  imports: [ReactiveFormsModule, NgClass, RouterLink, NgOptionTemplateDirective, NgSelectComponent],
+  imports: [
+    ReactiveFormsModule,
+    NgClass,
+    RouterLink,
+    NgOptionTemplateDirective,
+    NgSelectComponent,
+    Spinner,
+  ],
   templateUrl: './publicacion-form-component.html',
 })
 export class PublicacionFormComponent implements OnInit, OnDestroy {
@@ -42,6 +50,7 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
   esEdicion = signal(false);
   publicacionId = signal<number | undefined>(undefined);
   mascotaId = signal<number | undefined>(undefined);
+  isSubmitting = signal(false);
 
   // Signals para resultados de busqueda y estado de busqueda
   resultadoBusquedaUbicacion = signal<NominatimSearchResult[]>([]);
@@ -183,6 +192,8 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
     const ubicacion = this.mapearUbicacion(formValue.ubicacionQuery);
     const mascotaDto = this.mapearMascota(formValue.mascota);
 
+    this.isSubmitting.set(true);
+
     if (this.esEdicion()) {
       const cambiosPublicacion: PublicacionRequestUpdateDTO = {
         descripcion: formValue.descripcion,
@@ -195,18 +206,23 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
           cambiosPublicacion,
         ),
         mascota: this.mascotaService.updateMascota(this.mascotaId()!, mascotaDto),
-      }).subscribe({
-        next: () => {
-          this.toastService.showToast('¡Publicación actualizada!', 'success', 5000);
-          this.publicacionForm.reset();
-          this.router.navigate(['/publicaciones', this.publicacionId()]);
-        },
-        error: (error) => {
-          console.error('Error actualizando:', error);
-          this.toastService.showToast('Error al actualizar la publicación', 'error');
-        },
-      });
+      })
+        .pipe(finalize(() => this.isSubmitting.set(false)))
+        .subscribe({
+          next: () => {
+            this.toastService.showToast('¡Publicación actualizada!', 'success', 5000);
+            this.publicacionForm.reset();
+            this.router.navigate(['/publicaciones', this.publicacionId()]);
+          },
+          error: (error) => {
+            console.error('Error actualizando:', error);
+            this.toastService.showToast('Error al actualizar la publicación', 'error');
+          },
+        });
     } else {
+      // Flujo anidado (crear mascota, despues publicacion): un finalize() en el observable
+      // externo se dispararia antes de que termine el interno, asi que el flag se baja a mano
+      // en cada punto terminal.
       this.mascotaService.postMascota(mascotaDto).subscribe({
         next: (mascotaCreada) => {
           const nuevaPublicacion: PublicacionRequestDTO = {
@@ -217,17 +233,20 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
 
           this.publicacionService.postPublicacion(nuevaPublicacion).subscribe({
             next: (pub) => {
+              this.isSubmitting.set(false);
               this.toastService.showToast('¡Publicación creada!', 'success', 5000);
               this.publicacionForm.reset();
               this.router.navigate(['/publicaciones', pub.id]);
             },
             error: (error) => {
+              this.isSubmitting.set(false);
               console.error('Error creando la publicación:', error);
               this.toastService.showToast('Error al crear la publicación', 'error');
             },
           });
         },
         error: (error) => {
+          this.isSubmitting.set(false);
           console.error('Error creando la mascota:', error);
           this.toastService.showToast('Error al crear la mascota', 'error');
         },

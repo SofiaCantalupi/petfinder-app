@@ -8,10 +8,12 @@ import { DatePipe, NgClass } from '@angular/common';
 import { ToastService } from '../../services/toast-service';
 import { Map } from '../../components/map/map';
 import { Location } from '@angular/common';
+import { finalize } from 'rxjs';
+import { Spinner } from '../../components/spinner/spinner';
 
 @Component({
   selector: 'app-publicacion-detail',
-  imports: [ComentarioList, DatePipe, NgClass, Map],
+  imports: [ComentarioList, DatePipe, NgClass, Map, Spinner],
   templateUrl: './publicacion-detail.html',
 })
 export class PublicacionDetail implements OnInit {
@@ -27,6 +29,8 @@ export class PublicacionDetail implements OnInit {
   // signals
   publicacion = signal<Publicacion | null>(null);
   cargando = signal<boolean>(true);
+  // un solo signal para los 3 botones de accion: nunca estan visibles a la vez
+  accionEnCurso = signal(false);
 
   ubicacionFormateada: string = '';
 
@@ -106,16 +110,20 @@ export class PublicacionDetail implements OnInit {
     }
 
     if (this.puedeEliminar() && confirm('¿Estás seguro de eliminar esta publicación?')) {
-      this.publicacionService.deletePublicacion(publicacion.id).subscribe({
-        next: () => {
-          console.log('Publicación eliminada.');
-          this.toastService.showToast('Publicación eliminada', 'success');
-          this.router.navigate(['/publicaciones']);
-        },
-        error: (error) => {
-          console.log('Error al eliminar la publicación.', error);
-        },
-      });
+      this.accionEnCurso.set(true);
+      this.publicacionService
+        .deletePublicacion(publicacion.id)
+        .pipe(finalize(() => this.accionEnCurso.set(false)))
+        .subscribe({
+          next: () => {
+            console.log('Publicación eliminada.');
+            this.toastService.showToast('Publicación eliminada', 'success');
+            this.router.navigate(['/publicaciones']);
+          },
+          error: (error) => {
+            console.log('Error al eliminar la publicación.', error);
+          },
+        });
     }
   }
 
@@ -135,17 +143,21 @@ export class PublicacionDetail implements OnInit {
     if (!id) return;
 
     if (confirm('¿Estás seguro de querer cambiar el estado de esta mascota a REENCONTRADO?')) {
-      this.publicacionService.updateEstadoMascota(id, estado).subscribe({
-        next: (pub) => {
-          console.log('Estado Actualizado');
-          this.toastService.showToast('Estado de la mascota ctualizado', 'success');
-          this.publicacion.set(pub);
-        },
-        error: (error) => {
-          console.log('No se ha podido actualizar el estado', error);
-          this.toastService.showToast('Error al actualizar el estado', 'error');
-        },
-      });
+      this.accionEnCurso.set(true);
+      this.publicacionService
+        .updateEstadoMascota(id, estado)
+        .pipe(finalize(() => this.accionEnCurso.set(false)))
+        .subscribe({
+          next: (pub) => {
+            console.log('Estado Actualizado');
+            this.toastService.showToast('Estado de la mascota ctualizado', 'success');
+            this.publicacion.set(pub);
+          },
+          error: (error) => {
+            console.log('No se ha podido actualizar el estado', error);
+            this.toastService.showToast('Error al actualizar el estado', 'error');
+          },
+        });
     }
   }
 
@@ -159,17 +171,21 @@ export class PublicacionDetail implements OnInit {
     if (!id) return;
 
     if (confirm('¿Estás seguro de querer poner en adopción a esta mascota?')) {
-      this.publicacionService.updateEstadoMascota(id, estado).subscribe({
-        next: (pub) => {
-          console.log('Estado Actualizado');
-          this.toastService.showToast('Estado de la mascota actualizado', 'success');
-          this.publicacion.set(pub);
-        },
-        error: (error) => {
-          console.log('No se ha podido actualizar el estado', error);
-          this.toastService.showToast('Error al actualizar el estado', 'error');
-        },
-      });
+      this.accionEnCurso.set(true);
+      this.publicacionService
+        .updateEstadoMascota(id, estado)
+        .pipe(finalize(() => this.accionEnCurso.set(false)))
+        .subscribe({
+          next: (pub) => {
+            console.log('Estado Actualizado');
+            this.toastService.showToast('Estado de la mascota actualizado', 'success');
+            this.publicacion.set(pub);
+          },
+          error: (error) => {
+            console.log('No se ha podido actualizar el estado', error);
+            this.toastService.showToast('Error al actualizar el estado', 'error');
+          },
+        });
     }
   }
 

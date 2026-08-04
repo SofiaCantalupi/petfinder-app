@@ -184,9 +184,14 @@
       <button
         class="btn btn-primary btn-md"
         type="submit"
-        [disabled]="!publicacionForm.valid || (esEdicion() && !publicacionForm.dirty)"
+        [disabled]="!publicacionForm.valid || (esEdicion() && !publicacionForm.dirty) || isSubmitting()"
       >
-        {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
+        @if (isSubmitting()) {
+          <app-spinner class="mr-2" />
+          {{ esEdicion() ? 'Actualizando...' : 'Publicando...' }}
+        } @else {
+          {{ esEdicion() ? 'Actualizar' : 'Publicar' }}
+        }
       </button>
 
       @if(esEdicion()){
