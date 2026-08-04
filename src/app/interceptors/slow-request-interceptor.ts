@@ -27,9 +27,9 @@ export const slowRequestInterceptor: HttpInterceptorFn = (req, next) => {
 
     ultimoAvisoEn = ahora;
     toastService.showToast(
-      'El servidor está iniciando, puede tardar hasta un minuto',
+      'El servidor está iniciando, puede tardar hasta dos minutos',
       'info',
-      8000,
+      16000,
     );
   }, UMBRAL_MS);
 
