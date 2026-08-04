@@ -141,15 +141,33 @@
             ¿Tu mascota fue reencontrada? <br />
             Avisale a la comunidad!
           </p>
-          <button class="btn btn-sm btn-success w-fit" (click)="cambiarEstadoAReencontrado()">
-            Marcar como reencontrado
+          <button
+            class="btn btn-sm btn-success w-fit"
+            [disabled]="accionEnCurso()"
+            (click)="cambiarEstadoAReencontrado()"
+          >
+            @if (accionEnCurso()) {
+              <app-spinner class="mr-2" />
+              Procesando...
+            } @else {
+              Marcar como reencontrado
+            }
           </button>
         }
 
         <!-- boton para poner la mascota en adopcion, solo si el estado es encontrado y la publicacion pertenece a la persona loggeada -->
         @if (puedePonerEnAdopcion()) {
-          <button class="btn btn-md btn-primary w-fit" (click)="ponerEnAdopcion()">
-            Poner la mascota en adopción
+          <button
+            class="btn btn-md btn-primary w-fit"
+            [disabled]="accionEnCurso()"
+            (click)="ponerEnAdopcion()"
+          >
+            @if (accionEnCurso()) {
+              <app-spinner class="mr-2" />
+              Procesando...
+            } @else {
+              Poner la mascota en adopción
+            }
           </button>
           <p class="input-helper text-center mt-1">
             Esto habilitará a otros miembros interesados a enviar solicitudes de adopción.
@@ -206,7 +224,14 @@
 
           <!-- solo se muestra el propietario de la publicacion y al admin -->
           @if (puedeEliminar()) {
-            <button class="btn btn-danger btn-sm px-1.5!" (click)="deletePublicacion()">
+            <button
+              class="btn btn-danger btn-sm px-1.5!"
+              [disabled]="accionEnCurso()"
+              (click)="deletePublicacion()"
+            >
+              @if (accionEnCurso()) {
+                <app-spinner />
+              } @else {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
@@ -224,6 +249,7 @@
                 <line x1="10" x2="10" y1="11" y2="17" />
                 <line x1="14" x2="14" y1="11" y2="17" />
               </svg>
+              }
             </button>
           }
         }

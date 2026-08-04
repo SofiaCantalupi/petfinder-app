@@ -7,10 +7,11 @@ import { PublicacionService } from '../../services/publicacion-service';
 import { ToastService } from '../../services/toast-service';
 import { SolicitudEnviadaVista } from '../../models/solicitud-adopcion';
 import { extraerMensajeError } from '../../utils/http-error';
+import { SolicitudesTablaSkeleton } from '../../components/solicitudes-tabla-skeleton/solicitudes-tabla-skeleton';
 
 @Component({
   selector: 'app-listado-solicitudes-adopcion',
-  imports: [DatePipe],
+  imports: [DatePipe, SolicitudesTablaSkeleton],
   templateUrl: './listado-solicitudes-adopcion.html',
 })
 export class ListadoSolicitudesAdopcion implements OnInit {

@@ -126,19 +126,25 @@
               }@else{ @if(modoEditar()){
               <button
                 type="button"
-                [disabled]="!puedaGuardarPerfil"
+                [disabled]="!puedaGuardarPerfil || isGuardando()"
                 class="btn btn-primary btn-sm flex-1"
                 (click)="guardarCambios()"
               >
-                Guardar</button
+                @if (isGuardando()) {
+                <app-spinner class="mr-2" />
+                Guardando...
+                } @else { Guardar }</button
               >} @else {
               <button
                 type="button"
-                [disabled]="perfilForm.invalid"
+                [disabled]="perfilForm.invalid || isGuardando()"
                 class="btn btn-primary btn-sm flex-1"
                 (click)="guardarCambios()"
               >
-                Guardar
+                @if (isGuardando()) {
+                <app-spinner class="mr-2" />
+                Guardando...
+                } @else { Guardar }
               </button>
               }
 
@@ -172,8 +178,10 @@
   <div class="flex-2 flex flex-col w-full">
     <!-- el primer if es para no mostrar NADA sobre publicaciones al Admin -->
     @if (!authService.isAdmin()) { @if (cargandoPublicaciones()) {
-    <div class="flex justify-center items-center py-10">
-      <p class="text-gray-500">Cargando publicaciones...</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      @for (i of [1, 2, 3, 4]; track i) {
+      <app-publicacion-card-skeleton />
+      }
     </div>
     } @else if (misPublicaciones().length > 0) {
     <div class="card p-4 bg-primary/5">

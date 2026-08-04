@@ -5,10 +5,12 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../services/toast-service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth-service';
+import { finalize } from 'rxjs';
+import { Spinner } from '../spinner/spinner';
 
 @Component({
   selector: 'app-borrar-cuenta',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, Spinner],
   templateUrl: './borrar-cuenta.html',
   styleUrl: './borrar-cuenta.css',
 })
@@ -19,6 +21,7 @@ export class BorrarCuenta {
   formBuilder = inject(FormBuilder);
   toastService = inject(ToastService);
   confirmarError = signal<true | false>(false);
+  isEliminando = signal(false);
 
   borrarGroup = this.formBuilder.nonNullable.group({
     confirmar: [''],
@@ -31,15 +34,19 @@ export class BorrarCuenta {
       return;
     }
 
-    this.miembroService.eliminarCuentaPropia().subscribe({
-      next: () => {
-        this.toastService.showToast('Tu cuenta fue eliminada correctamente.', 'success', 5000);
-        this.authService.logout();
-      },
-      error: (error) => {
-        console.error('Error al eliminar la cuenta:', error);
-        this.toastService.showToast('Error al eliminar la cuenta.', 'error', 5000);
-      },
-    });
+    this.isEliminando.set(true);
+    this.miembroService
+      .eliminarCuentaPropia()
+      .pipe(finalize(() => this.isEliminando.set(false)))
+      .subscribe({
+        next: () => {
+          this.toastService.showToast('Tu cuenta fue eliminada correctamente.', 'success', 5000);
+          this.authService.logout();
+        },
+        error: (error) => {
+          console.error('Error al eliminar la cuenta:', error);
+          this.toastService.showToast('Error al eliminar la cuenta.', 'error', 5000);
+        },
+      });
   }
 }

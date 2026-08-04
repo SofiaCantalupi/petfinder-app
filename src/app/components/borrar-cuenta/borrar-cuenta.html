@@ -49,9 +49,15 @@
       <button
         type="button"
         class="btn btn-danger btn-sm"
+        [disabled]="isEliminando()"
         (click)="eliminarCuenta(borrarGroup.value.confirmar)"
       >
-        Cerrar mi cuenta
+        @if (isEliminando()) {
+          <app-spinner class="mr-2" />
+          Eliminando...
+        } @else {
+          Cerrar mi cuenta
+        }
       </button>
     </div>
   </div>

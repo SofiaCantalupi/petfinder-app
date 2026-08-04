@@ -12,6 +12,7 @@ import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { authInterceptor } from './interceptors/auth-interceptor';
 import { errorInterceptor } from './interceptors/error-interceptor';
+import { slowRequestInterceptor } from './interceptors/slow-request-interceptor';
 
 // se regista el locale es espaniol
 registerLocaleData(localeEs);
@@ -29,6 +30,6 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     { provide: LOCALE_ID, useValue: 'es' },
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor, slowRequestInterceptor])),
   ],
 };

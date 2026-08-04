@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { inject } from '@angular/core';
+import { finalize } from 'rxjs';
 import { MiembroService } from '../../services/miembro-service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -12,10 +13,19 @@ import { ToastService } from '../../services/toast-service';
 import { PublicacionList } from '../../components/publicacion-list/publicacion-list';
 import { PublicacionService } from '../../services/publicacion-service';
 import { Publicacion } from '../../models/publicacion';
+import { PublicacionCardSkeleton } from '../../components/publicacion-card-skeleton/publicacion-card-skeleton';
+import { Spinner } from '../../components/spinner/spinner';
 
 @Component({
   selector: 'app-mi-perfil',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, PublicacionList],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    PublicacionList,
+    PublicacionCardSkeleton,
+    Spinner,
+  ],
   templateUrl: './mi-perfil.html',
 })
 export class MiPerfil implements OnInit {
@@ -33,6 +43,7 @@ export class MiPerfil implements OnInit {
   modoEditar = signal(false);
   modoContrasenia = signal(false);
   errorPassword = signal<string>('');
+  isGuardando = signal(false);
   miembroActual!: Miembro;
 
   ngOnInit(): void {
@@ -160,11 +171,13 @@ export class MiPerfil implements OnInit {
 
       const { nombre, apellido } = this.perfilForm.getRawValue();
 
+      this.isGuardando.set(true);
       this.miembroService
         .actualizarMiembro({
           nombre,
           apellido,
         })
+        .pipe(finalize(() => this.isGuardando.set(false)))
         .subscribe({
           next: (actualizado) => {
             this.miembroActual = actualizado; // guardamos el cambio
@@ -189,21 +202,25 @@ export class MiPerfil implements OnInit {
         nueva: this.perfilForm.get('nueva')?.value,
       };
 
-      this.authService.cambiarPassword(dto).subscribe({
-        next: () => {
-          this.modoContrasenia.set(false);
+      this.isGuardando.set(true);
+      this.authService
+        .cambiarPassword(dto)
+        .pipe(finalize(() => this.isGuardando.set(false)))
+        .subscribe({
+          next: () => {
+            this.modoContrasenia.set(false);
 
-          this.perfilForm.get('actual')?.disable();
-          this.perfilForm.get('nueva')?.disable();
-          this.perfilForm.get('confirmar')?.disable();
+            this.perfilForm.get('actual')?.disable();
+            this.perfilForm.get('nueva')?.disable();
+            this.perfilForm.get('confirmar')?.disable();
 
-          this.errorPassword.set(''); // Limpiamos errores
-          this.toastService.showToast('¡Contraseña actualizada con éxito!', 'success', 5000);
-        },
-        error: (err: Error) => {
-          this.errorPassword.set(err.message);
-        },
-      });
+            this.errorPassword.set(''); // Limpiamos errores
+            this.toastService.showToast('¡Contraseña actualizada con éxito!', 'success', 5000);
+          },
+          error: (err: Error) => {
+            this.errorPassword.set(err.message);
+          },
+        });
     }
   }
 
