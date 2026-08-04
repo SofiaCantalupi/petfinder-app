@@ -19,7 +19,7 @@
       </svg>
 
       <span class="font-bold hidden sm:block"
-        ><a routerLink="/login" class="hover:text-amber-800 transition-colors text-white"
+        ><a routerLink="/publicaciones" class="hover:text-amber-800 transition-colors text-white"
           >PetFinder</a
         ></span
       >
@@ -29,24 +29,26 @@
       <li>
         <a routerLink="/publicaciones" class="hover:text-amber-800 transition-colors">Home</a>
       </li>
-      @if(authService.isUsuario()){
-      <li>
-        <a routerLink="/publicaciones/crear" class="hover:text-amber-800 transition-colors"
-          >Nueva Publicación</a
-        >
-      </li>
-      } @if(authService.isAdmin()){
-      <li>
-        <a routerLink="/admin/usuarios" class="hover:text-amber-800 transition-colors"
-          >Gestión Usuarios</a
-        >
-      </li>
-      } @if(authService.isUsuario()){
-      <li>
-        <a routerLink="/solicitudes-adopcion" class="hover:text-amber-800 transition-colors"
-          >Solicitudes de Adopción</a
-        >
-      </li>
+      @if (authService.isUsuario()) {
+        <li>
+          <a routerLink="/publicaciones/crear" class="hover:text-amber-800 transition-colors"
+            >Nueva Publicación</a
+          >
+        </li>
+      }
+      @if (authService.isAdmin()) {
+        <li>
+          <a routerLink="/admin/usuarios" class="hover:text-amber-800 transition-colors"
+            >Gestión Usuarios</a
+          >
+        </li>
+      }
+      @if (authService.isUsuario()) {
+        <li>
+          <a routerLink="/solicitudes-adopcion" class="hover:text-amber-800 transition-colors"
+            >Solicitudes de Adopción</a
+          >
+        </li>
       }
 
       <li>

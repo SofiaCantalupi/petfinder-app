@@ -17,11 +17,20 @@ import { publicacionActivaGuard } from './guards/publicacion-inactiva-guard';
 import { AdminUsuarios } from './pages/admin-usuarios/admin-usuarios';
 import { adminGuard } from './guards/admin-guard';
 import { GuiaEstilo } from './components/guia-estilo/guia-estilo';
+import { RedirectFunction } from '@angular/router';
+import { inject } from '@angular/core';
+import { AuthService } from './services/auth-service';
+
+//Se usa para verificar si el usuario está logeado y redirigirlo a la página de publicaciones o al login según corresponda
+const homeOrLoginRedirect: RedirectFunction = () => {
+  const authService = inject(AuthService);
+  return authService.estaLogeado() ? '/publicaciones' : '/login';
+};
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: homeOrLoginRedirect,
     pathMatch: 'full',
   },
   {
@@ -99,7 +108,7 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'login',
+    redirectTo: homeOrLoginRedirect,
     pathMatch: 'full',
   },
 ];
