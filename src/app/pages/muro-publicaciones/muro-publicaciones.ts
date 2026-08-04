@@ -7,15 +7,25 @@ import { Hero } from '../../components/hero/hero';
 import { CarruselPublicaciones } from '../../components/carrusel-publicaciones/carrusel-publicaciones';
 import { Map } from '../../components/map/map';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { PublicacionCardSkeleton } from '../../components/publicacion-card-skeleton/publicacion-card-skeleton';
 
 @Component({
   selector: 'app-muro-publicaciones',
-  imports: [PublicacionList, NgClass, Hero, CarruselPublicaciones, Map, NgxPaginationModule],
+  imports: [
+    PublicacionList,
+    NgClass,
+    Hero,
+    CarruselPublicaciones,
+    Map,
+    NgxPaginationModule,
+    PublicacionCardSkeleton,
+  ],
   templateUrl: './muro-publicaciones.html',
 })
 export class MuroPublicaciones {
   private publicacionService = inject(PublicacionService);
 
+  isLoading = this.publicacionService.isLoading;
   publicacionesReencontrados = this.publicacionService.publicacionesReencontrados;
   publicacionesAdoptados = this.publicacionService.publicacionesAdoptados;
 

@@ -11,11 +11,13 @@ import { LoginRequestDTO } from '../../models/auth/login-request-dto';
 import { signal } from '@angular/core';
 import { ToastService } from '../../services/toast-service';
 import { CatAstronautAnimation } from '../../components/cat-astronaut-animation/cat-astronaut-animation';
+import { Spinner } from '../../components/spinner/spinner';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, NgClass, ReactiveFormsModule, RouterLink, CatAstronautAnimation],
+  imports: [FormsModule, NgClass, ReactiveFormsModule, RouterLink, CatAstronautAnimation, Spinner],
   templateUrl: './login.html',
 })
 export class Login {
@@ -25,6 +27,7 @@ export class Login {
   toastService = inject(ToastService);
 
   errorMessage = signal<string | null>(null);
+  isSubmitting = signal(false);
 
   // Creacion del formulario
   logInForm = this.formBuilder.nonNullable.group({
@@ -48,15 +51,19 @@ export class Login {
     };
 
     //Login a través del authService.
-    this.authService.login(LoginDto).subscribe({
-      next: (miembro) => {
-        this.toastService.showToast('¡Ingreso de sesión con éxito!', 'success', 5000);
-        this.router.navigate(['/publicaciones']);
-      },
-      error: (error) => {
-        this.errorMessage.set(error.message);
-      },
-    });
+    this.isSubmitting.set(true);
+    this.authService
+      .login(LoginDto)
+      .pipe(finalize(() => this.isSubmitting.set(false)))
+      .subscribe({
+        next: (miembro) => {
+          this.toastService.showToast('¡Ingreso de sesión con éxito!', 'success', 5000);
+          this.router.navigate(['/publicaciones']);
+        },
+        error: (error) => {
+          this.errorMessage.set(error.message);
+        },
+      });
   }
 
   olvidarContrasenia(): void {}

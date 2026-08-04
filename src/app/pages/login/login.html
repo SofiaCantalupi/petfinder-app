@@ -1,12 +1,14 @@
 <div class="min-h-screen flex items-center justify-center bg-paw-pattern text-foreground -mt-8">
   <div class="flex flex-col md:flex-row w-full min-h-screen">
-    <div class=" relative flex-1 flex flex-col justify-center items-center text-foreground p-10">
+    <div class="relative flex-1 flex flex-col justify-center items-center text-foreground p-10">
       <h1 class="text-5xl font-bold tracking-wide mb-4">PetFinder</h1>
       <p class="max-w-md text-lg opacity-90 leading-relaxed text-center text-pretty">
         Ayudamos a reunir mascotas perdidas con sus familias. Encontrá, reportá y compartí — todo en
         un solo lugar.
       </p>
-      <app-cat-astronaut-animation ngClass="w-full max-w-[300px] hidden md:block h-auto mx-auto"></app-cat-astronaut-animation>
+      <app-cat-astronaut-animation
+        ngClass="w-full max-w-[300px] hidden md:block h-auto mx-auto"
+      ></app-cat-astronaut-animation>
     </div>
 
     <div class="flex-1 flex items-center justify-center">
@@ -25,7 +27,7 @@
               <input
                 class="input-field placeholder:text-muted-foreground"
                 [ngClass]="{
-                  'input-error': logInForm.get('email')?.invalid && logInForm.get('email')?.touched
+                  'input-error': logInForm.get('email')?.invalid && logInForm.get('email')?.touched,
                 }"
                 formControlName="email"
                 placeholder="usuario@ejemplo.com"
@@ -34,12 +36,14 @@
               />
 
               @if (logInForm.get('email')?.invalid && logInForm.get('email')?.touched) {
-              <p class="input-error-text">
-                @if (logInForm.get('email')?.errors?.['required']) { Este campo es obligatorio. }
-                @if (logInForm.get('email')?.errors?.['email']) { El formato del correo no es
-                válido. }
-              </p>
-
+                <p class="input-error-text">
+                  @if (logInForm.get('email')?.errors?.['required']) {
+                    Este campo es obligatorio.
+                  }
+                  @if (logInForm.get('email')?.errors?.['email']) {
+                    El formato del correo no es válido.
+                  }
+                </p>
               }
             </div>
 
@@ -49,7 +53,7 @@
                 class="input-field placeholder:text-muted-foreground"
                 [ngClass]="{
                   'input-error':
-                    logInForm.get('contrasenia')?.invalid && logInForm.get('contrasenia')?.touched
+                    logInForm.get('contrasenia')?.invalid && logInForm.get('contrasenia')?.touched,
                 }"
                 formControlName="contrasenia"
                 placeholder="••••••••"
@@ -57,15 +61,28 @@
                 id="contrasenia"
               />
               @if (logInForm.get('contrasenia')?.touched) {
-              <p class="input-error-text">
-                @if (logInForm.get('contrasenia')?.errors?.['required']) { Este campo es
-                obligatorio. }
-              </p>
+                <p class="input-error-text">
+                  @if (logInForm.get('contrasenia')?.errors?.['required']) {
+                    Este campo es obligatorio.
+                  }
+                </p>
               }
-
             </div>
 
-            <div class="relative inline-block group text-center">
+            <button
+              class="btn btn-primary btn-md mt-2"
+              type="submit"
+              [disabled]="logInForm.invalid || isSubmitting()"
+            >
+              @if (isSubmitting()) {
+                <app-spinner class="mr-2" />
+                Iniciando sesión...
+              } @else {
+                Iniciar sesión
+              }
+            </button>
+
+            <div class="relative inline-block group text-center mb-2">
               <a class="text-sm text-primary hover:underline cursor-pointer">
                 ¿Olvidaste tu contraseña?
               </a>
@@ -91,21 +108,13 @@
                 </div>
               </div>
             </div>
-
-            <button
-              class="btn btn-primary btn-md mb-5"
-              type="submit"
-              [disabled]="logInForm.invalid"
-            >
-              Iniciar sesión
-            </button>
           </form>
           @if (errorMessage()) {
-          <div class="flex justify-center">
-            <span class="input-error-text text-center text-pretty"
-              >Upps...{{ errorMessage() }}</span
-            >
-          </div>
+            <div class="flex justify-center">
+              <span class="input-error-text text-center text-pretty"
+                >Upps...{{ errorMessage() }}</span
+              >
+            </div>
           }
         </div>
 
