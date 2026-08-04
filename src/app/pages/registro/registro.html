@@ -88,18 +88,21 @@
 
             <div class="input-group">
               <label for="contrasenia" class="input-label">Contraseña</label>
-              <input
-                class="input-field placeholder:text-muted-foreground"
-                [ngClass]="{
-                  'input-error':
-                    registerForm.get('contrasenia')?.invalid &&
-                    registerForm.get('contrasenia')?.touched
-                }"
-                formControlName="contrasenia"
-                placeholder="••••••••"
-                type="password"
-                id="contrasenia"
-              />
+              <div class="relative">
+                <input
+                  class="input-field placeholder:text-muted-foreground pr-10"
+                  [ngClass]="{
+                    'input-error':
+                      registerForm.get('contrasenia')?.invalid &&
+                      registerForm.get('contrasenia')?.touched
+                  }"
+                  formControlName="contrasenia"
+                  placeholder="••••••••"
+                  [type]="mostrarContrasenia() ? 'text' : 'password'"
+                  id="contrasenia"
+                />
+                <app-password-toggle-icon [(visible)]="mostrarContrasenia" />
+              </div>
               @if (registerForm.get('contrasenia')?.touched) {
               <p class="input-error-text">
                 @if (registerForm.get('contrasenia')?.errors?.['required']) { Este campo es
@@ -107,27 +110,43 @@
                 contraseña no cumple con los requisitos }
               </p>
               }
-              <span class="mt-4">La contraseña debe tener: <br /></span>
-              <span class="input-helper"
-                >- Entre 6 y 15 caracteres.<br />- Una letra mayúscula. <br />- Una letra minúscula.
-                <br />- Un número.<br />- Un carácter especial.</span
-              >
+              <span class="mt-2">La contraseña debe tener:</span>
+              <ul class="flex flex-col gap-1">
+                <app-password-requisito [cumplido]="cumpleLongitud()"
+                  >Entre 6 y 15 caracteres.</app-password-requisito
+                >
+                <app-password-requisito [cumplido]="cumpleMayuscula()"
+                  >Una letra mayúscula.</app-password-requisito
+                >
+                <app-password-requisito [cumplido]="cumpleMinuscula()"
+                  >Una letra minúscula.</app-password-requisito
+                >
+                <app-password-requisito [cumplido]="cumpleNumero()"
+                  >Un número.</app-password-requisito
+                >
+                <app-password-requisito [cumplido]="cumpleEspecial()"
+                  >Un carácter especial.</app-password-requisito
+                >
+              </ul>
             </div>
 
             <div class="input-group">
               <label for="confirmarContrasenia" class="input-label">Confirmar contraseña</label>
-              <input
-                class="input-field placeholder:text-muted-foreground"
-                [ngClass]="{
-                  'input-error':
-                    registerForm.get('confirmarContrasenia')?.invalid &&
-                    registerForm.get('confirmarContrasenia')?.touched
-                }"
-                formControlName="confirmarContrasenia"
-                placeholder="••••••••"
-                type="password"
-                id="confirmarContrasenia"
-              />
+              <div class="relative">
+                <input
+                  class="input-field placeholder:text-muted-foreground pr-10"
+                  [ngClass]="{
+                    'input-error':
+                      registerForm.get('confirmarContrasenia')?.invalid &&
+                      registerForm.get('confirmarContrasenia')?.touched
+                  }"
+                  formControlName="confirmarContrasenia"
+                  placeholder="••••••••"
+                  [type]="mostrarConfirmarContrasenia() ? 'text' : 'password'"
+                  id="confirmarContrasenia"
+                />
+                <app-password-toggle-icon [(visible)]="mostrarConfirmarContrasenia" />
+              </div>
               @if (registerForm.get('confirmarContrasenia')?.touched) {
               <p class="input-error-text">
                 @if (registerForm.get('confirmarContrasenia')?.errors?.['required']) { Este campo es

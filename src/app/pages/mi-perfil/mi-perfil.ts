@@ -15,6 +15,8 @@ import { PublicacionService } from '../../services/publicacion-service';
 import { Publicacion } from '../../models/publicacion';
 import { PublicacionCardSkeleton } from '../../components/publicacion-card-skeleton/publicacion-card-skeleton';
 import { Spinner } from '../../components/spinner/spinner';
+import { PasswordToggleIcon } from '../../components/password-toggle-icon/password-toggle-icon';
+import { PasswordRequisito } from '../../components/password-requisito/password-requisito';
 
 @Component({
   selector: 'app-mi-perfil',
@@ -25,6 +27,8 @@ import { Spinner } from '../../components/spinner/spinner';
     PublicacionList,
     PublicacionCardSkeleton,
     Spinner,
+    PasswordToggleIcon,
+    PasswordRequisito,
   ],
   templateUrl: './mi-perfil.html',
 })
@@ -45,6 +49,10 @@ export class MiPerfil implements OnInit {
   errorPassword = signal<string>('');
   isGuardando = signal(false);
   miembroActual!: Miembro;
+
+  mostrarContraseniaActual = signal(false);
+  mostrarContraseniaNueva = signal(false);
+  mostrarContraseniaConfirmar = signal(false);
 
   ngOnInit(): void {
     this.inicializarForm();
@@ -72,8 +80,14 @@ export class MiPerfil implements OnInit {
   //Metodo para inicializar el form con valores deshabilitados para mostrar la info del miembro logeado.
   private inicializarForm(): void {
     this.perfilForm = this.fb.group({
-      nombre: [{ value: '' }, [Validators.required, Validators.minLength(3)]],
-      apellido: [{ value: '' }, [Validators.required, Validators.minLength(3)]],
+      nombre: [
+        { value: '' },
+        [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
+      ],
+      apellido: [
+        { value: '' },
+        [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
+      ],
       email: [{ value: '', disabled: true }],
 
       actual: [{ value: '', disabled: true }, [Validators.required]],
@@ -222,6 +236,31 @@ export class MiPerfil implements OnInit {
           },
         });
     }
+  }
+
+  //Valor actual de la contraseña nueva, usado para ir marcando los requisitos que se van cumpliendo.
+  private get nuevaContraseniaValue(): string {
+    return this.perfilForm.get('nueva')?.value ?? '';
+  }
+
+  cumpleLongitud(): boolean {
+    return this.nuevaContraseniaValue.length >= 8;
+  }
+
+  cumpleMayuscula(): boolean {
+    return /[A-Z]/.test(this.nuevaContraseniaValue);
+  }
+
+  cumpleMinuscula(): boolean {
+    return /[a-z]/.test(this.nuevaContraseniaValue);
+  }
+
+  cumpleNumero(): boolean {
+    return /\d/.test(this.nuevaContraseniaValue);
+  }
+
+  cumpleEspecial(): boolean {
+    return /[!@#$%^&*()_\-+={}[\]|\\:;"'<>,.?/~`]/.test(this.nuevaContraseniaValue);
   }
 
   private cargarPublicacionesDelMiembro(): void {

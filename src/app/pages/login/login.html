@@ -49,17 +49,20 @@
 
             <div class="input-group">
               <label for="contrasenia" class="input-label">Contraseña</label>
-              <input
-                class="input-field placeholder:text-muted-foreground"
-                [ngClass]="{
-                  'input-error':
-                    logInForm.get('contrasenia')?.invalid && logInForm.get('contrasenia')?.touched,
-                }"
-                formControlName="contrasenia"
-                placeholder="••••••••"
-                type="password"
-                id="contrasenia"
-              />
+              <div class="relative">
+                <input
+                  class="input-field placeholder:text-muted-foreground pr-10"
+                  [ngClass]="{
+                    'input-error':
+                      logInForm.get('contrasenia')?.invalid && logInForm.get('contrasenia')?.touched,
+                  }"
+                  formControlName="contrasenia"
+                  placeholder="••••••••"
+                  [type]="mostrarContrasenia() ? 'text' : 'password'"
+                  id="contrasenia"
+                />
+                <app-password-toggle-icon [(visible)]="mostrarContrasenia" />
+              </div>
               @if (logInForm.get('contrasenia')?.touched) {
                 <p class="input-error-text">
                   @if (logInForm.get('contrasenia')?.errors?.['required']) {

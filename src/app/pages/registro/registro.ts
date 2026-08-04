@@ -13,12 +13,23 @@ import { ToastService } from '../../services/toast-service';
 import { signal } from '@angular/core';
 import { CatAstronautAnimation } from '../../components/cat-astronaut-animation/cat-astronaut-animation';
 import { Spinner } from '../../components/spinner/spinner';
+import { PasswordToggleIcon } from '../../components/password-toggle-icon/password-toggle-icon';
+import { PasswordRequisito } from '../../components/password-requisito/password-requisito';
 import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [RouterLink, NgClass, FormsModule, ReactiveFormsModule, CatAstronautAnimation, Spinner],
+  imports: [
+    RouterLink,
+    NgClass,
+    FormsModule,
+    ReactiveFormsModule,
+    CatAstronautAnimation,
+    Spinner,
+    PasswordToggleIcon,
+    PasswordRequisito,
+  ],
   templateUrl: './registro.html',
 })
 export class Registro {
@@ -29,6 +40,8 @@ export class Registro {
   toastService = inject(ToastService);
   errorMessage = signal<string | null>(null);
   isSubmitting = signal(false);
+  mostrarContrasenia = signal(false);
+  mostrarConfirmarContrasenia = signal(false);
 
   // Creacion del formulario
   registerForm = this.formBuilder.nonNullable.group(
@@ -80,6 +93,32 @@ export class Registro {
       }
       return null;
     }
+  }
+
+  //Valor actual de la contraseña, usado para ir marcando los requisitos que se van cumpliendo.
+  private get contraseniaValue(): string {
+    return this.registerForm.get('contrasenia')?.value ?? '';
+  }
+
+  cumpleLongitud(): boolean {
+    const longitud = this.contraseniaValue.length;
+    return longitud >= 6 && longitud <= 15;
+  }
+
+  cumpleMayuscula(): boolean {
+    return /[A-Z]/.test(this.contraseniaValue);
+  }
+
+  cumpleMinuscula(): boolean {
+    return /[a-z]/.test(this.contraseniaValue);
+  }
+
+  cumpleNumero(): boolean {
+    return /\d/.test(this.contraseniaValue);
+  }
+
+  cumpleEspecial(): boolean {
+    return /[\W_]/.test(this.contraseniaValue);
   }
 
   onSubmit(): void {

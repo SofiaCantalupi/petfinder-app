@@ -12,12 +12,21 @@ import { signal } from '@angular/core';
 import { ToastService } from '../../services/toast-service';
 import { CatAstronautAnimation } from '../../components/cat-astronaut-animation/cat-astronaut-animation';
 import { Spinner } from '../../components/spinner/spinner';
+import { PasswordToggleIcon } from '../../components/password-toggle-icon/password-toggle-icon';
 import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, NgClass, ReactiveFormsModule, RouterLink, CatAstronautAnimation, Spinner],
+  imports: [
+    FormsModule,
+    NgClass,
+    ReactiveFormsModule,
+    RouterLink,
+    CatAstronautAnimation,
+    Spinner,
+    PasswordToggleIcon,
+  ],
   templateUrl: './login.html',
 })
 export class Login {
@@ -28,6 +37,7 @@ export class Login {
 
   errorMessage = signal<string | null>(null);
   isSubmitting = signal(false);
+  mostrarContrasenia = signal(false);
 
   // Creacion del formulario
   logInForm = this.formBuilder.nonNullable.group({
