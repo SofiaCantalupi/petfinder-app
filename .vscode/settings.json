@@ -5,5 +5,10 @@
   "tailwindCSS.experimental.configFile": "./src/styles.css",
   "files.associations": {
     "*.css": "tailwindcss"
+  },
+  // Los archivos de node_modules se abren solo-lectura: al hacer go-to-definition
+  // sobre un simbolo de una libreria, evita editar/romper la dependencia sin querer.
+  "files.readonlyInclude": {
+    "**/node_modules/**": true
   }
 } 
