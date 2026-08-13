@@ -12,11 +12,24 @@ import { RegistroRequestDTO } from '../../models/auth/registro-request-dto';
 import { ToastService } from '../../services/toast-service';
 import { signal } from '@angular/core';
 import { CatAstronautAnimation } from '../../components/cat-astronaut-animation/cat-astronaut-animation';
+import { Spinner } from '../../components/spinner/spinner';
+import { PasswordToggleIcon } from '../../components/password-toggle-icon/password-toggle-icon';
+import { PasswordRequisito } from '../../components/password-requisito/password-requisito';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [RouterLink, NgClass, FormsModule, ReactiveFormsModule, CatAstronautAnimation],
+  imports: [
+    RouterLink,
+    NgClass,
+    FormsModule,
+    ReactiveFormsModule,
+    CatAstronautAnimation,
+    Spinner,
+    PasswordToggleIcon,
+    PasswordRequisito,
+  ],
   templateUrl: './registro.html',
 })
 export class Registro {
@@ -26,6 +39,9 @@ export class Registro {
   private router = inject(Router);
   toastService = inject(ToastService);
   errorMessage = signal<string | null>(null);
+  isSubmitting = signal(false);
+  mostrarContrasenia = signal(false);
+  mostrarConfirmarContrasenia = signal(false);
 
   // Creacion del formulario
   registerForm = this.formBuilder.nonNullable.group(
@@ -79,6 +95,32 @@ export class Registro {
     }
   }
 
+  //Valor actual de la contraseña, usado para ir marcando los requisitos que se van cumpliendo.
+  private get contraseniaValue(): string {
+    return this.registerForm.get('contrasenia')?.value ?? '';
+  }
+
+  cumpleLongitud(): boolean {
+    const longitud = this.contraseniaValue.length;
+    return longitud >= 6 && longitud <= 15;
+  }
+
+  cumpleMayuscula(): boolean {
+    return /[A-Z]/.test(this.contraseniaValue);
+  }
+
+  cumpleMinuscula(): boolean {
+    return /[a-z]/.test(this.contraseniaValue);
+  }
+
+  cumpleNumero(): boolean {
+    return /\d/.test(this.contraseniaValue);
+  }
+
+  cumpleEspecial(): boolean {
+    return /[\W_]/.test(this.contraseniaValue);
+  }
+
   onSubmit(): void {
     //Se guardan los inputs del formulario
     //Uso getRawValue para evitar usar "non-null assertion" en los campos, me aseguro de que no van a ser nulos (El formBuilder es NonNullable)
@@ -94,14 +136,18 @@ export class Registro {
     };
 
     //Registro a través del authService.
-    this.authService.register(registroDto).subscribe({
-      next: (miembro) => {
-        this.toastService.showToast('¡Registro con éxito!', 'success', 5000);
-        this.router.navigate(['/publicaciones']);
-      },
-      error: (error) => {
-        this.errorMessage.set(error.message);
-      },
-    });
+    this.isSubmitting.set(true);
+    this.authService
+      .register(registroDto)
+      .pipe(finalize(() => this.isSubmitting.set(false)))
+      .subscribe({
+        next: (miembro) => {
+          this.toastService.showToast('¡Registro con éxito!', 'success', 5000);
+          this.router.navigate(['/publicaciones']);
+        },
+        error: (error) => {
+          this.errorMessage.set(error.message);
+        },
+      });
   }
 }

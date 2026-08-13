@@ -1,5 +1,12 @@
-// AfterViewInit es usado ya que swipper necesita que el html este renderizado antes de inicializarse
-import { Component, AfterViewInit, ViewChild, ElementRef, input } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterRenderEffect,
+  inject,
+  input,
+  viewChild,
+} from '@angular/core';
 import Swiper from 'swiper';
 import { Publicacion } from '../../models/publicacion';
 import { Navigation, Autoplay } from 'swiper/modules';
@@ -14,35 +21,56 @@ Swiper.use([Navigation, Autoplay]); // ACTIVACION  MODULOS
 export class CarruselPublicaciones {
   publicaciones = input.required<Publicacion[]>();
 
-  // se obtienme el contenedor con clase swipper
-  @ViewChild('swiperContainer', { static: false }) swiperContainer!: ElementRef;
+  // se obtiene el contenedor con clase swiper (query de signal: se reevalua sola)
+  private swiperContainer = viewChild<ElementRef<HTMLElement>>('swiperContainer');
 
-  // inicializacion del swipper, se crea el carrusel
-  ngAfterViewInit() {
-    new Swiper(this.swiperContainer.nativeElement, {
-      modules: [Navigation, Autoplay],
+  private swiper?: Swiper;
 
-      slidesPerView: 1,
-      spaceBetween: 10,
-      loop: true,
+  constructor() {
+    // Las publicaciones llegan por HTTP despues del primer render: si swiper se creara ahi (como
+    // hacia ngAfterViewInit) arrancaria con cero slides y nunca registraria los que Angular
+    // renderiza despues. Por eso se instancia recien cuando hay slides en el DOM, y en los cambios
+    // siguientes alcanza con update() en vez de rehacer el carrusel.
+    afterRenderEffect(() => {
+      const hayPublicaciones = this.publicaciones().length > 0;
+      const contenedor = this.swiperContainer()?.nativeElement;
 
-      //autoplat
-      autoplay: {
-        delay: 3000,
-        disableOnInteraction: false,
-      },
+      if (!contenedor || !hayPublicaciones) return;
 
-      // botones
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
+      if (this.swiper) {
+        this.swiper.update();
+        return;
+      }
 
-      // responsive
-      breakpoints: {
-        640: { slidesPerView: 2 },
-        1024: { slidesPerView: 3 },
-      },
+      this.swiper = new Swiper(contenedor, {
+        modules: [Navigation, Autoplay],
+
+        slidesPerView: 1,
+        spaceBetween: 10,
+        loop: true,
+
+        //autoplat
+        autoplay: {
+          delay: 3000,
+          disableOnInteraction: false,
+        },
+
+        // botones: swiper los busca dentro de este contenedor (uniqueNavElements), asi que varios
+        // carruseles en la misma pagina no se pisan entre si
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+
+        // responsive
+        breakpoints: {
+          640: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+        },
+      });
     });
+
+    // el autoplay deja un timer corriendo: sin esto queda vivo despues de salir del muro
+    inject(DestroyRef).onDestroy(() => this.swiper?.destroy());
   }
 }
