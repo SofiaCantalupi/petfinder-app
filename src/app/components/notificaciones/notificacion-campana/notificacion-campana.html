@@ -1,0 +1,75 @@
+<div class="relative">
+  <button
+    (click)="alternar()"
+    class="relative p-2 text-white hover:text-amber-800 transition-colors cursor-pointer"
+    title="Notificaciones"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+    </svg>
+
+    @if (noLeidas() > 0) {
+      <span
+        class="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground"
+      >
+        {{ noLeidas() > 9 ? '9+' : noLeidas() }}
+      </span>
+    }
+  </button>
+
+  @if (abierto()) {
+    <div class="fixed inset-0 z-40" (click)="cerrar()"></div>
+
+    <div
+      class="absolute right-0 z-50 mt-2 w-80 max-h-96 overflow-y-auto rounded-md border border-border bg-card shadow-lg"
+    >
+      <div class="flex items-center justify-between border-b border-border px-4 py-2">
+        <span class="font-semibold text-foreground">Notificaciones</span>
+        @if (noLeidas() > 0) {
+          <button
+            (click)="marcarTodasLeidas()"
+            class="text-sm text-primary hover:underline cursor-pointer"
+          >
+            Marcar todas como leídas
+          </button>
+        }
+      </div>
+
+      @if (notificaciones().length === 0) {
+        <p class="px-4 py-6 text-center text-sm text-muted-foreground">No tenés notificaciones</p>
+      } @else {
+        @for (notificacion of notificaciones(); track notificacion.id) {
+          <div class="border-b border-border last:border-b-0">
+            <app-notificacion-item
+              class="block"
+              [notificacion]="notificacion"
+              (notificacionClick)="verNotificacion($event)"
+              (notificacionEliminada)="eliminar($event)"
+            />
+          </div>
+        }
+      }
+
+      <div class="border-t border-border px-4 py-2 text-center">
+        <a
+          routerLink="/notificaciones"
+          (click)="cerrar()"
+          class="text-sm text-primary hover:underline cursor-pointer"
+        >
+          Ver todas las notificaciones
+        </a>
+      </div>
+    </div>
+  }
+</div>

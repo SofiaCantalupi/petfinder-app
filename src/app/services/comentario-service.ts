@@ -41,4 +41,8 @@ export class ComentarioService {
       map(() => undefined),
     );
   }
+
+  getComentarioById(id: number): Observable<Comentario> {
+    return this.http.get<Comentario>(`${this.apiUrl}/${id}`);
+  }
 }
