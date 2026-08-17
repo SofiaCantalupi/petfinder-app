@@ -80,6 +80,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'mensajes',
+    loadComponent: () => import('./pages/mensajeria/mensajeria').then((m) => m.Mensajeria),
+    canActivate: [authGuard, noAdminGuard],
+  },
+  {
     path: 'perfil',
     component: MiPerfil,
     canActivate: [authGuard],
