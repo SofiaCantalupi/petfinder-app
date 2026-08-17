@@ -1,3 +1,8 @@
+export interface MensajeRequestDTO{
+    texto: string;
+    idReceptor: number
+}
+
 export interface MensajeDetailDTO {
     id: number;
     texto: string;
