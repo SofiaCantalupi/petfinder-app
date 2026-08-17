@@ -1,0 +1,99 @@
+@if (idMiembro() === null) {
+  <!-- Placeholder: no hay ninguna conversacion abierta -->
+  <div class="card h-full flex flex-col items-center justify-center gap-2 p-8 text-center">
+    <p class="font-semibold text-foreground">Elegí una conversación</p>
+    <p class="text-sm text-muted-foreground">
+      Seleccioná un contacto de la lista para ver los mensajes.
+    </p>
+  </div>
+} @else {
+  <div class="card h-full flex flex-col">
+    <div class="card-header shrink-0">
+      <h2 class="text-lg font-semibold text-center truncate">{{ nombreContacto() }}</h2>
+    </div>
+
+    <!-- Mensajes -->
+    <div #contenedorMensajes class="flex-1 overflow-y-auto p-4">
+      @if (cargando()) {
+        <!-- Skeleton: burbujas alternadas, mismo patron gris + animate-pulse del proyecto -->
+        <div class="flex flex-col gap-3 animate-pulse">
+          @for (i of [1, 2, 3, 4, 5]; track i) {
+            <div class="flex" [class.justify-end]="i % 2 === 0">
+              <div class="h-12 w-48 bg-gray-200 rounded-xl"></div>
+            </div>
+          }
+        </div>
+      } @else if (error()) {
+        <div class="h-full flex items-center justify-center">
+          <p class="text-sm text-muted-foreground text-center">
+            No se pudo cargar la conversación.
+          </p>
+        </div>
+      } @else if (mensajes().length === 0) {
+        <div class="h-full flex flex-col items-center justify-center gap-2 text-center">
+          <p class="font-semibold text-foreground">Todavía no hay mensajes</p>
+          <p class="text-sm text-muted-foreground">Escribí el primero acá abajo.</p>
+        </div>
+      } @else {
+        <div class="flex flex-col gap-3">
+          @for (mensaje of mensajes(); track mensaje.idLocal) {
+            <div class="flex" [class.justify-end]="mensaje.esPropio">
+              <div
+                class="max-w-[75%] px-4 py-2 rounded-xl border-2"
+                [class.bg-primary]="mensaje.esPropio"
+                [class.border-primary]="mensaje.esPropio"
+                [class.text-primary-foreground]="mensaje.esPropio"
+                [class.bg-muted]="!mensaje.esPropio"
+                [class.border-border]="!mensaje.esPropio"
+                [class.text-foreground]="!mensaje.esPropio"
+                [class.opacity-70]="mensaje.estado === 'enviando'"
+              >
+                <!-- whitespace-pre-wrap: los saltos de linea de Shift+Enter se ven como se escribieron -->
+                <p class="text-sm whitespace-pre-wrap break-words">{{ mensaje.texto }}</p>
+
+                <div class="flex items-center justify-end gap-2 mt-1">
+                  @if (mensaje.estado === 'enviando') {
+                    <span class="text-xs opacity-80">Enviando…</span>
+                  } @else if (mensaje.estado === 'error') {
+                    <span class="text-xs font-semibold text-destructive">No se envió</span>
+                    <button
+                      type="button"
+                      class="text-xs font-semibold underline cursor-pointer text-destructive"
+                      (click)="reintentar(mensaje)"
+                    >
+                      Reintentar
+                    </button>
+                  } @else {
+                    <span class="text-xs opacity-80">{{ hora(mensaje.fechaEnvio) }}</span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Input de envio -->
+    <div class="card-footer shrink-0 flex items-end gap-2">
+      <textarea
+        #entrada
+        rows="1"
+        class="input-field resize-none"
+        placeholder="Escribí un mensaje…"
+        [value]="borrador()"
+        (input)="borrador.set(entrada.value)"
+        (keydown.enter)="alPresionarEnter($event)"
+      ></textarea>
+
+      <button
+        type="button"
+        class="btn-primary btn-sm shrink-0 h-10"
+        [disabled]="borrador().trim().length === 0"
+        (click)="enviar()"
+      >
+        Enviar
+      </button>
+    </div>
+  </div>
+}
