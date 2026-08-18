@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DATABASE_BASE_URL } from '../constants';
-import { ConversacionDetailDTO, MensajeDetailDTO } from '../models/chat';
+import { ConversacionDetailDTO, MensajeDetailDTO, MensajeRequestDTO } from '../models/chat';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -10,22 +10,22 @@ export class MensajeService {
 
   private http = inject(HttpClient);
 
-  enviarMensaje(request: MensajeDetailDTO, idEmisor: number) {
-    this.http.post(`${this.apiUrl}/${idEmisor}`, request).subscribe({
-      next: (data) => {
-        console.log('Mensaje enviado', data);
-      },
-      error: (error) => {
-        console.log('Error al enviar mensaje', error);
-      },
+  // Devuelve el Observable en vez de suscribirse acá porque el chat necesita
+  // la respuesta (201 + MensajeDetailDTO) para reemplazar la burbuja optimista por el mensaje real.
+  enviarMensaje(request: MensajeRequestDTO): Observable<MensajeDetailDTO> {
+    return this.http.post<MensajeDetailDTO>(this.apiUrl, request);
+  }
+
+  // desdeId es el corte incremental del backend (@RequestParam con defaultValue "0"): en 0 trae
+  // la conversación completa. Queda expuesto para la capa de polling que se agrega después.
+  obtenerConversacion(idMiembro: number, desdeId = 0): Observable<MensajeDetailDTO[]> {
+    return this.http.get<MensajeDetailDTO[]>(`${this.apiUrl}/conversacion/${idMiembro}`, {
+      params: { desdeId },
     });
   }
 
-  obtenerConversacion(desdeId = 0): Observable<MensajeDetailDTO[]> {
-    return this.http.get<MensajeDetailDTO[]>('${this.apiUrl}/conversacion/${idMiembro}',{params: {desdeId}})
-  }
-
-  marcarLeidos(idMiembro:number): Observable<void> {
+  // Responde 204 No Content
+  marcarLeidos(idMiembro: number): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/conversacion/${idMiembro}/leidos`, null);
   }
 

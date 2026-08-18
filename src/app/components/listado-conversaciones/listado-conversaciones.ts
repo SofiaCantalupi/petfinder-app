@@ -51,9 +51,8 @@ export class ListadoConversaciones implements OnInit {
     this.contactoSeleccionado.emit(conversacion);
 
     if (conversacion.mensajesNoLeidos > 0) {
-      // Se refresca en las dos ramas: aunque marcarLeidos falle, el GET de la conversacion que
-      // dispara el chat ya deja los mensajes como leidos del lado del backend, asi que la lista
-      // vuelve igual sin el badge.
+      // Se refresca en las dos ramas para que la lista muestre siempre el estado real del
+      // backend: si el PUT falla, el badge tiene que seguir ahi, no desaparecer de mentira.
       this.mensajeService.marcarLeidos(conversacion.idMiembro).subscribe({
         next: () => this.refrescar(),
         error: (err) => {

@@ -54,9 +54,9 @@
                 <span class="font-semibold text-foreground truncate">
                   {{ conversacion.nombre }} {{ conversacion.apellido }}
                 </span>
-                @if (fechaResumen(conversacion.LocalDateTime)) {
+                @if (fechaResumen(conversacion.fechaUltimoMensaje)) {
                   <span class="text-xs text-muted-foreground shrink-0">
-                    {{ fechaResumen(conversacion.LocalDateTime) }}
+                    {{ fechaResumen(conversacion.fechaUltimoMensaje) }}
                   </span>
                 }
               </span>

@@ -20,7 +20,7 @@ export interface ConversacionDetailDTO{
     apellido: string,
     mensajesNoLeidos: number,
     ultimoMensaje: string;
-    LocalDateTime: string; // LocalDateTime -> string
+    fechaUltimoMensaje: string; // LocalDateTime -> string
 }
 
 // Estado local de una burbuja: el POST tarda en responder, asi que el mensaje se pinta apenas
