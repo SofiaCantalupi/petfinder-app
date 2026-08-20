@@ -37,3 +37,10 @@ export interface MensajeVM {
     esPropio: boolean;
     estado: EstadoMensaje;
 }
+
+// Los mensajes de un mismo dia, para dibujar un solo separador de fecha por dia.
+export interface GrupoDia {
+    clave: string; // YYYY-MM-DD, sirve de track en el @for
+    etiqueta: string; // lo que se muestra en el separador, ej "mar 12, ago"
+    mensajes: MensajeVM[];
+}

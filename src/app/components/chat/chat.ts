@@ -1,8 +1,17 @@
-import { Component, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { MensajeService } from '../../services/mensaje-service';
 import { AuthService } from '../../services/auth-service';
-import { MensajeDetailDTO, MensajeVM } from '../../models/chat';
-import { formatearHora } from '../../utils/fecha-chat';
+import { GrupoDia, MensajeDetailDTO, MensajeVM } from '../../models/chat';
+import { claveDia, formatearDiaSeparador, formatearHora } from '../../utils/fecha-chat';
 
 @Component({
   selector: 'app-chat',
@@ -29,6 +38,29 @@ export class Chat {
   // Contador propio para las burbujas: el id real recien llega en la respuesta del POST, y las
   // que fallan no tienen id nunca. Sirve de track estable en el @for.
   private proximoIdLocal = 0;
+
+  // Los mensajes vienen ordenados por fecha, asi que alcanza con abrir un grupo nuevo cada vez
+  // que cambia el dia respecto del mensaje anterior. De ahi sale un solo separador por dia.
+  grupos = computed<GrupoDia[]>(() => {
+    const grupos: GrupoDia[] = [];
+
+    for (const mensaje of this.mensajes()) {
+      const clave = claveDia(mensaje.fechaEnvio);
+      const ultimo = grupos.at(-1);
+
+      if (ultimo && ultimo.clave === clave) {
+        ultimo.mensajes.push(mensaje);
+      } else {
+        grupos.push({
+          clave,
+          etiqueta: formatearDiaSeparador(mensaje.fechaEnvio),
+          mensajes: [mensaje],
+        });
+      }
+    }
+
+    return grupos;
+  });
 
   constructor() {
     effect(() => {
