@@ -1,0 +1,28 @@
+<div class="wrapper space-y-6 py-6">
+  <h2 class="card-title text-3xl">Notificaciones</h2>
+
+  @if (noLeidas() > 0) {
+    <div class="flex justify-end">
+      <button (click)="marcarTodasLeidas()" class="btn btn-outline btn-sm">
+        Marcar todas como leídas
+      </button>
+    </div>
+  }
+
+  @if (notificaciones().length === 0) {
+    <div class="card p-8 text-center">
+      <p class="text-gray-500">No tenés notificaciones</p>
+    </div>
+  } @else {
+    <div class="card divide-y divide-border">
+      @for (notificacion of notificaciones(); track notificacion.id) {
+        <app-notificacion-item
+          class="block"
+          [notificacion]="notificacion"
+          (notificacionClick)="verNotificacion($event)"
+          (notificacionEliminada)="eliminar($event)"
+        />
+      }
+    </div>
+  }
+</div>

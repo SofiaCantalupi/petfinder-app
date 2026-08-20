@@ -21,6 +21,7 @@ import { GuiaEstilo } from './components/guia-estilo/guia-estilo';
 import { RedirectFunction } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from './services/auth-service';
+import { Notificaciones } from './pages/notificaciones/notificaciones';
 
 //Se usa para verificar si el usuario está logeado y redirigirlo a la página de publicaciones o al login según corresponda
 const homeOrLoginRedirect: RedirectFunction = () => {
@@ -83,6 +84,11 @@ export const routes: Routes = [
     path: 'mensajes',
     loadComponent: () => import('./pages/mensajeria/mensajeria').then((m) => m.Mensajeria),
     canActivate: [authGuard, noAdminGuard],
+  },
+  {
+    path: 'notificaciones',
+    component: Notificaciones,
+    canActivate: [authGuard],
   },
   {
     path: 'perfil',
