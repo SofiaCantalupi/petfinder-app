@@ -21,7 +21,9 @@ export class ListadoConversaciones implements OnInit {
   // MensajeDetailDTO no trae apellido: por eso el DTO completo viaja aparte.
   contactoSeleccionado = output<ConversacionDetailDTO>();
 
-  conversaciones = signal<ConversacionDetailDTO[]>([]);
+  // La lista vive en el servicio: el badge del header consume el mismo estado, asi que no puede
+  // haber dos copias. 'cargando' y 'error' si son locales, son estado de esta vista.
+  conversaciones = this.mensajeService.conversaciones;
   cargando = signal(true);
   error = signal(false);
 
@@ -30,12 +32,13 @@ export class ListadoConversaciones implements OnInit {
   }
 
   cargar(): void {
-    this.cargando.set(true);
+    // Skeleton solo si no hay nada para mostrar: el header ya pudo haber traido la lista al
+    // arrancar la app, y taparla con el skeleton seria un parpadeo al pedo.
+    this.cargando.set(this.conversaciones().length === 0);
     this.error.set(false);
 
     this.mensajeService.listarConversaciones().subscribe({
-      next: (data) => {
-        this.conversaciones.set(data);
+      next: () => {
         this.cargando.set(false);
       },
       error: (err) => {
@@ -64,9 +67,9 @@ export class ListadoConversaciones implements OnInit {
   }
 
   // Recarga sin tocar 'cargando': si no, el skeleton parpadea sobre una lista que ya se ve.
+  // marcarLeidos ya puso el contador en 0 localmente; esto ademas refresca ultimoMensaje.
   private refrescar(): void {
     this.mensajeService.listarConversaciones().subscribe({
-      next: (data) => this.conversaciones.set(data),
       error: (err) => console.error('Error al refrescar las conversaciones:', err),
     });
   }
