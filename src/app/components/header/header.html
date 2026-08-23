@@ -1,6 +1,7 @@
 <header class="sticky flex items-center h-header top-0 z-50 p-2.5 bg-primary/85 shadow-lg">
-  <div class="wrapper flex justify-between w-full">
-    <div class="flex items-center">
+  <div class="wrapper flex items-center justify-between w-full gap-4">
+    <!-- Izquierda: marca -->
+    <div class="flex items-center shrink-0">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="50"
@@ -8,7 +9,7 @@
         version="1.0"
         viewBox="0 0 1024 1024"
         fill="#FFF"
-        class="size-[40px] md:size-[50px]"
+        class="size-10 md:size-[50px]"
       >
         <path
           d="M486.5 131.1c-83.2 8-159.1 54.6-202.1 124.2-19.8 32-31.6 65-38.1 106.7-2.4 15.7-2.4 54.7 0 70.3 6.9 44.5 20.7 79.2 52.5 131.8 46.5 77.1 173.2 272.4 192.9 297.3 9.3 11.8 13.7 15.6 19 16.3 8.8 1.2 14.3-3.6 30.5-26.2 22.7-31.6 108.5-164.2 173.1-267.5 48.3-77.2 64-118.9 66.3-176 3.8-91.8-42-182.2-117.6-232.5-51.5-34.3-115-50.3-176.5-44.4zm49.5 67c81.7 10.1 150.8 70.8 171.1 150.2 17.6 68.8-1.6 139.9-51.5 191.5-29.4 30.4-69.9 51.6-111.3 58.2-93.9 15-186.9-39.8-220.6-130-26.7-71.6-9.9-152.6 43.5-208.5 32.1-33.6 72.1-54.2 118.2-61 11.2-1.6 39.2-1.9 50.6-.4z"
@@ -25,41 +26,73 @@
       >
     </div>
 
-    <ul class="flex flex-row justify-between items-center gap-3 md:gap-5 font-semibold text-white">
-      <li>
-        <a routerLink="/publicaciones" class="hover:text-amber-800 transition-colors">Home</a>
-      </li>
+    <!-- Centro: navegacion -->
+    <nav class="flex items-center gap-3 md:gap-5 font-semibold text-white">
+      <a routerLink="/publicaciones" class="hover:text-amber-800 transition-colors">Home</a>
 
       @if (authService.isUsuario()) {
-        <li>
-          <a routerLink="/publicaciones/crear" class="hover:text-amber-800 transition-colors"
-            >Nueva Publicación</a
-          >
-        </li>
+        <a routerLink="/publicaciones/crear" class="hover:text-amber-800 transition-colors"
+          >Publicar</a
+        >
+        <a routerLink="/solicitudes-adopcion" class="hover:text-amber-800 transition-colors"
+          >Adoptar</a
+        >
       }
       @if (authService.isAdmin()) {
-        <li>
-          <a routerLink="/admin/usuarios" class="hover:text-amber-800 transition-colors"
-            >Gestión Usuarios</a
-          >
-        </li>
+        <a routerLink="/admin/usuarios" class="hover:text-amber-800 transition-colors"
+          >Gestión Usuarios</a
+        >
       }
+    </nav>
+
+    <!-- Derecha: acciones del usuario -->
+    <div class="flex items-center gap-1 md:gap-2 shrink-0">
+      <!-- Mensajes y campana solo para MIEMBRO: /mensajes tiene noAdminGuard y el backend
+           responde 403 al admin en todo /mensajes. -->
       @if (authService.isUsuario()) {
-        <li>
-          <a routerLink="/solicitudes-adopcion" class="hover:text-amber-800 transition-colors"
-            >Solicitudes de Adopción</a
+        <a
+          routerLink="/mensajes"
+          class="relative p-2 text-white hover:text-amber-800 transition-colors"
+          title="Mensajes"
+          aria-label="Mensajes"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-message-circle-icon lucide-message-circle"
           >
-        </li>
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+          </svg>
+
+          <!-- Mismo badge que la campana de notificaciones -->
+          @if (mensajesNoLeidos() > 0) {
+            <span
+              class="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground"
+            >
+              {{ mensajesNoLeidos() > 9 ? '9+' : mensajesNoLeidos() }}
+            </span>
+          }
+        </a>
+
+        <app-notificacion-campana />
       }
 
-      <li>
-        <a routerLink="/perfil" class="hover:text-amber-800 transition-colors">Mi Perfil</a>
-      </li>
-      @if (authService.isUsuario()) {
-        <li>
-          <app-notificacion-campana />
-        </li>
-      }
-    </ul>
+      <!-- Avatar: reemplaza al link "Mi Perfil" -->
+      <a
+        routerLink="/perfil"
+        class="size-9 shrink-0 rounded-full border-2 border-white bg-white text-primary flex items-center justify-center font-bold text-sm uppercase hover:opacity-80 transition-opacity"
+        title="Mi perfil"
+        aria-label="Mi perfil"
+      >
+        {{ iniciales() }}
+      </a>
+    </div>
   </div>
 </header>
