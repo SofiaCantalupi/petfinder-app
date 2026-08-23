@@ -9,11 +9,13 @@
   <section>
     <h3 class="font-semibold text-xl mb-3">Enviadas</h3>
 
-    @if (enviadas().length === 0) { @if (!cargando()) {
+    @if (cargando()) {
+    <app-solicitudes-tabla-skeleton />
+    } @else if (enviadas().length === 0) {
     <div class="card p-8 text-center">
       <p class="text-gray-500">No hay solicitudes para visualizar aún</p>
     </div>
-    } } @else {
+    } @else {
     <div class="card overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-left">
@@ -99,11 +101,13 @@
   <section>
     <h3 class="font-semibold text-xl mb-3">Recibidas</h3>
 
-    @if (solicitudService.recibidas().length === 0) { @if (!cargando()) {
+    @if (cargando()) {
+    <app-solicitudes-tabla-skeleton />
+    } @else if (solicitudService.recibidas().length === 0) {
     <div class="card p-8 text-center">
       <p class="text-gray-500">No hay solicitudes para visualizar aún</p>
     </div>
-    } } @else {
+    } @else {
     <div class="card overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-left">

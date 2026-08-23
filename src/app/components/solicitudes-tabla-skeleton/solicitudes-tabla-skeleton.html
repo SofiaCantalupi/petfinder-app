@@ -1,0 +1,30 @@
+<div class="card overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left">
+      <thead class="bg-muted border-b-2 border-border">
+        <tr>
+          <th class="px-4 py-3 text-sm font-semibold">Fecha</th>
+          <th class="px-4 py-3 text-sm font-semibold">Mascota</th>
+          <th class="px-4 py-3 text-sm font-semibold">Estado</th>
+          <th class="px-4 py-3 text-sm font-semibold">&nbsp;</th>
+          <th class="px-4 py-3 text-sm font-semibold text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="animate-pulse">
+        @for (i of [1, 2, 3]; track i) {
+          <tr class="border-b border-border last:border-b-0">
+            <td class="px-4 py-3"><div class="h-4 w-20 bg-gray-200 rounded"></div></td>
+            <td class="px-4 py-3"><div class="h-4 w-24 bg-gray-200 rounded"></div></td>
+            <td class="px-4 py-3"><div class="h-4 w-16 bg-gray-200 rounded"></div></td>
+            <td class="px-4 py-3"><div class="h-4 w-28 bg-gray-200 rounded"></div></td>
+            <td class="px-4 py-3">
+              <div class="flex justify-center items-center gap-1.5">
+                <div class="h-7 w-7 bg-gray-200 rounded-md"></div>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
