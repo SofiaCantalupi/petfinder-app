@@ -52,6 +52,10 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
   mascotaId = signal<number | undefined>(undefined);
   isSubmitting = signal(false);
 
+  // Estado con el que se cargo el formulario: el endpoint de cambio de estado responde 403 si se
+  // lo llama con el estado que la mascota ya tiene, asi que solo se dispara si cambio de verdad.
+  estadoOriginal = signal<EstadoMascota | undefined>(undefined);
+
   // Signals para resultados de busqueda y estado de busqueda
   resultadoBusquedaUbicacion = signal<NominatimSearchResult[]>([]);
   isBuscandoUbicacion = signal<boolean>(false);
@@ -83,11 +87,24 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
     { value: 'gato', label: 'Gato' },
   ];
 
+  // Estados que el formulario no ofrece elegir pero que una mascota puede tener: si la publicacion
+  // llega con uno de estos, igual necesita su <option> o el select se dibuja vacio.
+  private etiquetasEstadoNoElegible: Partial<Record<EstadoMascota, string>> = {
+    en_adopcion: 'En adopción',
+    adoptado: 'Adoptado',
+  };
+
   get estadosMascotaFiltrados() {
-    if (this.esEdicion()) {
-      return this.estadosMascota;
+    if (!this.esEdicion()) {
+      return this.estadosMascota.filter((e) => e.value !== 'reencontrado');
     }
-    return this.estadosMascota.filter((e) => e.value !== 'reencontrado');
+
+    const actual = this.estadoOriginal();
+    const etiqueta = actual ? this.etiquetasEstadoNoElegible[actual] : undefined;
+
+    return etiqueta
+      ? [{ value: actual!, label: etiqueta }, ...this.estadosMascota]
+      : this.estadosMascota;
   }
 
   ngOnInit(): void {
@@ -108,6 +125,7 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
     this.publicacionService.getPublicacionById(id).subscribe({
       next: (publicacion) => {
         this.mascotaId.set(publicacion.idMascota);
+        this.estadoOriginal.set(publicacion.estadoMascota);
         this.publicacionForm.patchValue(this.mappearPublicacionAForm(publicacion));
         this.buscarUbicacion(publicacion.ubicacion).subscribe({
           next: (data) => {
@@ -200,14 +218,28 @@ export class PublicacionFormComponent implements OnInit, OnDestroy {
         ubicacion,
       };
 
+      // El estado NO viaja en el PUT /mascotas: ese endpoint no lo persiste y ademas se saltearia
+      // las reglas de negocio (auto-rechazo de las solicitudes pendientes al salir de EN_ADOPCION).
+      const { estadoMascota, ...cambiosMascota } = mascotaDto;
+      const estadoNuevo = formValue.mascota.estadoMascota;
+      const cambioElEstado = estadoNuevo !== this.estadoOriginal();
+
       forkJoin({
         publicacion: this.publicacionService.updatePublicacion(
           this.publicacionId()!,
           cambiosPublicacion,
         ),
-        mascota: this.mascotaService.updateMascota(this.mascotaId()!, mascotaDto),
+        mascota: this.mascotaService.updateMascota(this.mascotaId()!, cambiosMascota),
       })
-        .pipe(finalize(() => this.isSubmitting.set(false)))
+        .pipe(
+          // Encadenado y no en paralelo: este PUT y el de mascota escriben la misma fila.
+          switchMap(() =>
+            cambioElEstado
+              ? this.publicacionService.updateEstadoMascota(this.publicacionId()!, estadoNuevo)
+              : of(null),
+          ),
+          finalize(() => this.isSubmitting.set(false)),
+        )
         .subscribe({
           next: () => {
             this.toastService.showToast('¡Publicación actualizada!', 'success', 5000);
