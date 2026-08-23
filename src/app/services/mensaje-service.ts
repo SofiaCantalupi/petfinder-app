@@ -15,6 +15,12 @@ export class MensajeService {
   private conversacionesState = signal<ConversacionDetailDTO[]>([]);
   public conversaciones = this.conversacionesState.asReadonly();
 
+  // Distingue "todavia no se pidio la lista" de "se pidio y vino vacia": mirando solo el largo
+  // de conversaciones() las dos situaciones son identicas, y el chat dibujaria el estado vacio
+  // durante la carga.
+  private listaCargadaState = signal(false);
+  public listaCargada = this.listaCargadaState.asReadonly();
+
   // Total de mensajes sin leer para el badge. Va derivado de la lista y no como un signal
   // aparte (a diferencia de NotificacionService) porque el backend no tiene un endpoint de
   // conteo tipo /notificaciones/no-leidas/cantidad: el único dato es mensajesNoLeidos por
@@ -58,8 +64,11 @@ export class MensajeService {
   }
 
   listarConversaciones(): Observable<ConversacionDetailDTO[]> {
-    return this.http
-      .get<ConversacionDetailDTO[]>(`${this.apiUrl}/conversaciones`)
-      .pipe(tap((data) => this.conversacionesState.set(data)));
+    return this.http.get<ConversacionDetailDTO[]>(`${this.apiUrl}/conversaciones`).pipe(
+      tap((data) => {
+        this.conversacionesState.set(data);
+        this.listaCargadaState.set(true);
+      }),
+    );
   }
 }

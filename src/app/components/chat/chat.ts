@@ -30,6 +30,12 @@ export class Chat {
 
   private contenedorMensajes = viewChild<ElementRef<HTMLDivElement>>('contenedorMensajes');
 
+  // Sin ninguna conversacion no hay nada que elegir: el listado ya avisa que no hay ninguna, asi
+  // que el panel del chat no puede seguir pidiendo que se seleccione un contacto.
+  sinConversaciones = computed(
+    () => this.mensajeService.listaCargada() && this.mensajeService.conversaciones().length === 0,
+  );
+
   mensajes = signal<MensajeVM[]>([]);
   cargando = signal(false);
   error = signal(false);
