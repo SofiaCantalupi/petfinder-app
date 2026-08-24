@@ -1,14 +1,16 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DATABASE_BASE_URL } from '../constants';
 import { ConversacionDetailDTO, MensajeDetailDTO, MensajeRequestDTO } from '../models/chat';
 import { Observable, tap } from 'rxjs';
+import { AuthService } from './auth-service';
 
 @Injectable({ providedIn: 'root' })
 export class MensajeService {
   private readonly apiUrl = `${DATABASE_BASE_URL}/mensajes`;
 
   private http = inject(HttpClient);
+  private authService = inject(AuthService);
 
   // Estado compartido: lo consumen el listado y el badge del header, que son componentes
   // distintos y tienen que ver siempre el mismo conteo.
@@ -31,6 +33,26 @@ export class MensajeService {
       0,
     ),
   );
+
+  // El estado es por usuario. Sin esto, al cerrar sesion y entrar con otra cuenta el badge del
+  // header muestra el conteo del usuario anterior hasta que resuelve el primer fetch. Se mira el
+  // id y no solo el logout, asi tambien cubre la sesion vencida y el login con otra cuenta.
+  private idUsuarioEnEstado = this.authService.usuarioId();
+
+  constructor() {
+    effect(() => {
+      const id = this.authService.usuarioId();
+      if (id === this.idUsuarioEnEstado) return;
+
+      this.idUsuarioEnEstado = id;
+      this.limpiar();
+    });
+  }
+
+  limpiar(): void {
+    this.conversacionesState.set([]);
+    this.listaCargadaState.set(false);
+  }
 
   // Devuelve el Observable en vez de suscribirse acá porque el chat necesita
   // la respuesta (201 + MensajeDetailDTO) para reemplazar la burbuja optimista por el mensaje real.
