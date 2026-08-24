@@ -3,6 +3,21 @@
     <h2 class="text-lg font-semibold text-center">Mensajes</h2>
   </div>
 
+  <!-- Buscador: se oculta si no hay ninguna conversacion, no hay nada que filtrar -->
+  @if (!cargando() && !error() && conversaciones().length > 0) {
+    <div class="shrink-0 px-3 py-2 border-b-2 border-border">
+      <input
+        #buscador
+        type="search"
+        class="input-field text-sm"
+        placeholder="Buscar por nombre…"
+        aria-label="Buscar conversaciones por nombre"
+        [value]="filtro()"
+        (input)="filtro.set(buscador.value)"
+      />
+    </div>
+  }
+
   @if (cargando()) {
     <!-- Skeleton: mismo patron que app-publicacion-card-skeleton (bloques grises + animate-pulse) -->
     <div class="flex-1 overflow-y-auto animate-pulse">
@@ -25,9 +40,17 @@
     <div class="flex-1 flex flex-col items-center justify-center gap-2 p-6 text-center">
       <p class="font-semibold text-foreground">Todavía no tenés conversaciones</p>
     </div>
+  } @else if (conversacionesFiltradas().length === 0) {
+    <div class="flex-1 flex flex-col items-center justify-center gap-3 p-6 text-center">
+      <p class="font-semibold text-foreground">Ningún contacto coincide</p>
+      <p class="text-sm text-muted-foreground">Probá con otro nombre.</p>
+      <button type="button" class="btn-primary btn-sm" (click)="filtro.set('')">
+        Limpiar búsqueda
+      </button>
+    </div>
   } @else {
     <ul class="flex-1 overflow-y-auto">
-      @for (conversacion of conversaciones(); track conversacion.idMiembro) {
+      @for (conversacion of conversacionesFiltradas(); track conversacion.idMiembro) {
         <li>
           <button
             type="button"

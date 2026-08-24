@@ -1,8 +1,16 @@
-import { Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { MensajeService } from '../../services/mensaje-service';
 import { ConversacionDetailDTO } from '../../models/chat';
 import { formatearFechaResumen } from '../../utils/fecha-chat';
+
+// Compara sin distinguir mayusculas ni acentos: buscar "pena" tiene que encontrar "Peña".
+function normalizar(texto: string): string {
+  return texto
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
 
 @Component({
   selector: 'app-listado-conversaciones',
@@ -26,6 +34,19 @@ export class ListadoConversaciones implements OnInit {
   conversaciones = this.mensajeService.conversaciones;
   cargando = signal(true);
   error = signal(false);
+
+  filtro = signal('');
+
+  // Filtra sobre la lista del servicio contra nombre + apellido juntos, asi "franco can" tambien
+  // matchea. El filtro es solo de vista: no se pide nada al backend.
+  conversacionesFiltradas = computed(() => {
+    const termino = normalizar(this.filtro().trim());
+    if (!termino) return this.conversaciones();
+
+    return this.conversaciones().filter((conversacion) =>
+      normalizar(`${conversacion.nombre} ${conversacion.apellido}`).includes(termino),
+    );
+  });
 
   ngOnInit(): void {
     this.cargar();
