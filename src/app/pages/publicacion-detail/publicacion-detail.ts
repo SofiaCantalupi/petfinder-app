@@ -10,6 +10,7 @@ import { Map } from '../../components/map/map';
 import { Location } from '@angular/common';
 import { finalize } from 'rxjs';
 import { Spinner } from '../../components/spinner/spinner';
+import { MensajeService } from '../../services/mensaje-service';
 
 @Component({
   selector: 'app-publicacion-detail',
@@ -21,6 +22,7 @@ export class PublicacionDetail implements OnInit {
   private publicacionService = inject(PublicacionService);
   authService = inject(AuthService);
   private toastService = inject(ToastService);
+  private mensajeService = inject(MensajeService);
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -29,8 +31,17 @@ export class PublicacionDetail implements OnInit {
   // signals
   publicacion = signal<Publicacion | null>(null);
   cargando = signal<boolean>(true);
+  // Se marca tanto en (load) como en (error): si la foto no llega a bajar, el skeleton no puede
+  // quedar pulsando para siempre.
+  imagenLista = signal(false);
   // un solo signal para los 3 botones de accion: nunca estan visibles a la vez
   accionEnCurso = signal(false);
+
+  // Estado del formulario de mensaje al autor. Va aparte de accionEnCurso porque el formulario
+  // convive con los botones de accion: bloquear uno no tiene que bloquear el otro.
+  borradorMensaje = signal('');
+  enviandoMensaje = signal(false);
+  mensajeEnviado = signal(false);
 
   ubicacionFormateada: string = '';
 
@@ -38,6 +49,17 @@ export class PublicacionDetail implements OnInit {
   // GET /miembros/{id}, que en el backend real es solo para ADMINISTRADOR)
   nombreCreador = computed(() => {
     return this.publicacion()?.nombreCompleto ?? 'Cargando...';
+  });
+
+  // El <img> recien tiene src cuando responde el GET, y despues todavia tarda en pintarse: el
+  // skeleton cubre los dos tramos y no solo el de la peticion.
+  mostrarSkeletonImagen = computed(() => this.cargando() || !this.imagenLista());
+
+  // Mientras carga, publicacion() es null y '!publicacion()?.activo' daba true: sin este corte
+  // la tarjeta arranca gris y con el cartel de eliminada antes de saber si lo esta.
+  estaEliminada = computed(() => {
+    const pub = this.publicacion();
+    return pub ? !pub.activo : false;
   });
 
   // verificar si el usuario loggeado puede editar o eliminar la publicacion
@@ -68,6 +90,31 @@ export class PublicacionDetail implements OnInit {
   puedePonerEnAdopcion = computed(() => {
     const pub = this.publicacion();
     return pub ? pub.estadoMascota === 'encontrado' && this.puedeEditar() : false;
+  });
+
+  // misma regla que poner en adopcion, pero con su propio computed: son dos acciones distintas
+  puedeMarcarReencontrado = computed(() => {
+    const pub = this.publicacion();
+    return pub ? (pub.estadoMascota === 'encontrado' || pub.estadoMascota === 'perdido') && this.puedeEditar() : false;
+  });
+
+  // La banda de acciones se dibuja sola: si no hay ninguna accion disponible para este usuario
+  // no tiene que quedar una franja vacia entre la foto y la descripcion.
+  tieneAcciones = computed(() => {
+    return (
+      this.puedeMarcarReencontrado() ||
+      this.puedePonerEnAdopcion() ||
+      this.puedeSolicitarAdopcion() ||
+      (this.puedeEliminar() && this.isAdmin())
+    );
+  });
+
+  // El mensaje privado es para quien NO publico: el autor no se escribe a si mismo, y el admin
+  // ni siquiera entra a /mensajes (la ruta tiene noAdminGuard). Sobre una publicacion eliminada
+  // tampoco se ofrece, igual que el resto de las acciones.
+  puedeEnviarMensaje = computed(() => {
+    const pub = this.publicacion();
+    return pub ? pub.activo && !this.puedeEditar() && !this.authService.isAdmin() : false;
   });
 
   ngOnInit(): void {
@@ -127,13 +174,6 @@ export class PublicacionDetail implements OnInit {
     }
   }
 
-  irAComentarios() {
-    if (!this.publicacion()?.activo) return;
-    const element = document.getElementById('formComentario');
-    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    element?.focus({ preventScroll: true });
-  }
-
   cambiarEstadoAReencontrado() {
     if (!this.publicacion()?.activo) return;
 
@@ -187,6 +227,37 @@ export class PublicacionDetail implements OnInit {
           },
         });
     }
+  }
+
+  enviarMensaje() {
+    const pub = this.publicacion();
+    const texto = this.borradorMensaje().trim();
+
+    if (!pub || !texto || this.enviandoMensaje() || !this.puedeEnviarMensaje()) return;
+
+    this.enviandoMensaje.set(true);
+    this.mensajeService
+      .enviarMensaje({ texto, idReceptor: pub.idMiembro })
+      .pipe(finalize(() => this.enviandoMensaje.set(false)))
+      .subscribe({
+        next: () => {
+          this.borradorMensaje.set('');
+          this.mensajeEnviado.set(true);
+          this.toastService.showToast('Mensaje enviado', 'success');
+        },
+        error: (error) => {
+          console.log('No se ha podido enviar el mensaje', error);
+          this.toastService.showToast('Error al enviar el mensaje', 'error');
+        },
+      });
+  }
+
+  // No hay entidad Conversacion: el chat se identifica por el id del otro miembro, que viaja
+  // como query param para que /mensajes abra esa conversacion y no el listado vacio.
+  irAlChat() {
+    const pub = this.publicacion();
+    if (!pub) return;
+    this.router.navigate(['/mensajes'], { queryParams: { contacto: pub.idMiembro } });
   }
 
   goBack() {

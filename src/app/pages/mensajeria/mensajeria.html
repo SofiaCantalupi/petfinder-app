@@ -1,0 +1,37 @@
+<!-- Alto fijo para que el scroll ocurra adentro de cada columna y no en la pagina entera.
+     Se descuentan el header (--spacing-header) y el padding vertical del <main>. -->
+<div class="flex gap-4 h-[calc(100vh-var(--spacing-header)-4rem)] min-h-[420px]">
+  <!-- Listado: ancho fijo en desktop. En mobile ocupa todo y se oculta al abrir un chat. -->
+  <aside
+    class="w-full md:w-[280px] md:shrink-0"
+    [ngClass]="{ 'hidden md:block': idSeleccionado() !== null }"
+  >
+    <app-listado-conversaciones
+      [idSeleccionado]="idSeleccionado()"
+      (conversacionSeleccionada)="seleccionarConversacion($event)"
+      (contactoSeleccionado)="guardarContacto($event)"
+    />
+  </aside>
+
+  <!-- Chat: ocupa el resto. En mobile solo se ve con una conversacion abierta. -->
+  <section
+    class="flex-1 min-w-0 flex flex-col gap-2"
+    [ngClass]="{ 'hidden md:flex': idSeleccionado() === null }"
+  >
+    @if (idSeleccionado() !== null) {
+      <button
+        type="button"
+        class="btn-primary btn-sm self-start md:hidden"
+        (click)="volverAlListado()"
+      >
+        ← Volver
+      </button>
+    }
+
+    <app-chat
+      class="block flex-1 min-h-0"
+      [idMiembro]="idSeleccionado()"
+      [nombreContacto]="nombreContacto()"
+    />
+  </section>
+</div>

@@ -54,7 +54,8 @@
                   class="input-field placeholder:text-muted-foreground pr-10"
                   [ngClass]="{
                     'input-error':
-                      logInForm.get('contrasenia')?.invalid && logInForm.get('contrasenia')?.touched,
+                      logInForm.get('contrasenia')?.invalid &&
+                      logInForm.get('contrasenia')?.touched,
                   }"
                   formControlName="contrasenia"
                   placeholder="••••••••"
@@ -85,27 +86,31 @@
               }
             </button>
 
-            <div class="relative inline-block group text-center mb-2">
+            <div class="group relative inline-block text-center">
               <a class="text-sm text-primary hover:underline cursor-pointer">
                 ¿Olvidaste tu contraseña?
               </a>
 
               <div
-                class="absolute top-full right-0 mt-3 w-80 z-51 opacity-0 invisible translate-y-2.5 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300"
+                class="absolute pointer-events-none top-0 left-1/2 -translate-x-1/2 -translate-y-full"
               >
-                <div class="alert-popUp-info shadow-xl text-left">
-                  <svg class="alert-popUp-icon" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fill-rule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clip-rule="evenodd"
-                    ></path>
-                  </svg>
+                <div
+                  class="w-80 z-51 opacity-0 invisible translate-y-4 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300"
+                >
+                  <div class="alert-popUp-info shadow-xl text-left">
+                    <svg class="alert-popUp-icon" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        fill-rule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
 
-                  <div class="alert-popUp-content">
-                    <div class="alert-popUp-title">Recuperar contraseña</div>
-                    <div class="alert-popUp-message">
-                      Contáctanos a: <b>petFinder@gmail.com</b> para recuperar tu cuenta.
+                    <div class="alert-popUp-content">
+                      <div class="alert-popUp-title">Recuperar contraseña</div>
+                      <div class="alert-popUp-message">
+                        Contáctanos a: <b>petFinder@gmail.com</b> para recuperar tu cuenta.
+                      </div>
                     </div>
                   </div>
                 </div>

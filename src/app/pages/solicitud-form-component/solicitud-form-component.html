@@ -7,6 +7,11 @@
   <!-- Formulario -->
   <form [formGroup]="solicitudForm" (ngSubmit)="onSubmit()">
     <div class="card-body space-y-4 pb-16">
+      <p>
+        Adoptar es un compromiso de amor y responsabilidad. La información que proporciones en este
+        formulario ayudará a quién tiene la mascota en adopción a conocer un poco de vos y tu hogar,
+        y así tomar una decisión.
+      </p>
       <!-- Celular -->
       <div class="input-group mb-3">
         <label class="input-label" for="celular">Celular:</label>
@@ -14,7 +19,7 @@
           class="input-field"
           [ngClass]="{
             'input-error':
-              solicitudForm.get('celular')?.invalid && solicitudForm.get('celular')?.touched
+              solicitudForm.get('celular')?.invalid && solicitudForm.get('celular')?.touched,
           }"
           formControlName="celular"
           type="text"
@@ -23,7 +28,7 @@
         />
 
         @if (solicitudForm.get('celular')?.invalid && solicitudForm.get('celular')?.touched) {
-        <p class="input-error-text">Este campo es obligatorio.</p>
+          <p class="input-error-text">Este campo es obligatorio.</p>
         }
       </div>
 
@@ -34,7 +39,7 @@
           class="input-field"
           [ngClass]="{
             'input-error':
-              solicitudForm.get('tipoHogar')?.invalid && solicitudForm.get('tipoHogar')?.touched
+              solicitudForm.get('tipoHogar')?.invalid && solicitudForm.get('tipoHogar')?.touched,
           }"
           formControlName="tipoHogar"
           id="tipoHogar"
@@ -45,7 +50,7 @@
         </select>
 
         @if (solicitudForm.get('tipoHogar')?.invalid && solicitudForm.get('tipoHogar')?.touched) {
-        <p class="input-error-text">Debe seleccionar una opción.</p>
+          <p class="input-error-text">Debe seleccionar una opción.</p>
         }
       </div>
 
@@ -63,37 +68,41 @@
           </label>
         </div>
 
-        @if (solicitudForm.get('hayMascotaEnHogar')?.invalid &&
-        solicitudForm.get('hayMascotaEnHogar')?.touched) {
-        <p class="input-error-text">Debe seleccionar una opción.</p>
+        @if (
+          solicitudForm.get('hayMascotaEnHogar')?.invalid &&
+          solicitudForm.get('hayMascotaEnHogar')?.touched
+        ) {
+          <p class="input-error-text">Debe seleccionar una opción.</p>
         }
       </div>
 
       <!-- Tipo de mascota en el hogar: solo si hay otra mascota en el hogar -->
       @if (solicitudForm.get('hayMascotaEnHogar')?.value) {
-      <div class="input-group mb-3">
-        <label class="input-label" for="tipoMascotasEnHogar">Tipo de mascota en el hogar:</label>
-        <select
-          class="input-field"
-          [ngClass]="{
-            'input-error':
-              solicitudForm.get('tipoMascotasEnHogar')?.invalid &&
-              solicitudForm.get('tipoMascotasEnHogar')?.touched
-          }"
-          formControlName="tipoMascotasEnHogar"
-          id="tipoMascotasEnHogar"
-        >
-          <option value="">Seleccione...</option>
-          <option value="perro">Perro</option>
-          <option value="gato">Gato</option>
-          <option value="perro_y_gato">Perro y gato</option>
-        </select>
+        <div class="input-group mb-3">
+          <label class="input-label" for="tipoMascotasEnHogar">Tipo de mascota en el hogar:</label>
+          <select
+            class="input-field"
+            [ngClass]="{
+              'input-error':
+                solicitudForm.get('tipoMascotasEnHogar')?.invalid &&
+                solicitudForm.get('tipoMascotasEnHogar')?.touched,
+            }"
+            formControlName="tipoMascotasEnHogar"
+            id="tipoMascotasEnHogar"
+          >
+            <option value="">Seleccione...</option>
+            <option value="perro">Perro</option>
+            <option value="gato">Gato</option>
+            <option value="perro_y_gato">Perro y gato</option>
+          </select>
 
-        @if (solicitudForm.get('tipoMascotasEnHogar')?.invalid &&
-        solicitudForm.get('tipoMascotasEnHogar')?.touched) {
-        <p class="input-error-text">Debe seleccionar una opción.</p>
-        }
-      </div>
+          @if (
+            solicitudForm.get('tipoMascotasEnHogar')?.invalid &&
+            solicitudForm.get('tipoMascotasEnHogar')?.touched
+          ) {
+            <p class="input-error-text">Debe seleccionar una opción.</p>
+          }
+        </div>
       }
 
       <!-- Tiene patio -->
@@ -111,7 +120,7 @@
         </div>
 
         @if (solicitudForm.get('tienePatio')?.invalid && solicitudForm.get('tienePatio')?.touched) {
-        <p class="input-error-text">Debe seleccionar una opción.</p>
+          <p class="input-error-text">Debe seleccionar una opción.</p>
         }
       </div>
 
@@ -129,9 +138,9 @@
 
       <!-- Acepta condiciones -->
       <div class="input-group mb-3">
-        <p class="input-helper">
-          Me comprometo a castrar al perro/gato de ser necesario, a completar su plan de
-          vacunación y permitir a quien lo da en adopción a realizar seguimiento de la mascota.
+        <p class="font-semibold">
+          Me comprometo a castrar al perro/gato de ser necesario, a completar su plan de vacunación
+          y permitir a quien lo da en adopción a realizar seguimiento de la mascota.
         </p>
 
         <label class="input-label flex items-center gap-2">
@@ -139,15 +148,17 @@
           Acepto las condiciones de adopción.
         </label>
 
-        @if (solicitudForm.get('aceptaCondiciones')?.invalid &&
-        solicitudForm.get('aceptaCondiciones')?.touched) {
-        <p class="input-error-text">Debes aceptar las condiciones para continuar.</p>
+        @if (
+          solicitudForm.get('aceptaCondiciones')?.invalid &&
+          solicitudForm.get('aceptaCondiciones')?.touched
+        ) {
+          <p class="input-error-text">Debes aceptar las condiciones para continuar.</p>
         }
       </div>
 
       <!-- Error del servidor -->
       @if (errorMensaje()) {
-      <p class="input-error-text text-center text-pretty">Upps...{{ errorMensaje() }}</p>
+        <p class="input-error-text text-center text-pretty">Upps...{{ errorMensaje() }}</p>
       }
     </div>
 

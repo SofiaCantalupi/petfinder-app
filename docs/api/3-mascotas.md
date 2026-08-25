@@ -161,6 +161,11 @@ Orden real en el archivo: `GET /mascotas/id/{id}`, `POST /mascotas`, `PUT /masco
   2. Valida propiedad: si `existente.getMiembroId() != userDetails.getId()`, lanza `OperacionNoPermitidaException`.
   3. Valida que al menos un campo del body no sea `null`, si no, `IllegalArgumentException`.
   4. Actualiza sólo los campos no-`null` (actualización parcial campo a campo, no reemplazo total).
+
+⚠️ **Corrección verificada en runtime (23/08/2026)**: el update parcial **no** cubre los 4 campos. Mandando un body con los 4 campos, la respuesta devuelve `nombre` y `urlFoto` actualizados pero `estadoMascota` y `tipoMascota` con el valor viejo — los dos campos tipados como enum se descartan silenciosamente (no hay error, el status es 200).
+
+- `tipoMascota`: es un bug, no hay ninguna otra vía para cambiar el tipo de una mascota. Hay que agregar el `if (dto.getTipoMascota() != null)` en `MascotaService.modificar`.
+- `estadoMascota`: que no se aplique acá es lo correcto y conviene dejarlo documentado como deliberado. El estado lo gobierna `PUT /publicaciones/{id}/estado/{estado}` (`PublicacionService.modificarEstado`), que es el único que valida el cambio (`validarCambioEstado`) y aplica el efecto secundario sobre las solicitudes de adopción pendientes (ver `4-publicaciones.md`, sección D.3). Aplicarlo también acá duplicaría esas reglas o, peor, permitiría saltearlas.
 - **Status éxito**: `200 OK` con `MascotaDetailDTO` actualizado (`MascotaController.java:51`)
 - **Errores posibles**:
   | Caso | Excepción | Status |
