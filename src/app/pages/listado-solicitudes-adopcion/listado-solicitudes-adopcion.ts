@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SolicitudAdopcionService } from '../../services/solicitud-adopcion-service';
 import { PublicacionService } from '../../services/publicacion-service';
+import { NotificacionService } from '../../services/notificacion-service';
 import { ToastService } from '../../services/toast-service';
 import { SolicitudEnviadaVista } from '../../models/solicitud-adopcion';
 import { extraerMensajeError } from '../../utils/http-error';
@@ -17,6 +18,7 @@ import { SolicitudesTablaSkeleton } from '../../components/solicitudes-tabla-ske
 export class ListadoSolicitudesAdopcion implements OnInit {
   solicitudService = inject(SolicitudAdopcionService);
   private publicacionService = inject(PublicacionService);
+  private notificacionService = inject(NotificacionService);
   private toastService = inject(ToastService);
   private router = inject(Router);
 
@@ -48,6 +50,16 @@ export class ListadoSolicitudesAdopcion implements OnInit {
         console.error('Error al obtener las solicitudes', error);
       },
     });
+
+    // Entrar aca es ver las solicitudes, asi que sus notificaciones dejan de tener
+    // sentido: se marcan como leidas todas las de tipo SOLICITUD_ADOPCION y RESPUESTA_ADOPCION.
+    this.notificacionService
+      .marcarTiposComoLeidas(['SOLICITUD_ADOPCION', 'RESPUESTA_ADOPCION'])
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al marcar como leidas las notificaciones de solicitudes', error);
+        },
+      });
   }
 
   // navega al detalle de la solicitud

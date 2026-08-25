@@ -1,5 +1,5 @@
 <header class="sticky flex items-center h-header top-0 z-50 p-2.5 bg-primary/85 shadow-lg">
-  <div class="wrapper flex items-center justify-between w-full gap-4">
+  <div class="relative wrapper flex items-center justify-between w-full gap-4">
     <!-- Izquierda: marca -->
     <div class="flex items-center shrink-0">
       <svg
@@ -27,7 +27,9 @@
     </div>
 
     <!-- Centro: navegacion -->
-    <nav class="flex items-center gap-3 md:gap-5 font-semibold text-white">
+    <nav
+      class="absolute left-1/2 -translate-x-1/2 flex items-center gap-3 md:gap-5 font-semibold text-white"
+    >
       <a routerLink="/publicaciones" class="hover:text-amber-800 transition-colors">Home</a>
 
       @if (authService.isUsuario()) {

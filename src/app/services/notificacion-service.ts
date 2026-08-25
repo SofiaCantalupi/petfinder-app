@@ -1,7 +1,7 @@
-import { Injectable, signal, inject } from '@angular/core';
+import { computed, Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, of, tap } from 'rxjs';
-import { Notificacion } from '../models/notificacion';
+import { forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
+import { Notificacion, TipoNotificacion } from '../models/notificacion';
 import { DATABASE_BASE_URL } from '../constants';
 import { ComentarioService } from './comentario-service';
 
@@ -13,7 +13,12 @@ export class NotificacionService {
   private comentarioService = inject(ComentarioService);
 
   private notificacionesState = signal<Notificacion[]>([]);
-  public notificaciones = this.notificacionesState.asReadonly();
+
+  // El backend devuelve las notificaciones en orden de insercion, asi
+  // que se ordenan aca y no en cada template: por id descendente, que es el orden real de creacion.
+  public notificaciones = computed(() =>
+    [...this.notificacionesState()].sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id),
+  );
 
   private noLeidasState = signal<number>(0);
   public noLeidas = this.noLeidasState.asReadonly();
@@ -54,6 +59,22 @@ export class NotificacionService {
           notificaciones.map((n) => ({ ...n, leida: true })),
         );
         this.noLeidasState.set(0);
+      }),
+    );
+  }
+
+  // Marca como leidas las notificaciones de los tipos pedidos. Se marcan una por una. Se re-pide la lista antes de filtrar
+  // porque a esta pantalla se puede llegar sin haber abierto nunca la campana, que es la unica
+  // que carga notificacionesState.
+  marcarTiposComoLeidas(tipos: TipoNotificacion[]): Observable<Notificacion[]> {
+    return this.getNotificaciones().pipe(
+      switchMap((notificaciones) => {
+        const pendientes = notificaciones.filter((n) => tipos.includes(n.tipo) && !n.leida);
+
+        // forkJoin con array vacio nunca emite: sin este corte el subscribe no se completa.
+        if (pendientes.length === 0) return of([]);
+
+        return forkJoin(pendientes.map((n) => this.marcarComoLeida(n.id)));
       }),
     );
   }

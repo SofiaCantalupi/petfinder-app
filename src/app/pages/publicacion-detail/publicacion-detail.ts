@@ -93,10 +93,9 @@ export class PublicacionDetail implements OnInit {
   });
 
   // misma regla que poner en adopcion, pero con su propio computed: son dos acciones distintas
-  // sobre el estado de la mascota y cada una puede cambiar de condicion por separado
   puedeMarcarReencontrado = computed(() => {
     const pub = this.publicacion();
-    return pub ? pub.estadoMascota === 'encontrado' && this.puedeEditar() : false;
+    return pub ? (pub.estadoMascota === 'encontrado' || pub.estadoMascota === 'perdido') && this.puedeEditar() : false;
   });
 
   // La banda de acciones se dibuja sola: si no hay ninguna accion disponible para este usuario
