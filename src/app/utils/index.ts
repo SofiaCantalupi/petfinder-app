@@ -70,6 +70,28 @@ export function estadoSolicitudAConstante(estado: EstadoSolicitud): EstadoSolici
   return ESTADO_SOLICITUD_A_CONSTANTE[estado];
 }
 
+// Es el unico valorFront de mas de una palabra, asi que es el unico que no se puede mostrar tal
+// cual: la clase capitalize del template no toca el guion bajo y se leia "Perro_y_gato". Los
+// textos ya vienen capitalizados y son los mismos que muestra el <select> del formulario.
+const TIPO_MASCOTAS_EN_HOGAR_A_TEXTO: Record<TipoMascotasEnHogar, string> = {
+  perro: 'Perro',
+  gato: 'Gato',
+  perro_y_gato: 'Perro y gato',
+};
+
+export function tipoMascotasEnHogarATexto(
+  tipo: TipoMascotasEnHogar | null | undefined,
+): string | null {
+  if (!tipo) return null;
+
+  // Se pasa a minusculas antes de buscar porque el campo puede llegar como nombre de constante
+  // ("PERRO_Y_GATO") en vez de valorFront; sin esto el lookup daria undefined y el dato se veria
+  // en blanco, que es peor que verlo feo. El replace cubre lo mismo para un valor no mapeado.
+  const clave = tipo.toLowerCase() as TipoMascotasEnHogar;
+
+  return TIPO_MASCOTAS_EN_HOGAR_A_TEXTO[clave] ?? clave.replace(/_/g, ' ');
+}
+
 // MANUAL no tiene texto: ese rechazo ya lo explica comentarioResolucion, no hace falta mostrarlo.
 const MOTIVO_RECHAZO_A_TEXTO: Record<MotivoRechazo, string | null> = {
   manual: null,

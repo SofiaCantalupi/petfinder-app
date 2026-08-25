@@ -10,7 +10,11 @@ import {
   ResolucionSolicitudRequestDTO,
   SolicitudAdopcion,
 } from '../../models/solicitud-adopcion';
-import { estadoSolicitudAConstante, motivoRechazoATexto } from '../../utils';
+import {
+  estadoSolicitudAConstante,
+  motivoRechazoATexto,
+  tipoMascotasEnHogarATexto,
+} from '../../utils';
 import { extraerMensajeError } from '../../utils/http-error';
 
 @Component({
@@ -48,6 +52,11 @@ export class SolicitudAdopcionDetail implements OnInit {
         ?.nombreCompleto ?? '—'
     );
   });
+
+  // Texto legible del tipo de mascotas en el hogar (el DTO trae "perro_y_gato").
+  tipoMascotasEnHogarTexto = computed(() =>
+    tipoMascotasEnHogarATexto(this.solicitud()?.tipoMascotasEnHogar),
+  );
 
   // Texto legible del motivo de rechazo (el DTO solo trae el enum crudo).
   motivoRechazoTexto = computed(() => {
