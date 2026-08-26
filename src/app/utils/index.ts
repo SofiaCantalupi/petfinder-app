@@ -1,4 +1,4 @@
-import { EstadoMascota, TipoMascota } from '../models/publicacion';
+import { EstadoMascota, Publicacion, TipoMascota } from '../models/publicacion';
 import { EstadoMascotaConstante, TipoMascotaConstante } from '../models/mascota-request-dto';
 import {
   EstadoSolicitud,
@@ -25,6 +25,13 @@ const TIPO_MASCOTA_A_CONSTANTE: Record<TipoMascota, TipoMascotaConstante> = {
 
 export function estadoMascotaAConstante(estado: EstadoMascota): EstadoMascotaConstante {
   return ESTADO_MASCOTA_A_CONSTANTE[estado];
+}
+
+// El backend devuelve las publicaciones en orden de insercion (findAllByActivoTrue, sin ORDER BY),
+// asi que las mas viejas quedaban primero en el muro. Se ordenan aca y no en cada template,
+// por id descendente, que es el orden real de creacion. Se copia el array porque sort muta.
+export function ordenarPublicacionesRecientesPrimero(publicaciones: Publicacion[]): Publicacion[] {
+  return [...publicaciones].sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id);
 }
 
 export function tipoMascotaAConstante(tipo: TipoMascota): TipoMascotaConstante {
