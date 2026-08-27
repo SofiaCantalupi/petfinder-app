@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 import { NotificacionCampana } from '../notificaciones/notificacion-campana/notificacion-campana';
@@ -15,6 +15,9 @@ export class Header implements OnInit {
 
   // Total de mensajes sin leer para el badge del icono de mensajeria.
   mensajesNoLeidos = this.mensajeService.noLeidos;
+
+  // Menu de navegacion desplegable. Solo se muestra en mobile, donde la nav central se oculta.
+  menuAbierto = signal(false);
 
   // Iniciales del avatar. Se derivan de nombreCompleto() porque es el unico signal publico de
   // AuthService con los datos del miembro (currentUserSignal es privado). Toma la primera y la
@@ -33,6 +36,14 @@ export class Header implements OnInit {
 
     return (primera + ultima).toUpperCase();
   });
+
+  alternarMenu(): void {
+    this.menuAbierto.update((valor) => !valor);
+  }
+
+  cerrarMenu(): void {
+    this.menuAbierto.set(false);
+  }
 
   ngOnInit(): void {
     // Mismo criterio que la campana de notificaciones: se cuenta una vez al montar el header,
