@@ -293,6 +293,12 @@
   @apply text-sm leading-snug;
 }
 
+/* Baja logica: usado para usuario eliminado. mismo gris que el badge "Eliminada" de las publicaciones, pero sin el
+   posicionamiento absolute, porque este va inline al lado de un nombre. */
+@utility badge-eliminado {
+  @apply px-2 py-0.5 text-xs font-semibold bg-gray-600 text-white rounded-full uppercase;
+}
+
 /* EstadoMascota tags */
 @utility tag {
   @apply absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white rounded-full uppercase;
