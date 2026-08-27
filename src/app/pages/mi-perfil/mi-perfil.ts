@@ -17,6 +17,7 @@ import { PublicacionCardSkeleton } from '../../components/publicacion-card-skele
 import { Spinner } from '../../components/spinner/spinner';
 import { PasswordToggleIcon } from '../../components/password-toggle-icon/password-toggle-icon';
 import { PasswordRequisito } from '../../components/password-requisito/password-requisito';
+import { ordenarPublicacionesRecientesPrimero } from '../../utils';
 
 @Component({
   selector: 'app-mi-perfil',
@@ -268,8 +269,9 @@ export class MiPerfil implements OnInit {
 
     this.publicacionService.getPublicacionesByMiembro().subscribe({
       next: (publicaciones) => {
-        // muestra todas las publicaciones (activas e inactivas)
-        this.misPublicaciones.set(publicaciones);
+        // muestra todas las publicaciones (activas e inactivas). /propias es otro endpoint, no pasa
+        // por el state del service, asi que hay que ordenarlas explicitamente
+        this.misPublicaciones.set(ordenarPublicacionesRecientesPrimero(publicaciones));
         this.cargandoPublicaciones.set(false);
       },
       error: (error) => {

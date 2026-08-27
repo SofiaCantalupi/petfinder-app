@@ -72,6 +72,7 @@ No tiene campo `idEmisor`: el emisor se toma del usuario autenticado (`userDetai
 | `mensajesNoLeidos` | `Long` | number | conteo de mensajes recibidos de ese contacto sin leer | — |
 | `ultimoMensaje` | `String` | string | texto del último mensaje de la conversación | 
 | `fechaUltimoMensaje` | `LocalDateTime` | string ISO 8601 | fecha del último mensaje de la conversación 
+| `activo` | `boolean` | referencia al miembro
 
 Notas para el cliente:
 

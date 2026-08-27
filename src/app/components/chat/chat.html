@@ -93,8 +93,12 @@
   </div>
 } @else {
   <div class="card h-full flex flex-col">
-    <div class="card-header shrink-0">
-      <h2 class="text-lg font-semibold text-center truncate">{{ nombreContacto() }}</h2>
+    <div class="card-header shrink-0 flex items-center justify-center gap-2">
+      <h2 class="text-lg font-semibold truncate">{{ nombreContacto() }}</h2>
+
+      @if (!contactoActivo()) {
+        <span class="badge-eliminado shrink-0">Usuario eliminado</span>
+      }
     </div>
 
     <!-- Mensajes -->
@@ -170,26 +174,36 @@
       }
     </div>
 
-    <!-- Input de envio -->
-    <div class="card-footer shrink-0 flex items-end gap-2">
-      <textarea
-        #entrada
-        rows="1"
-        class="input-field resize-none"
-        placeholder="Escribí un mensaje…"
-        [value]="borrador()"
-        (input)="borrador.set(entrada.value)"
-        (keydown.enter)="alPresionarEnter($event)"
-      ></textarea>
+    <!-- Input de envio. Con el contacto dado de baja se saca entero en vez de deshabilitarlo,
+         igual que el form de comentarios cuando la publicacion esta inactiva: la conversacion
+         queda de solo lectura y el cartel explica por que. -->
+    @if (contactoActivo()) {
+      <div class="card-footer shrink-0 flex items-end gap-2">
+        <textarea
+          #entrada
+          rows="1"
+          class="input-field resize-none"
+          placeholder="Escribí un mensaje…"
+          [value]="borrador()"
+          (input)="borrador.set(entrada.value)"
+          (keydown.enter)="alPresionarEnter($event)"
+        ></textarea>
 
-      <button
-        type="button"
-        class="btn-primary btn-sm shrink-0 h-10"
-        [disabled]="borrador().trim().length === 0"
-        (click)="enviar()"
-      >
-        Enviar
-      </button>
-    </div>
+        <button
+          type="button"
+          class="btn-primary btn-sm shrink-0 h-10"
+          [disabled]="borrador().trim().length === 0"
+          (click)="enviar()"
+        >
+          Enviar
+        </button>
+      </div>
+    } @else {
+      <div class="card-footer shrink-0">
+        <p class="text-sm text-muted-foreground text-center">
+          Este usuario se encuentra eliminado. No podés enviarle mensajes.
+        </p>
+      </div>
+    }
   </div>
 }

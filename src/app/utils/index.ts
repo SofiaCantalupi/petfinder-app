@@ -1,4 +1,4 @@
-import { EstadoMascota, TipoMascota } from '../models/publicacion';
+import { EstadoMascota, Publicacion, TipoMascota } from '../models/publicacion';
 import { EstadoMascotaConstante, TipoMascotaConstante } from '../models/mascota-request-dto';
 import {
   EstadoSolicitud,
@@ -25,6 +25,13 @@ const TIPO_MASCOTA_A_CONSTANTE: Record<TipoMascota, TipoMascotaConstante> = {
 
 export function estadoMascotaAConstante(estado: EstadoMascota): EstadoMascotaConstante {
   return ESTADO_MASCOTA_A_CONSTANTE[estado];
+}
+
+// El backend devuelve las publicaciones en orden de insercion (findAllByActivoTrue, sin ORDER BY),
+// asi que las mas viejas quedaban primero en el muro. Se ordenan aca y no en cada template,
+// por id descendente, que es el orden real de creacion. Se copia el array porque sort muta.
+export function ordenarPublicacionesRecientesPrimero(publicaciones: Publicacion[]): Publicacion[] {
+  return [...publicaciones].sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id);
 }
 
 export function tipoMascotaAConstante(tipo: TipoMascota): TipoMascotaConstante {
@@ -93,14 +100,25 @@ export function tipoMascotasEnHogarATexto(
 }
 
 // MANUAL no tiene texto: ese rechazo ya lo explica comentarioResolucion, no hace falta mostrarlo.
-const MOTIVO_RECHAZO_A_TEXTO: Record<MotivoRechazo, string | null> = {
+// AUTO_BAJA_CUENTA queda afuera del mapa a proposito: es el unico motivo cuyo texto depende de
+// quien mira, y se resuelve en la funcion.
+const MOTIVO_RECHAZO_A_TEXTO: Record<Exclude<MotivoRechazo, 'auto_baja_cuenta'>, string | null> = {
   manual: null,
   auto_otra_aprobada: 'La mascota fue adoptada por otro miembro.',
   auto_publicacion_eliminada: 'La publicación ha sido eliminada.',
   auto_cambio_estado_mascota: 'La mascota ha dejado de estar en adopción.',
-  auto_baja_cuenta: 'La cuenta del publicador fue dada de baja.',
 };
 
-export function motivoRechazoATexto(motivo: MotivoRechazo): string | null {
+// El backend emite el mismo AUTO_BAJA_CUENTA se haya dado de baja el publicador o el
+// solicitante, asi que el motivo solo no alcanza: el que se fue es siempre la contraparte del
+// que esta viendo la solicitud. Sin 'esRecibida' el dueño de la publicacion leia que la cuenta
+// dada de baja era la del publicador, es decir la suya propia, estando activo.
+export function motivoRechazoATexto(motivo: MotivoRechazo, esRecibida: boolean): string | null {
+  if (motivo === 'auto_baja_cuenta') {
+    return esRecibida
+      ? 'La cuenta del solicitante fue dada de baja.'
+      : 'La cuenta del publicador fue dada de baja.';
+  }
+
   return MOTIVO_RECHAZO_A_TEXTO[motivo];
 }

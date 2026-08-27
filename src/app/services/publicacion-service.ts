@@ -5,7 +5,7 @@ import { PublicacionRequestUpdateDTO } from '../models/publicacion-request-updat
 import { HttpClient } from '@angular/common/http';
 import { finalize, map, tap } from 'rxjs';
 import { DATABASE_BASE_URL } from '../constants';
-import { estadoMascotaAConstante } from '../utils';
+import { estadoMascotaAConstante, ordenarPublicacionesRecientesPrimero } from '../utils';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +16,10 @@ export class PublicacionService {
   // al actualizar publicacionesState cada vez que se realiza una baja pasiva o una actualizacion, este contiene solo las publicaciones ACTIVAS
   private publicacionesState = signal<Publicacion[]>([]);
 
-  public publicaciones = this.publicacionesState.asReadonly();
+  // Las mas recientes primero
+  public publicaciones = computed(() =>
+    ordenarPublicacionesRecientesPrimero(this.publicacionesState()),
+  );
 
   // true mientras se resuelve el GET inicial de publicaciones (util para mostrar loading/skeletons)
   private loadingState = signal<boolean>(true);
@@ -24,18 +27,20 @@ export class PublicacionService {
   public isLoading = this.loadingState.asReadonly();
 
   // computed usado para filtrar publicaciones activas, filtra solo cuando hay cambios
+  // Los tres derivan de publicaciones() y no del state crudo: filter preserva el orden, asi que
+  // heredan el ordenamiento por fecha sin repetir el sort.
   public publicacionesActivas = computed(() =>
-    this.publicacionesState().filter((publicacion) => publicacion.activo === true),
+    this.publicaciones().filter((publicacion) => publicacion.activo === true),
   );
 
   public publicacionesReencontrados = computed(() =>
-    this.publicacionesState().filter(
+    this.publicaciones().filter(
       (publicacion) => publicacion.activo === true && publicacion.estadoMascota === 'reencontrado',
     ),
   );
 
   public publicacionesAdoptados = computed(() =>
-    this.publicacionesState().filter(
+    this.publicaciones().filter(
       (publicacion) => publicacion.activo === true && publicacion.estadoMascota === 'adoptado',
     ),
   );

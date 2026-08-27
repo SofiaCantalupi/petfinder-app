@@ -58,23 +58,31 @@ export class SolicitudAdopcionDetail implements OnInit {
     tipoMascotasEnHogarATexto(this.solicitud()?.tipoMascotasEnHogar),
   );
 
-  // Texto legible del motivo de rechazo (el DTO solo trae el enum crudo).
+  // De que lado de la solicitud esta el que la mira. Las dos listas del service no se solapan
+  // (no se puede solicitar la adopcion de la propia publicacion), asi que estar entre las
+  // recibidas equivale a ser el dueño de la publicacion.
+  private esRecibida = computed(() => {
+    const s = this.solicitud();
+    return s !== null && this.solicitudService.recibidas().some((r) => r.id === s.id);
+  });
+
+  // Texto legible del motivo de rechazo (el DTO solo trae el enum crudo). Necesita la
+  // perspectiva porque AUTO_BAJA_CUENTA no dice cual de los dos miembros se dio de baja.
   motivoRechazoTexto = computed(() => {
     const s = this.solicitud();
     if (!s || !s.motivoRechazo) return null;
-    return motivoRechazoATexto(s.motivoRechazo);
+    return motivoRechazoATexto(s.motivoRechazo, this.esRecibida());
   });
 
   // Espeja las tres precondiciones que valida el backend al resolver: que siga pendiente,
-  // que la mascota siga en adopcion, y que el usuario sea el dueño de la publicacion
-  // (es decir, que la solicitud aparezca entre sus "recibidas").
+  // que la mascota siga en adopcion, y que el usuario sea el dueño de la publicacion.
   puedeResolver = computed(() => {
     const s = this.solicitud();
     if (!s) return false;
     if (s.estado !== 'pendiente') return false;
     if (s.estadoMascota !== 'en_adopcion') return false;
 
-    return this.solicitudService.recibidas().some((r) => r.id === s.id);
+    return this.esRecibida();
   });
 
   ngOnInit(): void {

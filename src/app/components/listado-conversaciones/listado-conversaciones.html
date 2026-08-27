@@ -61,9 +61,12 @@
             }"
             (click)="seleccionar(conversacion)"
           >
-            <!-- Iniciales: el DTO no trae foto de perfil -->
+            <!-- Iniciales. Con el contacto dado de baja se atenua
+                 solo el avatar y no el boton entero, para no agrisar ni el borde que marca la
+                 conversacion abierta ni el badge -->
             <span
               class="h-10 w-10 shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold uppercase"
+              [ngClass]="{ 'grayscale opacity-70': conversacion.activo === false }"
             >
               {{ conversacion.nombre.charAt(0) }}{{ conversacion.apellido.charAt(0) }}
             </span>
@@ -94,6 +97,13 @@
                   </span>
                 }
               </span>
+
+              <!-- Renglon propio. Se compara contra false explicito
+                   porque con un backend sin el campo 'activo' llegaria undefined, y un !activo
+                   marcaria como eliminados a todos los contactos. -->
+              @if (conversacion.activo === false) {
+                <span class="badge-eliminado self-start mt-0.5">Eliminado</span>
+              }
             </span>
           </button>
         </li>

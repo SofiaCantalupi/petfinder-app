@@ -21,6 +21,7 @@ export interface ConversacionDetailDTO{
     mensajesNoLeidos: number,
     ultimoMensaje: string;
     fechaUltimoMensaje: string; // LocalDateTime -> string
+    activo: boolean;// Baja logica del contacto
 }
 
 // Estado local de una burbuja: el POST tarda en responder, asi que el mensaje se pinta apenas
