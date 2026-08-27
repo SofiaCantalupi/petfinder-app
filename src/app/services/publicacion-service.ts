@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { EstadoMascota, Publicacion } from '../models/publicacion';
 import { PublicacionRequestDTO } from '../models/publicacion-request-dto';
 import { PublicacionRequestUpdateDTO } from '../models/publicacion-request-update-dto';
@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { finalize, map, tap } from 'rxjs';
 import { DATABASE_BASE_URL } from '../constants';
 import { estadoMascotaAConstante, ordenarPublicacionesRecientesPrimero } from '../utils';
+import { AuthService } from './auth-service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,8 @@ export class PublicacionService {
   private loadingState = signal<boolean>(true);
 
   public isLoading = this.loadingState.asReadonly();
+
+  private authService = inject(AuthService);
 
   // computed usado para filtrar publicaciones activas, filtra solo cuando hay cambios
   // Los tres derivan de publicaciones() y no del state crudo: filter preserva el orden, asi que
@@ -87,9 +90,13 @@ export class PublicacionService {
     );
   }
 
-  // Baja logica de una publicacion propia (el backend cascadea mascota, ubicacion y comentarios)
+  // Baja logica de una publicacion (el backend cascadea mascota, ubicacion y comentarios).
+  // El backend separa la baja por rol: /admin/{id} es solo ADMINISTRADOR (borra cualquier
+  // publicacion) y /propia/{id} es solo MIEMBRO sobre publicaciones de las que es autor.
   deletePublicacion(id: number) {
-    return this.http.delete(`${this.apiUrl}/propia/${id}`, { responseType: 'text' }).pipe(
+    const ruta = this.authService.isAdmin() ? 'admin' : 'propia';
+
+    return this.http.delete(`${this.apiUrl}/${ruta}/${id}`, { responseType: 'text' }).pipe(
       tap(() => {
         this.publicacionesState.update((publicaciones) =>
           publicaciones.filter((pub) => pub.id !== id),

@@ -5,18 +5,7 @@ import { catchError, throwError } from 'rxjs';
 import { ToastService } from '../services/toast-service';
 import { AuthService } from '../services/auth-service';
 import { DATABASE_BASE_URL } from '../constants';
-
-// El backend usa 403 tanto para "sesión inválida" (filtro de seguridad) como para errores de
-// negocio (OperacionNoPermitidaException). Se distinguen por el body: los de negocio pasan por
-// GlobalHandlerException y traen el envelope { mensaje, ... }; los del filtro vienen vacíos.
-function esRechazoDeSesion(error: HttpErrorResponse): boolean {
-  if (error.status === 401) return true;
-  if (error.status !== 403) return false;
-
-  const body = error.error;
-  const esEnvelopeDeNegocio = !!body && typeof body === 'object' && 'mensaje' in body;
-  return !esEnvelopeDeNegocio;
-}
+import { esRechazoDeSesion } from '../utils/http-error';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   if (!req.url.startsWith(DATABASE_BASE_URL)) {
