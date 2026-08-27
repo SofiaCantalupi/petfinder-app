@@ -24,11 +24,94 @@
           >PetFinder</a
         ></span
       >
+
+      <!-- Menu desplegable de navegacion, solo en mobile -->
+      <div class="relative md:hidden">
+        <button
+          (click)="alternarMenu()"
+          class="relative p-2 text-white hover:text-amber-800 transition-colors cursor-pointer"
+          title="Menú"
+          aria-label="Menú"
+          [attr.aria-expanded]="menuAbierto()"
+        >
+          @if (menuAbierto()) {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          } @else {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M4 6h16" />
+              <path d="M4 12h16" />
+              <path d="M4 18h16" />
+            </svg>
+          }
+        </button>
+
+        @if (menuAbierto()) {
+          <div class="fixed inset-0 z-40" (click)="cerrarMenu()"></div>
+
+          <nav
+            class="absolute left-0 z-50 mt-2 w-48 rounded-md border border-border bg-card shadow-lg py-1 font-semibold"
+          >
+            <a
+              routerLink="/publicaciones"
+              (click)="cerrarMenu()"
+              class="block px-4 py-2 text-foreground hover:bg-muted transition-colors"
+              >Home</a
+            >
+
+            @if (authService.isUsuario()) {
+              <a
+                routerLink="/publicaciones/crear"
+                (click)="cerrarMenu()"
+                class="block px-4 py-2 text-foreground hover:bg-muted transition-colors"
+                >Publicar</a
+              >
+              <a
+                routerLink="/solicitudes-adopcion"
+                (click)="cerrarMenu()"
+                class="block px-4 py-2 text-foreground hover:bg-muted transition-colors"
+                >Adoptar</a
+              >
+            }
+            @if (authService.isAdmin()) {
+              <a
+                routerLink="/admin/usuarios"
+                (click)="cerrarMenu()"
+                class="block px-4 py-2 text-foreground hover:bg-muted transition-colors"
+                >Gestión Usuarios</a
+              >
+            }
+          </nav>
+        }
+      </div>
     </div>
 
-    <!-- Centro: navegacion -->
+    <!-- Centro: navegacion. Desde md para arriba va centrada en el header; abajo de ese ancho se reemplaza por un menu
+         desplegable al lado del logo. -->
     <nav
-      class="absolute left-1/2 -translate-x-1/2 flex items-center gap-3 md:gap-5 font-semibold text-white"
+      class="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-3 md:gap-5 font-semibold text-white"
     >
       <a routerLink="/publicaciones" class="hover:text-amber-800 transition-colors">Home</a>
 
