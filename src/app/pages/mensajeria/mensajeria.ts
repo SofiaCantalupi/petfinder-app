@@ -18,20 +18,34 @@ export class Mensajeria {
   // No hay entidad Conversacion: lo unico que se guarda es el id del otro miembro.
   idSeleccionado = signal<number | null>(null);
 
-  // Nombre que emite el listado al elegir un contacto. Entrando por link directo todavia no
-  // hubo click, asi que puede estar vacio y lo resuelve el computed de abajo.
-  private nombreEmitido = signal<string>('');
+  // Contacto que emite el listado al elegir una conversacion. Entrando por link directo todavia
+  // no hubo click, asi que puede estar en null y lo resuelve el computed de abajo.
+  private contactoEmitido = signal<ConversacionDetailDTO | null>(null);
 
-  // El header del chat muestra nombre + apellido y MensajeDetailDTO no trae apellido: por link
-  // directo el dato sale de la lista compartida del servicio, que carga el propio listado.
-  nombreContacto = computed(() => {
-    const emitido = this.nombreEmitido();
-    if (emitido) return emitido;
-
+  // Del contacto hacen falta dos datos (nombre completo y si sigue activo) y ninguno viene en
+  // MensajeDetailDTO, asi que se resuelve el DTO entero una sola vez. La lista del servicio es
+  // la fuente de verdad: se refresca sola tras marcarLeidos, mientras que el DTO emitido en el
+  // click es una foto del momento y queda solo de respaldo.
+  private contacto = computed(() => {
     const id = this.idSeleccionado();
-    const contacto = this.mensajeService.conversaciones().find((c) => c.idMiembro === id);
+    if (id === null) return null;
+
+    const deLaLista = this.mensajeService.conversaciones().find((c) => c.idMiembro === id);
+    if (deLaLista) return deLaLista;
+
+    const emitido = this.contactoEmitido();
+    return emitido?.idMiembro === id ? emitido : null;
+  });
+
+  // El header del chat muestra nombre + apellido y MensajeDetailDTO no trae apellido.
+  nombreContacto = computed(() => {
+    const contacto = this.contacto();
     return contacto ? `${contacto.nombre} ${contacto.apellido}` : '';
   });
+
+  // Optimista ante la falta de dato: por link directo la lista todavia no cargo y no se puede
+  // bloquear el chat por eso. Si el contacto igual estaba inactivo, el POST vuelve 403.
+  contactoActivo = computed(() => this.contacto()?.activo ?? true);
 
   constructor() {
     // Link directo desde el detalle de una publicacion: /mensajes?contacto=<idMiembro>
@@ -45,16 +59,16 @@ export class Mensajeria {
     this.idSeleccionado.set(idContacto);
     // Se limpia el anterior para que el header no muestre el contacto viejo si el listado
     // todavia no emitio el nuevo.
-    this.nombreEmitido.set('');
+    this.contactoEmitido.set(null);
   }
 
   guardarContacto(contacto: ConversacionDetailDTO): void {
-    this.nombreEmitido.set(`${contacto.nombre} ${contacto.apellido}`);
+    this.contactoEmitido.set(contacto);
   }
 
   // Solo se usa en mobile, donde las dos columnas no entran juntas.
   volverAlListado(): void {
     this.idSeleccionado.set(null);
-    this.nombreEmitido.set('');
+    this.contactoEmitido.set(null);
   }
 }
