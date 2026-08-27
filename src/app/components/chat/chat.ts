@@ -32,6 +32,9 @@ export class Chat {
   idMiembro = input<number | null>(null);
   // Lo pasa la pagina desde ConversacionDetailDTO: MensajeDetailDTO solo trae el nombre de pila.
   nombreContacto = input<string>('');
+  // Sale de ConversacionDetailDTO. Arranca en true porque sin el dato no se puede bloquear el chat (link directo con la
+  // lista sin cargar); si el contacto igual estaba inactivo, el POST vuelve 403.
+  contactoActivo = input<boolean>(true);
 
   private contenedorMensajes = viewChild<ElementRef<HTMLDivElement>>('contenedorMensajes');
 
@@ -255,7 +258,9 @@ export class Chat {
   enviar(): void {
     const texto = this.borrador().trim();
     const idReceptor = this.idMiembro();
-    if (!texto || idReceptor === null) return;
+    // El template ya no dibuja el input con un contacto dado de baja, pero el binding de Enter
+    // sigue vivo y el flag puede cambiar con la conversacion abierta: el backend responderia 403.
+    if (!texto || idReceptor === null || !this.contactoActivo()) return;
 
     // Optimistic update: la burbuja aparece antes de que responda el POST.
     const idLocal = this.proximoIdLocal++;
@@ -279,7 +284,9 @@ export class Chat {
 
   reintentar(mensaje: MensajeVM): void {
     const idReceptor = this.idMiembro();
-    if (idReceptor === null) return;
+    // Las burbujas fallidas quedan a la vista con su boton, tambien si el contacto se dio de
+    // baja despues: reintentar contra un inactivo solo repetiria el mismo 403.
+    if (idReceptor === null || !this.contactoActivo()) return;
 
     this.actualizar(mensaje.idLocal, (actual) => ({ ...actual, estado: 'enviando' }));
     this.postear(mensaje.idLocal, mensaje.texto, idReceptor);
